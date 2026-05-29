@@ -19,6 +19,7 @@ function RegisterForm() {
   const [plan, setPlan] = useState<"free" | "premium">(planParam === "premium" ? "premium" : "free");
 
   const [successMsg, setSuccessMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
