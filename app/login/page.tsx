@@ -14,6 +14,20 @@ export default function LoginPage() {
 
   const [errorMsg, setErrorMsg] = useState("");
 
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`
+      }
+    });
+    if (error) {
+      setErrorMsg(error.message);
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMsg("");
@@ -148,11 +162,13 @@ export default function LoginPage() {
               border: "1px solid var(--border-default)",
               borderRadius: "12px",
               display: "flex", alignItems: "center", justifyContent: "center", gap: "10px",
-              cursor: "pointer", marginBottom: "24px",
+              cursor: "pointer", marginBottom: "20px",
               color: "var(--text-primary)", fontSize: "0.9rem", fontWeight: 600,
               transition: "all 0.2s",
               fontFamily: "var(--font-sans)",
             }}
+            onClick={handleGoogleLogin}
+            disabled={loading}
             onMouseEnter={(e) => {
               (e.currentTarget as HTMLElement).style.borderColor = "var(--border-strong)";
               (e.currentTarget as HTMLElement).style.background = "var(--bg-card-hover)";

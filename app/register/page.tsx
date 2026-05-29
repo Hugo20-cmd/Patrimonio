@@ -20,6 +20,20 @@ function RegisterForm() {
 
   const [errorMsg, setErrorMsg] = useState("");
 
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`
+      }
+    });
+    if (error) {
+      setErrorMsg(error.message);
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMsg("");
@@ -113,6 +127,8 @@ function RegisterForm() {
           transition: "all 0.2s",
           fontFamily: "var(--font-sans)",
         }}
+        onClick={handleGoogleLogin}
+        disabled={loading}
         onMouseEnter={(e) => {
           (e.currentTarget as HTMLElement).style.borderColor = "var(--border-strong)";
           (e.currentTarget as HTMLElement).style.background = "var(--bg-card-hover)";
