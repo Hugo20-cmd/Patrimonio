@@ -1,11 +1,19 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Award, Lock, Zap, Flame, Trophy, Star } from "lucide-react";
-import { mockAchievements, mockUser } from "@/lib/mock-data";
+import { mockAchievements } from "@/lib/mock-data";
+import { getProfile } from "@/app/actions/profile";
 
 export default function AchievementsPage() {
-  const levelProgress = (mockUser.xp / mockUser.xpToNextLevel) * 100;
+  const [profile, setProfile] = useState<any>(null);
+
+  useEffect(() => {
+    getProfile().then(setProfile);
+  }, []);
+
+  const levelProgress = profile ? (profile.xp / profile.xpToNextLevel) * 100 : 0;
 
   const rarityColors = {
     comum: "var(--text-secondary)",
@@ -61,21 +69,21 @@ export default function AchievementsPage() {
           boxShadow: "0 10px 30px rgba(79,110,247,0.4)",
           position: "relative", zIndex: 1,
         }}>
-          {mockUser.level}
+          {profile?.level || 1}
         </div>
 
         <div style={{ flex: 1, position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "12px" }}>
             <div>
-              <h2 style={{ fontSize: "1.4rem", marginBottom: "4px" }}>Investidor Avançado</h2>
+              <h2 style={{ fontSize: "1.4rem", marginBottom: "4px" }}>Investidor Iniciante</h2>
               <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.85rem", color: "var(--text-secondary)" }}>
                 <Flame size={14} color="var(--orange-primary)" fill="var(--orange-primary)" />
-                Streak de {mockUser.streak} meses investindo
+                Começando sua jornada agora
               </div>
             </div>
             <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--blue-primary)" }}>{mockUser.xp} XP</div>
-              <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)" }}>Faltam {mockUser.xpToNextLevel - mockUser.xp} XP para Nível {mockUser.level + 1}</div>
+              <div style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--blue-primary)" }}>{profile?.xp || 0} XP</div>
+              <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)" }}>Faltam {(profile?.xpToNextLevel || 1000) - (profile?.xp || 0)} XP para Nível {(profile?.level || 1) + 1}</div>
             </div>
           </div>
 
@@ -98,9 +106,9 @@ export default function AchievementsPage() {
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "16px" }}>
           {mockAchievements.map((ach) => {
-            const isUnlocked = !!ach.unlockedAt;
-            const color = rarityColors[ach.rarity];
-            const glow = rarityGlows[ach.rarity];
+            const isUnlocked = false; // Bloquear todas as conquistas provisoriamente
+            const color = rarityColors[ach.rarity as keyof typeof rarityColors];
+            const glow = rarityGlows[ach.rarity as keyof typeof rarityGlows];
 
             return (
               <motion.div

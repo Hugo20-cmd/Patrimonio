@@ -1,10 +1,11 @@
 "use client";
-
+import { supabase } from '@/lib/supabase'
 import { useState, Suspense } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { TrendingUp, Mail, Lock, Eye, EyeOff, ArrowRight, Zap, Check, User } from "lucide-react";
+import { signup } from "@/app/actions/auth";
 
 function RegisterForm() {
   const searchParams = useSearchParams();
@@ -17,13 +18,20 @@ function RegisterForm() {
   const [password, setPassword] = useState("");
   const [plan, setPlan] = useState<"free" | "premium">(planParam === "premium" ? "premium" : "free");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setErrorMsg("");
     setLoading(true);
-    // TODO: Supabase auth integration
-    await new Promise((r) => setTimeout(r, 1500));
-    setLoading(false);
-    window.location.href = "/dashboard";
+    
+    const formData = new FormData(e.currentTarget);
+    const result = await signup(formData);
+    
+    if (result?.error) {
+      setErrorMsg(result.error);
+      setLoading(false);
+    }
   };
 
   return (
@@ -130,6 +138,12 @@ function RegisterForm() {
         <div className="divider" style={{ flex: 1, margin: 0 }} />
       </div>
 
+      {errorMsg && (
+        <div style={{ background: "rgba(255,0,0,0.1)", color: "var(--red-primary)", padding: "12px", borderRadius: "8px", marginBottom: "16px", fontSize: "0.85rem", border: "1px solid rgba(255,0,0,0.2)" }}>
+          {errorMsg}
+        </div>
+      )}
+
       {/* Form */}
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
         {/* Name */}
@@ -141,6 +155,7 @@ function RegisterForm() {
               transform: "translateY(-50%)", color: "var(--text-tertiary)",
             }} />
             <input
+              name="name"
               id="name"
               type="text"
               placeholder="João Silva"
@@ -161,6 +176,7 @@ function RegisterForm() {
               transform: "translateY(-50%)", color: "var(--text-tertiary)",
             }} />
             <input
+              name="email"
               id="email"
               type="email"
               placeholder="seu@email.com.br"
@@ -181,6 +197,7 @@ function RegisterForm() {
               transform: "translateY(-50%)", color: "var(--text-tertiary)",
             }} />
             <input
+              name="password"
               id="password"
               type={showPassword ? "text" : "password"}
               placeholder="Mínimo 8 caracteres"

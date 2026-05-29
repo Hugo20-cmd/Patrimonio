@@ -1,9 +1,10 @@
 "use client";
-
+import { supabase } from '@/lib/supabase'
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { TrendingUp, Mail, Lock, Eye, EyeOff, ArrowRight, Zap } from "lucide-react";
+import { login } from "@/app/actions/auth";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -11,13 +12,21 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setErrorMsg("");
     setLoading(true);
-    // TODO: Supabase auth integration
-    await new Promise((r) => setTimeout(r, 1500));
-    setLoading(false);
-    window.location.href = "/dashboard";
+    
+    const formData = new FormData(e.currentTarget);
+    const result = await login(formData);
+    
+    if (result?.error) {
+      setErrorMsg(result.error);
+      setLoading(false);
+    }
+    // se sucesso, ocorrerá um redirect do server action, então o loading pode continuar ativo
   };
 
   return (
@@ -169,6 +178,12 @@ export default function LoginPage() {
             <div className="divider" style={{ flex: 1, margin: 0 }} />
           </div>
 
+          {errorMsg && (
+            <div style={{ background: "rgba(255,0,0,0.1)", color: "var(--red-primary)", padding: "12px", borderRadius: "8px", marginBottom: "16px", fontSize: "0.85rem", border: "1px solid rgba(255,0,0,0.2)" }}>
+              {errorMsg}
+            </div>
+          )}
+
           {/* Form */}
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             {/* Email */}
@@ -180,6 +195,7 @@ export default function LoginPage() {
                   transform: "translateY(-50%)", color: "var(--text-tertiary)",
                 }} />
                 <input
+                  name="email"
                   id="email"
                   type="email"
                   placeholder="seu@email.com.br"
@@ -208,6 +224,7 @@ export default function LoginPage() {
                   transform: "translateY(-50%)", color: "var(--text-tertiary)",
                 }} />
                 <input
+                  name="password"
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"

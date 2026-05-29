@@ -457,10 +457,11 @@ export function formatPercent(value: number): string {
   return `${sign}${value.toFixed(2)}%`;
 }
 
-export function formatCompact(value: number): string {
-  if (value >= 1_000_000) return `R$ ${(value / 1_000_000).toFixed(2)}M`;
-  if (value >= 1_000) return `R$ ${(value / 1_000).toFixed(1)}K`;
-  return formatCurrency(value);
+export function formatCompact(value: number, currency: string = 'BRL'): string {
+  const symbol = currency === 'USD' ? 'US$' : 'R$';
+  if (value >= 1_000_000) return `${symbol} ${(value / 1_000_000).toFixed(2)}M`;
+  if (value >= 1_000) return `${symbol} ${(value / 1_000).toFixed(1)}K`;
+  return formatCurrency(value, currency);
 }
 
 // Dicionário legível para tipo de ativo

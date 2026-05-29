@@ -5,9 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { 
   TrendingUp, LayoutDashboard, PieChart, Target, 
-  Award, Settings, LogOut, ArrowRightLeft, DollarSign 
+  Award, Settings, LogOut, ArrowRightLeft, DollarSign, Link as LinkIcon
 } from "lucide-react";
-import { mockUser } from "@/lib/mock-data";
+import { getProfile } from "@/app/actions/profile";
+import { logout } from "@/app/actions/auth";
+import { getSubscriptionStatus } from "@/app/actions/subscription";
+import { useEffect } from "react";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Visão Geral", href: "/dashboard" },
@@ -16,11 +19,19 @@ const menuItems = [
   { icon: DollarSign, label: "Dividendos", href: "/dividends" },
   { icon: Target, label: "Metas", href: "/goals" },
   { icon: Award, label: "Conquistas", href: "/achievements" },
+  { icon: LinkIcon, label: "Conexões", href: "/connections" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
   const [isHovered, setIsHovered] = useState(false);
+  const [profile, setProfile] = useState<any>(null);
+  const [subStatus, setSubStatus] = useState("free");
+
+  useEffect(() => {
+    getProfile().then(setProfile);
+    getSubscriptionStatus().then((res) => setSubStatus(res.status));
+  }, [pathname]);
 
   return (
     <aside 
@@ -84,10 +95,12 @@ export default function Sidebar() {
           <Settings size={18} />
           Configurações
         </Link>
-        <button className="sidebar-link" style={{ width: "100%", background: "transparent", border: "none", textAlign: "left" }}>
-          <LogOut size={18} />
-          Sair
-        </button>
+        <form action={logout} style={{ width: "100%" }}>
+          <button type="submit" className="sidebar-link" style={{ width: "100%", background: "transparent", border: "none", textAlign: "left", cursor: "pointer" }}>
+            <LogOut size={18} />
+            Sair
+          </button>
+        </form>
 
         {/* User Card */}
         <div style={{
@@ -105,15 +118,22 @@ export default function Sidebar() {
             background: "var(--gradient-blue)",
             display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: "0.8rem", fontWeight: 700, color: "#fff",
+            overflow: "hidden"
           }}>
-            {mockUser.name.split(" ").map(n => n[0]).join("").substring(0, 2)}
+            {profile?.avatarUrl ? (
+              <img src={profile.avatarUrl} alt="Avatar" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            ) : (
+              (profile?.name || "Inv").split(" ").map((n: string) => n[0]).join("").substring(0, 2).toUpperCase()
+            )}
           </div>
           <div style={{ flex: 1, overflow: "hidden" }}>
             <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--text-primary)", whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden" }}>
-              {mockUser.name}
+              {profile?.name || "Novo Investidor"}
             </div>
-            <div style={{ fontSize: "0.75rem", color: "var(--green-primary)", fontWeight: 600 }}>
-              {mockUser.plan === "premium" ? "Premium" : "Free"}
+            <div style={{ fontSize: "0.75rem", color: subStatus === "premium" ? "var(--purple-primary)" : "var(--green-primary)", fontWeight: 600, display: "flex", alignItems: "center", gap: "4px" }}>
+              {subStatus === "premium" ? (
+                <>Premium <Award size={12} /></>
+              ) : "Free"}
             </div>
           </div>
         </div>
