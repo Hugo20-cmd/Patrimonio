@@ -1,0 +1,50 @@
+import type { Metadata } from "next";
+import "./globals.css";
+
+export const metadata: Metadata = {
+  title: "PATRIMÔNIO+ | Organize seus investimentos em um único lugar",
+  description:
+    "Plataforma premium para acompanhamento de ETFs, ações, FIIs, Tesouro Direto, dividendos e evolução patrimonial. Invista com inteligência.",
+  keywords: [
+    "ETF", "ações", "FII", "dividendos", "patrimônio", "investimentos",
+    "Tesouro Direto", "carteira de investimentos", "renda passiva", "liberdade financeira"
+  ],
+  openGraph: {
+    title: "PATRIMÔNIO+ | Organize seus investimentos",
+    description: "Acompanhe ETFs, ações, FIIs e patrimônio automaticamente com gráficos inteligentes.",
+    type: "website",
+    locale: "pt_BR",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PATRIMÔNIO+",
+    description: "Plataforma premium de investimentos e patrimônio.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="pt-BR">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body>
+        <div className="noise-overlay" aria-hidden="true" />
+        {children}
+      </body>
+    </html>
+  );
+}

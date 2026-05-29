@@ -1,0 +1,135 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { 
+  TrendingUp, LayoutDashboard, PieChart, Target, 
+  Award, Settings, LogOut, ArrowRightLeft, DollarSign 
+} from "lucide-react";
+import { mockUser } from "@/lib/mock-data";
+
+const menuItems = [
+  { icon: LayoutDashboard, label: "Visão Geral", href: "/dashboard" },
+  { icon: PieChart, label: "Carteira", href: "/portfolio" },
+  { icon: ArrowRightLeft, label: "Lançamentos", href: "/transactions" },
+  { icon: DollarSign, label: "Dividendos", href: "/dividends" },
+  { icon: Target, label: "Metas", href: "/goals" },
+  { icon: Award, label: "Conquistas", href: "/achievements" },
+];
+
+export default function Sidebar() {
+  const pathname = usePathname();
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <aside 
+      style={{
+        width: "var(--sidebar-width)",
+        height: "100vh",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        background: "var(--bg-secondary)",
+        borderRight: "1px solid var(--border-subtle)",
+        display: "flex",
+        flexDirection: "column",
+        zIndex: 50,
+      }}
+      className="sidebar-container"
+    >
+      {/* Logo */}
+      <div style={{ padding: "24px", marginBottom: "12px" }}>
+        <Link href="/dashboard" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
+          <div style={{
+            width: "32px", height: "32px",
+            background: "linear-gradient(135deg, #00d4aa 0%, #4f6ef7 100%)",
+            borderRadius: "8px",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            boxShadow: "0 0 15px rgba(0,212,170,0.3)",
+          }}>
+            <TrendingUp size={18} color="#000" strokeWidth={2.5} />
+          </div>
+          <span style={{ fontWeight: 800, fontSize: "1.1rem", color: "var(--text-primary)" }}>
+            PATRIMÔNIO<span style={{ color: "var(--green-primary)" }}>+</span>
+          </span>
+        </Link>
+      </div>
+
+      {/* Nav Items */}
+      <nav style={{ flex: 1, padding: "0 16px", display: "flex", flexDirection: "column", gap: "6px" }}>
+        <div style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.08em", padding: "0 16px", marginBottom: "8px" }}>
+          Menu Principal
+        </div>
+        
+        {menuItems.map((item) => {
+          const isActive = pathname === item.href || (pathname.startsWith(item.href) && item.href !== "/dashboard");
+          
+          return (
+            <Link 
+              key={item.href} 
+              href={item.href}
+              className={`sidebar-link ${isActive ? "active" : ""}`}
+            >
+              <item.icon size={18} />
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* User / Bottom */}
+      <div style={{ padding: "24px 16px", borderTop: "1px solid var(--border-subtle)", display: "flex", flexDirection: "column", gap: "6px" }}>
+        <Link href="/settings" className={`sidebar-link ${pathname === "/settings" ? "active" : ""}`}>
+          <Settings size={18} />
+          Configurações
+        </Link>
+        <button className="sidebar-link" style={{ width: "100%", background: "transparent", border: "none", textAlign: "left" }}>
+          <LogOut size={18} />
+          Sair
+        </button>
+
+        {/* User Card */}
+        <div style={{
+          marginTop: "16px",
+          background: "var(--bg-card)",
+          border: "1px solid var(--border-default)",
+          borderRadius: "12px",
+          padding: "12px",
+          display: "flex",
+          alignItems: "center",
+          gap: "12px"
+        }}>
+          <div style={{
+            width: "36px", height: "36px", borderRadius: "50%",
+            background: "var(--gradient-blue)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: "0.8rem", fontWeight: 700, color: "#fff",
+          }}>
+            {mockUser.name.split(" ").map(n => n[0]).join("").substring(0, 2)}
+          </div>
+          <div style={{ flex: 1, overflow: "hidden" }}>
+            <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--text-primary)", whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden" }}>
+              {mockUser.name}
+            </div>
+            <div style={{ fontSize: "0.75rem", color: "var(--green-primary)", fontWeight: 600 }}>
+              {mockUser.plan === "premium" ? "Premium" : "Free"}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <style jsx global>{`
+        @media (max-width: 768px) {
+          .sidebar-container {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+          }
+          .sidebar-container.open {
+            transform: translateX(0);
+          }
+        }
+      `}</style>
+    </aside>
+  );
+}
