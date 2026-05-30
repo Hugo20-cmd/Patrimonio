@@ -30,6 +30,19 @@ export async function getMarketNews() {
   let unifiedNews: any[] = [];
   let idCounter = 1;
 
+  // Array de imagens fallback bonitas sobre finanças
+  const FALLBACK_IMAGES = [
+    'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1523292562811-8fa7962a78c8?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1642543348745-03b1219733d9?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&q=80&w=800',
+    'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800'
+  ];
+
+  const getFallbackImage = (id: number) => FALLBACK_IMAGES[id % FALLBACK_IMAGES.length];
+
   // 1. Fetch NewsAPI (Brazil Business)
   try {
     const newsApiRes = await fetch(`https://newsapi.org/v2/top-headlines?country=br&category=business&apiKey=${NEWSAPI_KEY}`, { next: { revalidate: 3600 } });
@@ -45,7 +58,7 @@ export async function getMarketNews() {
               source: article.source?.name || 'NewsAPI',
               category: 'Economia e Negócios',
               url: article.url,
-              imageUrl: article.urlToImage || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=800',
+              imageUrl: article.urlToImage || getFallbackImage(idCounter),
               publishedAt: article.publishedAt || new Date().toISOString()
             });
           }
@@ -71,7 +84,7 @@ export async function getMarketNews() {
             source: article.source || 'Finnhub',
             category: article.category === 'general' ? 'Mercado Global' : article.category,
             url: article.url,
-            imageUrl: article.image || 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=800',
+            imageUrl: article.image || getFallbackImage(idCounter),
             // Finnhub returns datetime in unix timestamp seconds
             publishedAt: new Date(article.datetime * 1000).toISOString()
           });
