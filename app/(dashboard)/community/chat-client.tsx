@@ -58,6 +58,8 @@ export default function ChatClient({ initialMessages, isAdmin = false }: { initi
       setContent("");
       setReplyTo(null);
       loadChannelMessages(activeChannel);
+    } else {
+      alert("Erro ao enviar mensagem: " + (res.error || "Tente novamente."));
     }
   };
 
@@ -76,7 +78,7 @@ export default function ChatClient({ initialMessages, isAdmin = false }: { initi
   return (
     <div style={{ position: "relative", display: "flex", height: "calc(100vh - 120px)", background: "var(--bg-card)", borderRadius: "16px", border: "1px solid var(--border-default)", overflow: "hidden" }}>
       
-      {/* Botão Mobile para abrir Salas (só aparece em telas pequenas - controlado via CSS ou estado) */}
+      {/* Botão Mobile para abrir Salas */}
       <button 
         className="mobile-only-btn"
         onClick={() => setIsSidebarOpen(true)}
@@ -84,13 +86,13 @@ export default function ChatClient({ initialMessages, isAdmin = false }: { initi
           position: "absolute", top: "12px", right: "12px", zIndex: 50,
           background: "var(--bg-elevated)", border: "1px solid var(--border-default)",
           borderRadius: "8px", padding: "8px", color: "var(--text-primary)", cursor: "pointer",
-          display: "none" // Escondido no desktop, exibido via CSS abaixo
+          display: "none"
         }}
       >
         <Menu size={24} />
       </button>
 
-      {/* Estilos injetados para responsividade básica sem tailwind excessivo */}
+      {/* Estilos injetados para responsividade */}
       <style dangerouslySetInnerHTML={{__html: `
         @media (max-width: 768px) {
           .chat-sidebar {
@@ -114,7 +116,7 @@ export default function ChatClient({ initialMessages, isAdmin = false }: { initi
         }
       `}} />
 
-      {/* Overlay Escuro para Mobile quando Sidebar estiver aberta */}
+      {/* Overlay Escuro para Mobile */}
       <AnimatePresence>
         {isSidebarOpen && (
           <motion.div 
@@ -273,11 +275,6 @@ export default function ChatClient({ initialMessages, isAdmin = false }: { initi
           )}
 
           <form onSubmit={handleSendMessage} style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-            <button type="button" onClick={() => {
-              setContent(c => c + " 🚀");
-            }} style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "50%", width: "44px", height: "44px", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)", cursor: "pointer", flexShrink: 0 }}>
-              <Smile size={20} />
-            </button>
             <input 
               type="text" 
               value={content} 
