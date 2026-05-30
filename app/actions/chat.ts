@@ -28,7 +28,7 @@ export async function getChatMessages(channel: string = 'geral') {
 
   // Force Admin Profile Name update if they are the one fetching
   if (isAdmin) {
-    await supabase.from('profiles').update({ name: 'Patrimônio+ 👑' }).eq('id', userData.user.id)
+    await supabase.from('profiles').update({ name: 'Patrimônio+' }).eq('id', userData.user.id)
   }
 
   // Fetch messages
@@ -61,11 +61,11 @@ export async function getChatMessages(channel: string = 'geral') {
     const profile = profiles?.find(p => p.id === msg.user_id)
     
     // Fallback if update didn't run yet or for other viewers checking the admin's message
-    const isMessageFromAdmin = profile?.email === 'contatopennamc@gmail.com' || profile?.name === 'Patrimônio+ 👑'
+    const isMessageFromAdmin = profile?.email === 'contatopennamc@gmail.com' || profile?.name === 'Patrimônio+' || profile?.name === 'Patrimônio+ 👑'
     
     return {
       ...msg,
-      profiles: profile || { id: msg.user_id, name: isMessageFromAdmin ? 'Patrimônio+ 👑' : 'Usuário', level: 1 }
+      profiles: profile || { id: msg.user_id, name: isMessageFromAdmin ? 'Patrimônio+' : 'Usuário', level: 1 }
     }
   })
 

@@ -188,34 +188,37 @@ export default function ChatClient({ initialMessages, isAdmin = false }: { initi
             </div>
           ) : (
             messages.map((msg) => {
-              const repliedMsg = msg.reply_to_id ? getReplyMessage(msg.reply_to_id) : null;
-
-              return (
-                <motion.div
-                  key={msg.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  style={{ display: "flex", gap: "12px", group: "msg" }}
-                  className="msg-container"
-                >
-                  <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: msg.is_pinned ? "var(--purple-primary)" : "var(--bg-card)", color: msg.is_pinned ? "#fff" : "var(--text-secondary)", border: `1px solid ${msg.is_pinned ? "transparent" : "var(--border-subtle)"}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontWeight: 700 }}>
-                    {msg.is_pinned ? <Pin size={18} /> : (msg.profiles?.name?.charAt(0) || "U")}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "4px", flexWrap: "wrap" }}>
-                      <span style={{ fontWeight: 600, color: msg.is_pinned ? "var(--purple-primary)" : "var(--text-primary)" }}>{msg.profiles?.name || "Usuário"}</span>
-                      <span style={{ fontSize: "0.75rem", color: "var(--text-tertiary)" }}>
-                        {new Date(msg.created_at).toLocaleTimeString("pt-BR", { hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                      <span style={{ fontSize: "0.65rem", padding: "2px 6px", background: "rgba(0,212,170,0.1)", color: "var(--green-primary)", borderRadius: "4px" }}>
-                        Lvl {msg.profiles?.level || 1}
-                      </span>
-                      {msg.is_pinned && (
-                        <span style={{ fontSize: "0.65rem", padding: "2px 6px", background: "rgba(168, 85, 247, 0.1)", color: "var(--purple-primary)", borderRadius: "4px", fontWeight: 700, textTransform: "uppercase" }}>
-                          Fixado
-                        </span>
-                      )}
-                    </div>
+                  const repliedMsg = msg.reply_to_id ? getReplyMessage(msg.reply_to_id) : null;
+                  const isAdminUser = msg.profiles?.name?.includes('Patrimônio+');
+                  
+                  return (
+                    <motion.div
+                      key={msg.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      style={{ display: "flex", gap: "12px", group: "msg" }}
+                      className="msg-container"
+                    >
+                      <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: msg.is_pinned ? "var(--purple-primary)" : "var(--bg-card)", color: msg.is_pinned ? "#fff" : "var(--text-secondary)", border: `1px solid ${msg.is_pinned ? "transparent" : "var(--border-subtle)"}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontWeight: 700, overflow: "hidden" }}>
+                        {isAdminUser ? <img src="/logo.png" alt="Patrimônio+" style={{width: "100%", height: "100%", objectFit: "cover"}} /> : (msg.is_pinned ? <Pin size={18} /> : (msg.profiles?.name?.charAt(0) || "U"))}
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "4px", flexWrap: "wrap" }}>
+                          <span style={{ fontWeight: 600, color: msg.is_pinned ? "var(--purple-primary)" : "var(--text-primary)" }}>{msg.profiles?.name || "Usuário"}</span>
+                          <span style={{ fontSize: "0.75rem", color: "var(--text-tertiary)" }}>
+                            {new Date(msg.created_at).toLocaleTimeString("pt-BR", { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                          {!isAdminUser && (
+                            <span style={{ fontSize: "0.65rem", padding: "2px 6px", background: "rgba(0,212,170,0.1)", color: "var(--green-primary)", borderRadius: "4px" }}>
+                              Lvl {msg.profiles?.level || 1}
+                            </span>
+                          )}
+                          {msg.is_pinned && (
+                            <span style={{ fontSize: "0.65rem", padding: "2px 6px", background: "rgba(168, 85, 247, 0.1)", color: "var(--purple-primary)", borderRadius: "4px", fontWeight: 700, textTransform: "uppercase" }}>
+                              Fixado
+                            </span>
+                          )}
+                        </div>
 
                     {/* Reply Bubble */}
                     {repliedMsg && (
