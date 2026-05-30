@@ -17,11 +17,18 @@ export async function getChatMessages(channel: string = 'geral') {
     .single()
 
   const ADMIN_EMAILS = ['contatopennamc@gmail.com']
-  const userEmail = userData.user.email?.toLowerCase().trim() || profile?.email?.toLowerCase().trim() || ''
+  const userEmail = userData.user.email?.toLowerCase().trim() || ''
   const isAdmin = ADMIN_EMAILS.includes(userEmail)
 
-  if (profile?.plan !== 'premium' && !isAdmin) {
+  const { data: profileCheck } = await supabase.from('profiles').select('plan').eq('id', userData.user.id).single()
+
+  if (profileCheck?.plan !== 'premium' && !isAdmin) {
     return { error: 'premium_required' }
+  }
+
+  // Force Admin Profile Name update if they are the one fetching
+  if (isAdmin) {
+    await supabase.from('profiles').update({ name: 'Patrimônio+ 👑' }).eq('id', userData.user.id)
   }
 
   // Fetch messages
@@ -47,14 +54,18 @@ export async function getChatMessages(channel: string = 'geral') {
   const userIds = [...new Set((rawMessages || []).map(m => m.user_id))]
   const { data: profiles } = await supabase
     .from('profiles')
-    .select('id, name, level')
+    .select('id, name, level, email')
     .in('id', userIds)
 
   const messages = (rawMessages || []).map(msg => {
     const profile = profiles?.find(p => p.id === msg.user_id)
+    
+    // Fallback if update didn't run yet or for other viewers checking the admin's message
+    const isMessageFromAdmin = profile?.email === 'contatopennamc@gmail.com' || profile?.name === 'Patrimônio+ 👑'
+    
     return {
       ...msg,
-      profiles: profile || { id: msg.user_id, name: 'Usuário', level: 1 }
+      profiles: profile || { id: msg.user_id, name: isMessageFromAdmin ? 'Patrimônio+ 👑' : 'Usuário', level: 1 }
     }
   })
 
