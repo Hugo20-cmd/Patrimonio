@@ -66,7 +66,7 @@ export async function addTransaction(formData: FormData) {
     await addXp(userData.user.id, xpEarned)
   }
 
-  revalidatePath('/transactions')
+  revalidatePath('/', 'layout')
   return { success: true, unlockedAchievements, xpEarned }
 }
 
@@ -82,7 +82,7 @@ export async function deleteTransaction(id: string) {
   const { syncRetroactiveXp } = await import('./gamification')
   await syncRetroactiveXp()
 
-  revalidatePath('/transactions')
+  revalidatePath('/', 'layout')
   return { success: true }
 }
 
