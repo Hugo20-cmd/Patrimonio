@@ -34,7 +34,7 @@ export async function getProfile() {
   return {
     id: profile.id,
     name: profile.name || 'Investidor',
-    email: profile.email,
+    email: userData.user.email,
     level: profile.level || 1,
     xp: profile.xp || 0,
     xpToNextLevel: profile.xp_to_next_level || 1000,

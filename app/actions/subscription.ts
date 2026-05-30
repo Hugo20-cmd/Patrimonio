@@ -5,7 +5,14 @@ import { createClient } from '@/utils/supabase/server'
 export async function getSubscriptionStatus() {
   const supabase = await createClient()
   const { data: userData } = await supabase.auth.getUser()
-  if (!userData.user) return { status: 'free' }
+  if (!userData?.user) return { status: 'free' }
+
+  // 👑 ADMIN BYPASS (Acesso Vitalício)
+  const ADMIN_EMAILS = ['contatopennamc@gmail.com']
+  const userEmail = userData.user.email?.toLowerCase().trim() || ''
+  if (ADMIN_EMAILS.includes(userEmail)) {
+    return { status: 'premium', current_period_end: '2099-12-31' }
+  }
 
   const { data: subscription } = await supabase
     .from('subscriptions')

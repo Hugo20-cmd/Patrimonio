@@ -5,7 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { 
   TrendingUp, LayoutDashboard, PieChart, Target, 
-  Award, Settings, LogOut, ArrowRightLeft, DollarSign, Link as LinkIcon, ArrowLeft
+  Award, Settings, LogOut, ArrowRightLeft, DollarSign, Link as LinkIcon, ArrowLeft,
+  Newspaper, MessageSquare, MessagesSquare
 } from "lucide-react";
 import { getProfile } from "@/app/actions/profile";
 import { logout } from "@/app/actions/auth";
@@ -19,6 +20,9 @@ const menuItems = [
   { icon: DollarSign, label: "Dividendos", href: "/dividends" },
   { icon: Target, label: "Metas", href: "/goals" },
   { icon: Award, label: "Conquistas", href: "/achievements" },
+  { icon: Newspaper, label: "Notícias", href: "/news" },
+  { icon: MessageSquare, label: "Comunidade", href: "/community" },
+  { icon: MessagesSquare, label: "Feedbacks", href: "/feedback" },
   { icon: LinkIcon, label: "Conexões", href: "/connections" },
 ];
 
@@ -106,6 +110,20 @@ export default function Sidebar({
             </Link>
           );
         })}
+
+        {/* ADMIN LINK (Apenas para o Dono) */}
+        {profile?.email === 'contatopennamc@gmail.com' && (
+          <Link 
+            href="/admin"
+            className={`sidebar-link ${pathname.startsWith("/admin") ? "active" : ""}`}
+            style={{ marginTop: "8px", border: "1px solid var(--border-accent)", background: "rgba(255,77,109,0.05)" }}
+          >
+            <div style={{ color: "var(--red-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
+              <TrendingUp size={18} />
+              Painel Admin
+            </div>
+          </Link>
+        )}
       </nav>
 
       {/* User / Bottom */}

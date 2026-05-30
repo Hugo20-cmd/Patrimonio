@@ -11,12 +11,12 @@ export async function submitFeedback(formData: FormData) {
   const message = formData.get('message') as string
 
   const { error } = await supabase
-    .from('feedback')
+    .from('feedbacks')
     .insert({
       user_id: userData.user.id,
-      category,
-      message,
-      status: 'new'
+      type: category,
+      content: message,
+      status: 'pendente'
     })
 
   if (error) return { error: error.message }
@@ -28,10 +28,7 @@ export async function getFeedback(statusFilter?: string) {
   const { data: userData } = await supabase.auth.getUser()
   if (!userData?.user) return []
 
-  // Check if admin (implement your own admin logic here, e.g. role check)
-  // For simplicity, we just fetch all feedback if they have access to the admin page.
-
-  let query = supabase.from('feedback').select(`
+  let query = supabase.from('feedbacks').select(`
     *,
     profiles ( name, email )
   `).order('created_at', { ascending: false })
@@ -49,7 +46,7 @@ export async function getFeedback(statusFilter?: string) {
 export async function updateFeedbackStatus(id: string, status: string) {
   const supabase = await createClient()
   const { error } = await supabase
-    .from('feedback')
+    .from('feedbacks')
     .update({ status })
     .eq('id', id)
 

@@ -2,6 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { checkTransactionAchievements } from './gamification'
 
 export async function getTransactions() {
   const supabase = await createClient()
@@ -50,6 +51,9 @@ export async function addTransaction(formData: FormData) {
     })
 
   if (error) return { error: error.message }
+
+  // Disparar gatilho de gamificação
+  await checkTransactionAchievements(userData.user.id)
 
   revalidatePath('/transactions')
   return { success: true }
