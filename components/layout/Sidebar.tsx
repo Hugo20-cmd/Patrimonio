@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { 
   TrendingUp, LayoutDashboard, PieChart, Target, 
-  Award, Settings, LogOut, ArrowRightLeft, DollarSign, Link as LinkIcon
+  Award, Settings, LogOut, ArrowRightLeft, DollarSign, Link as LinkIcon, ArrowLeft
 } from "lucide-react";
 import { getProfile } from "@/app/actions/profile";
 import { logout } from "@/app/actions/auth";
@@ -42,7 +42,7 @@ export default function Sidebar({
   return (
     <aside 
       style={{
-        width: "var(--sidebar-width)",
+        width: "260px",
         height: "100vh",
         position: "fixed",
         top: 0,
@@ -55,6 +55,19 @@ export default function Sidebar({
       }}
       className={`sidebar-container ${isOpen ? "open" : ""}`}
     >
+      {/* Mobile Close Button */}
+      <button 
+        className="mobile-close-btn"
+        onClick={() => setIsOpen?.(false)}
+        style={{
+          position: "absolute", top: "24px", right: "20px", 
+          background: "none", border: "none", color: "var(--text-secondary)",
+          cursor: "pointer", display: "none"
+        }}
+      >
+        <ArrowLeft size={24} />
+      </button>
+
       {/* Logo */}
       <div style={{ padding: "24px", marginBottom: "12px" }}>
         <Link href="/dashboard" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
@@ -167,6 +180,9 @@ export default function Sidebar({
           }
           .sidebar-container.open {
             transform: translateX(0);
+          }
+          .mobile-close-btn {
+            display: block !important;
           }
         }
       `}</style>

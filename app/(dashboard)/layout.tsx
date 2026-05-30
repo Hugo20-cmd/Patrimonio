@@ -4,6 +4,7 @@ import { useState } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import TopBar from "@/components/layout/TopBar";
 import FeedbackButton from "@/components/ui/FeedbackButton";
+import { Menu } from "lucide-react";
 
 export default function DashboardLayout({
   children,
@@ -54,6 +55,22 @@ export default function DashboardLayout({
         </main>
       </div>
 
+      {/* Floating Menu Button Mobile */}
+      <button
+        className="mobile-fab-menu"
+        onClick={() => setIsSidebarOpen(true)}
+        style={{
+          position: "fixed", bottom: "24px", left: "24px", zIndex: 40,
+          width: "56px", height: "56px", borderRadius: "50%",
+          background: "var(--green-primary)", color: "#000",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          boxShadow: "0 8px 32px rgba(0, 212, 170, 0.4)",
+          border: "none", cursor: "pointer"
+        }}
+      >
+        <Menu size={24} />
+      </button>
+
       <FeedbackButton />
 
       <style jsx global>{`
@@ -68,9 +85,15 @@ export default function DashboardLayout({
           .mobile-backdrop {
             display: block;
           }
+          .mobile-fab-menu {
+            display: flex !important;
+          }
         }
         @media (min-width: 769px) {
           .mobile-backdrop {
+            display: none !important;
+          }
+          .mobile-fab-menu {
             display: none !important;
           }
         }
