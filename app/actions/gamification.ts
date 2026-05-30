@@ -136,11 +136,12 @@ export async function getUserAchievements() {
   const { data: userData } = await supabase.auth.getUser()
   if (!userData?.user) return []
 
-  const { data: achievements } = await supabase
+  const { data: achievements, error } = await supabase
     .from('user_achievements')
     .select('*')
     .eq('user_id', userData.user.id)
-    .order('unlocked_at', { ascending: false })
+    
+  if (error) console.error("Error fetching achievements:", error)
 
   return achievements || []
 }
