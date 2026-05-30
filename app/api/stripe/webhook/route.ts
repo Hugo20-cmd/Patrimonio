@@ -43,6 +43,13 @@ export async function POST(req: Request) {
             stripe_subscription_id: session.subscription as string,
             status: 'active',
           });
+
+          // Fetch user info for email
+          const { data: user } = await supabaseAdmin.auth.admin.getUserById(userId);
+          if (user?.user?.email) {
+            const { sendPremiumConfirmationEmail } = await import('@/app/actions/emails');
+            await sendPremiumConfirmationEmail(user.user.email, user.user.user_metadata?.name || 'Investidor');
+          }
         }
         break;
       }

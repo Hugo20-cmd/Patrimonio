@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
     // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card', 'boleto', 'pix'], // Common payment methods in Brazil
+      // payment_method_types is omitted to use Dashboard settings automatically
       billing_address_collection: 'auto',
       customer_email: user.email,
       line_items: [

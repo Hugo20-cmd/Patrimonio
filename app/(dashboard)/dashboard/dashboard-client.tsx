@@ -16,18 +16,80 @@ import {
   assetTypeColor, assetTypeLabel, Asset, AssetType
 } from "@/lib/mock-data";
 import { getPortfolioSnapshots } from "@/app/actions/snapshots";
+import { getMultipleQuotes, getExchangeRate } from "@/app/actions/market";
 
 export default function DashboardClient({ initialAssets }: { initialAssets: any[] }) {
   const [timeRange, setTimeRange] = useState<"1M" | "6M" | "1A" | "TUDO">("1A");
   const [historyData, setHistoryData] = useState<any[]>([]);
-  const metrics = calcPortfolioMetrics(initialAssets as Asset[]);
+  const [quotes, setQuotes] = useState<Record<string, any>>({});
+  const [exchangeRate, setExchangeRate] = useState(5.0);
+  const [quotesLoading, setQuotesLoading] = useState(true);
 
+  // Fetch Quotes
+  useEffect(() => {
+    async function loadQuotes() {
+      if (!initialAssets.length) {
+        setQuotesLoading(false);
+        return;
+      }
+      try {
+        const tickers = initialAssets.map((a) => a.ticker);
+        const [results, rate] = await Promise.all([
+          getMultipleQuotes(tickers),
+          getExchangeRate()
+        ]);
+        if (rate) setExchangeRate(rate);
+
+        const newQuotes: Record<string, any> = {};
+        results.forEach((r: any) => {
+          if (r && r.symbol) newQuotes[r.symbol.toUpperCase()] = r;
+        });
+        setQuotes(newQuotes);
+      } catch (err) {
+        console.error("Failed to fetch quotes:", err);
+      } finally {
+        setQuotesLoading(false);
+      }
+    }
+    loadQuotes();
+  }, [initialAssets]);
+
+  // Calc Metrics dynamically
+  function getDynamicMetrics() {
+    let totalInvested = 0;
+    let totalCurrent = 0;
+    const byType: Record<string, number> = {};
+
+    for (const a of initialAssets) {
+      const quotePrice = quotes[a.ticker?.toUpperCase()]?.price ?? a.currentPrice ?? a.averagePrice;
+      let nativeInvested = a.quantity * a.averagePrice;
+      let nativeCurrent = a.quantity * quotePrice;
+      
+      let assetCurrency = a.currency || 'BRL';
+      if (assetCurrency === 'USD') {
+        nativeInvested *= exchangeRate;
+        nativeCurrent *= exchangeRate;
+      }
+
+      totalInvested += nativeInvested;
+      totalCurrent += nativeCurrent;
+      byType[a.type] = (byType[a.type] || 0) + nativeCurrent;
+    }
+
+    const totalProfit = totalCurrent - totalInvested;
+    const totalProfitPercent = totalInvested > 0 ? (totalProfit / totalInvested) * 100 : 0;
+    return { totalInvested, totalCurrent, totalProfit, totalProfitPercent, byType };
+  }
+
+  const metrics = getDynamicMetrics();
 
   useEffect(() => {
-    getPortfolioSnapshots(metrics.totalInvested, metrics.totalCurrent)
-      .then(setHistoryData)
-      .catch(console.error);
-  }, [metrics.totalInvested, metrics.totalCurrent]);
+    if (!quotesLoading) {
+      getPortfolioSnapshots(metrics.totalInvested, metrics.totalCurrent)
+        .then(setHistoryData)
+        .catch(console.error);
+    }
+  }, [metrics.totalInvested, metrics.totalCurrent, quotesLoading]);
 
   // Prepare Pie Chart data
   const pieData = Object.entries(metrics.byType)
@@ -39,7 +101,15 @@ export default function DashboardClient({ initialAssets }: { initialAssets: any[
     .sort((a, b) => b.value - a.value);
 
   // Top Assets
-  const topAssets = [...initialAssets].sort((a, b) => (b.quantity * b.currentPrice) - (a.quantity * a.currentPrice)).slice(0, 5);
+  const topAssets = [...initialAssets].sort((a, b) => {
+    const priceA = quotes[a.ticker?.toUpperCase()]?.price ?? a.currentPrice ?? a.averagePrice;
+    const priceB = quotes[b.ticker?.toUpperCase()]?.price ?? b.currentPrice ?? b.averagePrice;
+    let valA = a.quantity * priceA;
+    let valB = b.quantity * priceB;
+    if (a.currency === 'USD') valA *= exchangeRate;
+    if (b.currency === 'USD') valB *= exchangeRate;
+    return valB - valA;
+  }).slice(0, 5);
 
   const renderActiveShape = (props: any) => {
     const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
@@ -292,10 +362,11 @@ export default function DashboardClient({ initialAssets }: { initialAssets: any[
             </thead>
             <tbody>
               {topAssets.map(asset => {
+                const livePrice = quotes[asset.ticker?.toUpperCase()]?.price ?? asset.currentPrice ?? asset.averagePrice;
                 const totalInvested = asset.quantity * asset.averagePrice;
-                const totalCurrent = asset.quantity * asset.currentPrice;
+                const totalCurrent = asset.quantity * livePrice;
                 const profit = totalCurrent - totalInvested;
-                const profitPercent = (profit / totalInvested) * 100;
+                const profitPercent = totalInvested > 0 ? (profit / totalInvested) * 100 : 0;
                 
                 return (
                   <tr key={asset.id}>
@@ -317,11 +388,11 @@ export default function DashboardClient({ initialAssets }: { initialAssets: any[
                     </td>
                     <td style={{ textAlign: "right", fontWeight: 600 }}>{asset.quantity}</td>
                     <td style={{ textAlign: "right" }}>{formatCurrency(asset.averagePrice, asset.currency)}</td>
-                    <td style={{ textAlign: "right", fontWeight: 600 }}>{formatCurrency(asset.currentPrice, asset.currency)}</td>
+                    <td style={{ textAlign: "right", fontWeight: 600 }}>{formatCurrency(livePrice, asset.currency)}</td>
                     <td style={{ textAlign: "right", fontWeight: 700 }}>{formatCurrency(totalCurrent, asset.currency)}</td>
                     <td style={{ textAlign: "right" }}>
                       <div style={{ color: profit >= 0 ? "var(--green-primary)" : "var(--red-primary)", fontWeight: 700 }}>
-                        {formatCurrency(profit, asset.currency)}
+                        {profit >= 0 ? "+" : ""}{formatCurrency(profit, asset.currency)}
                       </div>
                       <div style={{ fontSize: "0.75rem", color: profit >= 0 ? "var(--green-primary)" : "var(--red-primary)", fontWeight: 600 }}>
                         {formatPercent(profitPercent)}

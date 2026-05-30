@@ -26,7 +26,7 @@ function NotifIcon({ type }: { type: string }) {
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
-export default function TopBar() {
+export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   const [profile, setProfile]         = useState<any>(null);
   const [notifs, setNotifs]           = useState<any[]>([]);
   const [unread, setUnread]           = useState(0);
@@ -80,7 +80,11 @@ export default function TopBar() {
     }}>
       {/* Left – Search */}
       <div style={{ display: "flex", alignItems: "center", gap: "16px", flex: 1 }}>
-        <button className="mobile-menu-btn" style={{ background: "none", border: "none", color: "var(--text-primary)", display: "none", cursor: "pointer" }}>
+        <button 
+          className="mobile-menu-btn" 
+          onClick={onMenuClick}
+          style={{ background: "none", border: "none", color: "var(--text-primary)", display: "none", cursor: "pointer" }}
+        >
           <Menu size={24} />
         </button>
 

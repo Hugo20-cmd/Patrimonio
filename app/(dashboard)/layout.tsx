@@ -1,17 +1,33 @@
 "use client";
 
+import { useState } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import TopBar from "@/components/layout/TopBar";
+import FeedbackButton from "@/components/ui/FeedbackButton";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)" }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)", position: "relative" }}>
+      {/* Mobile Backdrop */}
+      {isSidebarOpen && (
+        <div 
+          onClick={() => setIsSidebarOpen(false)}
+          className="mobile-backdrop"
+          style={{
+            position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+            background: "rgba(0,0,0,0.5)", zIndex: 40, backdropFilter: "blur(2px)"
+          }}
+        />
+      )}
+
       {/* Fixed Sidebar */}
-      <Sidebar />
+      <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
       
       {/* Main Content Area */}
       <div style={{
@@ -21,26 +37,41 @@ export default function DashboardLayout({
         flexDirection: "column",
         minHeight: "100vh",
         transition: "margin-left 0.3s ease",
+        maxWidth: "100vw", // prevent horizontal overflow
+        overflowX: "hidden"
       }} className="main-content">
-        <TopBar />
+        <TopBar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
         
         {/* Page Content */}
-        <main style={{
-          flex: 1,
+        <main style={{ 
+          flex: 1, 
           padding: "32px",
-          position: "relative",
+          maxWidth: "1400px",
+          width: "100%",
+          margin: "0 auto"
         }}>
           {children}
         </main>
       </div>
 
+      <FeedbackButton />
+
       <style jsx global>{`
         @media (max-width: 768px) {
           .main-content {
             margin-left: 0 !important;
+            width: 100vw;
           }
           main {
             padding: 20px 16px !important;
+          }
+          .mobile-backdrop {
+            display: block;
+          }
+        }
+        @media (min-width: 769px) {
+          .mobile-backdrop {
+            display: none !important;
           }
         }
       `}</style>

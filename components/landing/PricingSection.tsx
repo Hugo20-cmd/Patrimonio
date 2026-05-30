@@ -28,7 +28,7 @@ const plans = [
   {
     id: "premium",
     name: "Premium",
-    price: "R$ 29",
+    price: "R$ 19,99",
     period: "por mês",
     description: "Para investidores sérios sobre o futuro",
     color: "var(--green-primary)",

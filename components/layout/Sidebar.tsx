@@ -22,7 +22,13 @@ const menuItems = [
   { icon: LinkIcon, label: "Conexões", href: "/connections" },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ 
+  isOpen = false, 
+  setIsOpen 
+}: { 
+  isOpen?: boolean; 
+  setIsOpen?: (v: boolean) => void; 
+}) {
   const pathname = usePathname();
   const [isHovered, setIsHovered] = useState(false);
   const [profile, setProfile] = useState<any>(null);
@@ -47,7 +53,7 @@ export default function Sidebar() {
         flexDirection: "column",
         zIndex: 50,
       }}
-      className="sidebar-container"
+      className={`sidebar-container ${isOpen ? "open" : ""}`}
     >
       {/* Logo */}
       <div style={{ padding: "24px", marginBottom: "12px" }}>
@@ -101,6 +107,15 @@ export default function Sidebar() {
             Sair
           </button>
         </form>
+
+        {/* UPGRADE BUTTON (IF FREE) */}
+        {subStatus === "free" && (
+          <div style={{ marginTop: "12px", marginBottom: "4px" }}>
+            <Link href="/register?plan=premium" className="btn btn-primary" style={{ width: "100%", justifyContent: "center", padding: "8px", fontSize: "0.85rem", gap: "6px" }}>
+              <Award size={16} /> Fazer Upgrade
+            </Link>
+          </div>
+        )}
 
         {/* User Card */}
         <div style={{

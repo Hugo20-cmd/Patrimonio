@@ -39,6 +39,10 @@ export async function signup(formData: FormData) {
     return { error: error.message }
   }
 
+  // Send Welcome Email
+  const { sendWelcomeEmail } = await import('@/app/actions/emails');
+  await sendWelcomeEmail(dataToSubmit.email, "Investidor");
+
   // If email confirmation is required, session will be null
   if (!data.session) {
     return { success: true, message: "Conta criada com sucesso! Verifique seu e-mail para confirmar o cadastro e fazer login." }
