@@ -77,34 +77,53 @@ export async function checkTransactionAchievements(userId: string) {
     .select('amount, type, category')
     .eq('user_id', userId)
 
-  if (!transactions || transactions.length === 0) return
+  const eligibleKeys = new Set<string>();
+  let totalInvested = 0;
 
-  const results = [];
+  if (transactions && transactions.length > 0) {
+    if (transactions.length >= 1) eligibleKeys.add('primeira_transacao');
 
-  // 1. Primeira transação
-  if (transactions.length >= 1) {
-    results.push(await unlockAchievement(userId, 'primeira_transacao'))
+    const hasAcao = transactions.some(t => t.category && t.category.toLowerCase().includes('açã'))
+    if (hasAcao) eligibleKeys.add('primeira_acao')
+
+    const hasFII = transactions.some(t => t.category && t.category.toLowerCase().includes('fii'))
+    if (hasFII) eligibleKeys.add('primeiro_fii')
+
+    const hasETF = transactions.some(t => t.category && t.category.toLowerCase().includes('etf'))
+    if (hasETF) eligibleKeys.add('primeiro_etf')
+
+    totalInvested = transactions
+      .filter(t => t.type === 'income')
+      .reduce((acc, t) => acc + Number(t.amount), 0)
+
+    if (totalInvested >= 1000) eligibleKeys.add('1k_investido')
+    if (totalInvested >= 5000) eligibleKeys.add('5k_investido')
+    if (totalInvested >= 10000) eligibleKeys.add('10k_investido')
+    if (totalInvested >= 100000) eligibleKeys.add('100k_lendario')
   }
 
-  // 2. Primeiros Ativos (Ação, FII, ETF)
-  const hasAcao = transactions.some(t => t.category && t.category.toLowerCase().includes('açã'))
-  if (hasAcao) results.push(await unlockAchievement(userId, 'primeira_acao'))
+  const transactionAchievementKeys = ['primeira_transacao', 'primeira_acao', 'primeiro_fii', 'primeiro_etf', '1k_investido', '5k_investido', '10k_investido', '100k_lendario'];
 
-  const hasFII = transactions.some(t => t.category && t.category.toLowerCase().includes('fii'))
-  if (hasFII) results.push(await unlockAchievement(userId, 'primeiro_fii'))
+  const { data: existing } = await supabase
+    .from('user_achievements')
+    .select('achievement_key')
+    .eq('user_id', userId)
+    .in('achievement_key', transactionAchievementKeys)
 
-  const hasETF = transactions.some(t => t.category && t.category.toLowerCase().includes('etf'))
-  if (hasETF) results.push(await unlockAchievement(userId, 'primeiro_etf'))
+  const existingKeys = new Set(existing?.map(e => e.achievement_key) || [])
+  const results = [];
 
-  // 3. Patrimônio / Investido (soma de entradas)
-  const totalInvested = transactions
-    .filter(t => t.type === 'income') // Ou expense dependendo de como está configurado no app, assumimos income como aporte
-    .reduce((acc, t) => acc + Number(t.amount), 0)
+  for (const key of eligibleKeys) {
+    if (!existingKeys.has(key)) {
+      results.push(await unlockAchievement(userId, key))
+    }
+  }
 
-  if (totalInvested >= 1000) results.push(await unlockAchievement(userId, '1k_investido'))
-  if (totalInvested >= 5000) results.push(await unlockAchievement(userId, '5k_investido'))
-  if (totalInvested >= 10000) results.push(await unlockAchievement(userId, '10k_investido'))
-  if (totalInvested >= 100000) results.push(await unlockAchievement(userId, '100k_lendario'))
+  for (const key of existingKeys) {
+    if (!eligibleKeys.has(key)) {
+      await supabase.from('user_achievements').delete().eq('user_id', userId).eq('achievement_key', key)
+    }
+  }
 
   return { totalInvested, results }
 }

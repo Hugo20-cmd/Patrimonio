@@ -214,7 +214,7 @@ export default function SettingsPage() {
               console.log("SYNC RESULT:", data);
               
               if (res.ok) {
-                alert("Sincronização executada! Verifique o console (F12) para ver os detalhes: " + JSON.stringify(data.result.achievementsResult));
+                alert("Sincronização executada com sucesso! Seu novo XP total é: " + (data.result.totalCalculatedXp || 0));
                 window.location.reload();
               } else {
                 alert("Erro ao sincronizar.");

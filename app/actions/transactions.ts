@@ -72,10 +72,16 @@ export async function addTransaction(formData: FormData) {
 
 export async function deleteTransaction(id: string) {
   const supabase = await createClient()
-  const { error } = await supabase.from('transactions').delete().eq('id', id)
+  const { data: userData } = await supabase.auth.getUser()
+  if (!userData?.user) return { error: 'Not authenticated' }
+
+  const { error } = await supabase.from('transactions').delete().eq('id', id).eq('user_id', userData.user.id)
   
   if (error) return { error: error.message }
   
+  const { syncRetroactiveXp } = await import('./gamification')
+  await syncRetroactiveXp()
+
   revalidatePath('/transactions')
   return { success: true }
 }
@@ -107,6 +113,9 @@ export async function editTransaction(id: string, formData: FormData) {
     .eq('user_id', userData.user.id)
 
   if (error) return { error: error.message }
+
+  const { syncRetroactiveXp } = await import('./gamification')
+  await syncRetroactiveXp()
 
   revalidatePath('/transactions')
   return { success: true }
