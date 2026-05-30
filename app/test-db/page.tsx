@@ -20,21 +20,32 @@ export default async function TestDbPage() {
     .select('*')
     .eq('user_id', userId)
 
+  // Test 3: Upsert into profiles (XP)
+  const { data: profileUpdateData, error: profileUpdateError } = await supabase
+    .from('profiles')
+    .upsert({
+      id: userId,
+      xp: 150,
+      level: 1,
+      xp_to_next_level: 1000
+    }, { onConflict: 'id' })
+    .select()
+
   return (
     <div style={{ padding: '40px', background: 'white', color: 'black', minHeight: '100vh', fontFamily: 'monospace' }}>
-      <h1>Debug Supabase</h1>
+      <h1>Debug Supabase - Profiles</h1>
       
-      <h2>1. Insert Error:</h2>
-      <pre style={{ color: 'red' }}>{JSON.stringify(insertError, null, 2)}</pre>
-      <h2>1. Insert Data:</h2>
-      <pre>{JSON.stringify(insertData, null, 2)}</pre>
+      <h2>3. Profile Upsert Error:</h2>
+      <pre style={{ color: 'red' }}>{JSON.stringify(profileUpdateError, null, 2)}</pre>
+      <h2>3. Profile Upsert Data:</h2>
+      <pre>{JSON.stringify(profileUpdateData, null, 2)}</pre>
 
       <hr />
 
+      <h2>1. Insert Error:</h2>
+      <pre style={{ color: 'red' }}>{JSON.stringify(insertError, null, 2)}</pre>
       <h2>2. Select Error:</h2>
       <pre style={{ color: 'red' }}>{JSON.stringify(selectError, null, 2)}</pre>
-      <h2>2. Select Data:</h2>
-      <pre>{JSON.stringify(selectData, null, 2)}</pre>
     </div>
   )
 }
