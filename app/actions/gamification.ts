@@ -5,8 +5,13 @@ import { revalidatePath } from 'next/cache'
 
 // Lista de conquistas estáticas base do sistema
 const BASE_ACHIEVEMENTS = [
+  { key: 'primeira_transacao', title: 'Primeiros Passos', xp: 50 },
+  { key: 'primeira_acao', title: 'Primeira Ação', xp: 100 },
+  { key: 'primeiro_fii', title: 'Primeiro FII', xp: 100 },
   { key: 'primeiro_etf', title: 'Primeiro ETF', xp: 100 },
-  { key: '10k_investido', title: 'R$10.000 Investidos', xp: 500 },
+  { key: '1k_investido', title: 'Investidor Aprendiz (R$ 1K)', xp: 200 },
+  { key: '5k_investido', title: 'Caminho Certo (R$ 5K)', xp: 300 },
+  { key: '10k_investido', title: 'R$ 10.000 Investidos', xp: 500 },
   { key: '100k_lendario', title: 'Centenário (100K)', xp: 2000 },
   { key: 'rei_dividendos', title: 'Rei dos Dividendos', xp: 1500 },
   { key: 'primeira_meta', title: 'Sonhador', xp: 150 },
@@ -81,23 +86,25 @@ export async function checkTransactionAchievements(userId: string) {
     await unlockAchievement(userId, 'primeira_transacao')
   }
 
-  // 2. Primeiro ETF (vamos supor categoria "ETF" ou similar)
-  const hasETF = transactions.some(t => t.category && t.category.toUpperCase().includes('ETF'))
-  if (hasETF) {
-    await unlockAchievement(userId, 'primeiro_etf')
-  }
+  // 2. Primeiros Ativos (Ação, FII, ETF)
+  const hasAcao = transactions.some(t => t.category && t.category.toLowerCase().includes('açã'))
+  if (hasAcao) await unlockAchievement(userId, 'primeira_acao')
+
+  const hasFII = transactions.some(t => t.category && t.category.toLowerCase().includes('fii'))
+  if (hasFII) await unlockAchievement(userId, 'primeiro_fii')
+
+  const hasETF = transactions.some(t => t.category && t.category.toLowerCase().includes('etf'))
+  if (hasETF) await unlockAchievement(userId, 'primeiro_etf')
 
   // 3. Patrimônio / Investido (soma de entradas)
   const totalInvested = transactions
-    .filter(t => t.type === 'income')
+    .filter(t => t.type === 'income') // Ou expense dependendo de como está configurado no app, assumimos income como aporte
     .reduce((acc, t) => acc + Number(t.amount), 0)
 
-  if (totalInvested >= 10000) {
-    await unlockAchievement(userId, '10k_investido')
-  }
-  if (totalInvested >= 100000) {
-    await unlockAchievement(userId, '100k_lendario')
-  }
+  if (totalInvested >= 1000) await unlockAchievement(userId, '1k_investido')
+  if (totalInvested >= 5000) await unlockAchievement(userId, '5k_investido')
+  if (totalInvested >= 10000) await unlockAchievement(userId, '10k_investido')
+  if (totalInvested >= 100000) await unlockAchievement(userId, '100k_lendario')
 }
 
 export async function checkGoalAchievements(userId: string, goalId: string) {
