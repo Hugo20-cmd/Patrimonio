@@ -1,10 +1,16 @@
 import { getChatMessages } from "@/app/actions/chat";
 import ChatClient from "./chat-client";
 import PremiumPaywall from "@/components/layout/PremiumPaywall";
+import { createClient } from '@/utils/supabase/server';
 
 export const dynamic = 'force-dynamic'
 
 export default async function ForumPage() {
+  const supabase = await createClient()
+  const { data: userData } = await supabase.auth.getUser()
+  const ADMIN_EMAILS = ['contatopennamc@gmail.com']
+  const isAdmin = userData?.user?.email ? ADMIN_EMAILS.includes(userData.user.email.toLowerCase().trim()) : false
+
   const postsResponse = await getChatMessages('geral');
 
   if (postsResponse.error === 'premium_required') {
@@ -17,5 +23,5 @@ export default async function ForumPage() {
     );
   }
 
-  return <ChatClient initialMessages={postsResponse.data || []} />;
+  return <ChatClient initialMessages={postsResponse.data || []} isAdmin={isAdmin} />;
 }

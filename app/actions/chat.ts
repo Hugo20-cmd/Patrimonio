@@ -33,13 +33,18 @@ export async function getChatMessages(channel: string = 'geral') {
       channel,
       created_at,
       reply_to_id,
+      is_pinned,
       profiles:user_id (id, name, level)
     `)
     .eq('channel', channel)
-    .order('created_at', { ascending: true }) // Em chat, as antigas ficam em cima, rola pra baixo
+    .order('is_pinned', { ascending: false }) // Fixados primeiro no topo, ou a gente mantém ordem e destaca.
+    .order('created_at', { ascending: true })
     .limit(100)
 
   if (error) return { error: error.message }
+
+  // Ajustar ordenação: Mensagens normais em ordem cronológica. Fixados também, mas vamos fazer isso no client.
+  // Voltando pra order by created_at apenas e filtrando no front-end para não quebrar a ordem cronológica do chat.
   return { success: true, data: messages || [] }
 }
 
@@ -66,9 +71,32 @@ export async function sendChatMessage(formData: FormData) {
 
   if (error) return { error: error.message }
 
-  // Dar XP por participar do chat (1 XP por msg para evitar farm, com limite diário na teoria, mas simplificado aqui)
+  // Dar XP
   const { addXp } = await import('./gamification')
   await addXp(userData.user.id, 1)
+
+  revalidatePath('/community')
+  return { success: true }
+}
+
+export async function togglePinMessage(id: string, currentPinStatus: boolean) {
+  const supabase = await createServerClient()
+  const { data: userData } = await supabase.auth.getUser()
+  if (!userData?.user) return { error: 'Not authenticated' }
+
+  const ADMIN_EMAILS = ['contatopennamc@gmail.com']
+  const userEmail = userData.user.email?.toLowerCase().trim() || ''
+  
+  if (!ADMIN_EMAILS.includes(userEmail)) {
+    return { error: 'Apenas administradores podem fixar mensagens' }
+  }
+
+  const { error } = await supabase
+    .from('chat_messages')
+    .update({ is_pinned: !currentPinStatus })
+    .eq('id', id)
+
+  if (error) return { error: error.message }
 
   revalidatePath('/community')
   return { success: true }
@@ -84,7 +112,7 @@ export async function deleteChatMessage(id: string) {
     .from('chat_messages')
     .delete()
     .eq('id', id)
-    .eq('user_id', userData.user.id) // RLS também protege, mas é bom garantir
+    .eq('user_id', userData.user.id)
 
   if (error) return { error: error.message }
 

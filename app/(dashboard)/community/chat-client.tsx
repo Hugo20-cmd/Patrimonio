@@ -2,8 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Hash, CornerDownRight, Smile, ShieldCheck, Menu, X } from "lucide-react";
-import { sendChatMessage, getChatMessages } from "@/app/actions/chat";
+import { Send, Hash, CornerDownRight, Smile, ShieldCheck, Menu, X, Pin } from "lucide-react";
+import { sendChatMessage, getChatMessages, togglePinMessage } from "@/app/actions/chat";
 
 const CHANNELS = [
   { id: 'geral', name: 'Geral', desc: 'Discussões gerais sobre finanças' },
@@ -13,7 +13,7 @@ const CHANNELS = [
   { id: 'cripto', name: 'Cripto', desc: 'Bitcoin, Ethereum e altcoins' },
 ];
 
-export default function ChatClient({ initialMessages }: { initialMessages: any[] }) {
+export default function ChatClient({ initialMessages, isAdmin = false }: { initialMessages: any[], isAdmin?: boolean }) {
   const [messages, setMessages] = useState(initialMessages);
   const [activeChannel, setActiveChannel] = useState('geral');
   const [content, setContent] = useState("");
@@ -57,6 +57,14 @@ export default function ChatClient({ initialMessages }: { initialMessages: any[]
     if (res.success) {
       setContent("");
       setReplyTo(null);
+      loadChannelMessages(activeChannel);
+    }
+  };
+
+  const handlePin = async (id: string, currentStatus: boolean) => {
+    if (!isAdmin) return;
+    const res = await togglePinMessage(id, currentStatus);
+    if (res.success) {
       loadChannelMessages(activeChannel);
     }
   };
@@ -188,18 +196,23 @@ export default function ChatClient({ initialMessages }: { initialMessages: any[]
                   style={{ display: "flex", gap: "12px", group: "msg" }}
                   className="msg-container"
                 >
-                  <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: "var(--bg-card)", border: "1px solid var(--border-subtle)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontWeight: 700, color: "var(--text-secondary)" }}>
-                    {msg.profiles?.name?.charAt(0) || "U"}
+                  <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: msg.is_pinned ? "var(--purple-primary)" : "var(--bg-card)", color: msg.is_pinned ? "#fff" : "var(--text-secondary)", border: `1px solid ${msg.is_pinned ? "transparent" : "var(--border-subtle)"}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontWeight: 700 }}>
+                    {msg.is_pinned ? <Pin size={18} /> : (msg.profiles?.name?.charAt(0) || "U")}
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "4px", flexWrap: "wrap" }}>
-                      <span style={{ fontWeight: 600, color: "var(--text-primary)" }}>{msg.profiles?.name || "Usuário"}</span>
+                      <span style={{ fontWeight: 600, color: msg.is_pinned ? "var(--purple-primary)" : "var(--text-primary)" }}>{msg.profiles?.name || "Usuário"}</span>
                       <span style={{ fontSize: "0.75rem", color: "var(--text-tertiary)" }}>
                         {new Date(msg.created_at).toLocaleTimeString("pt-BR", { hour: '2-digit', minute: '2-digit' })}
                       </span>
                       <span style={{ fontSize: "0.65rem", padding: "2px 6px", background: "rgba(0,212,170,0.1)", color: "var(--green-primary)", borderRadius: "4px" }}>
                         Lvl {msg.profiles?.level || 1}
                       </span>
+                      {msg.is_pinned && (
+                        <span style={{ fontSize: "0.65rem", padding: "2px 6px", background: "rgba(168, 85, 247, 0.1)", color: "var(--purple-primary)", borderRadius: "4px", fontWeight: 700, textTransform: "uppercase" }}>
+                          Fixado
+                        </span>
+                      )}
                     </div>
 
                     {/* Reply Bubble */}
@@ -211,11 +224,11 @@ export default function ChatClient({ initialMessages }: { initialMessages: any[]
                       </div>
                     )}
 
-                    <div style={{ color: "var(--text-secondary)", lineHeight: 1.5, fontSize: "0.95rem" }}>
+                    <div style={{ color: msg.is_pinned ? "var(--text-primary)" : "var(--text-secondary)", lineHeight: 1.5, fontSize: "0.95rem", fontWeight: msg.is_pinned ? 500 : 400, background: msg.is_pinned ? "rgba(168, 85, 247, 0.05)" : "transparent", padding: msg.is_pinned ? "8px 12px" : "0", borderRadius: "8px", borderLeft: msg.is_pinned ? "3px solid var(--purple-primary)" : "none" }}>
                       {msg.content}
                     </div>
 
-                    <div style={{ marginTop: "4px" }}>
+                    <div style={{ marginTop: msg.is_pinned ? "8px" : "4px", display: "flex", gap: "12px" }}>
                       <button 
                         onClick={() => setReplyTo(msg)}
                         style={{ background: "none", border: "none", color: "var(--text-tertiary)", fontSize: "0.8rem", cursor: "pointer", padding: "0" }}
@@ -223,6 +236,15 @@ export default function ChatClient({ initialMessages }: { initialMessages: any[]
                       >
                         Responder
                       </button>
+                      
+                      {isAdmin && (
+                        <button 
+                          onClick={() => handlePin(msg.id, msg.is_pinned)}
+                          style={{ background: "none", border: "none", color: msg.is_pinned ? "var(--purple-primary)" : "var(--text-tertiary)", fontSize: "0.8rem", cursor: "pointer", padding: "0", display: "flex", alignItems: "center", gap: "4px" }}
+                        >
+                          <Pin size={12} /> {msg.is_pinned ? 'Desfixar' : 'Fixar'}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </motion.div>
