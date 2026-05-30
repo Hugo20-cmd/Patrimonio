@@ -1,19 +1,21 @@
-import { getForumPosts } from "@/app/actions/forum";
-import ForumClient from "./forum-client";
+import { getChatMessages } from "@/app/actions/chat";
+import ChatClient from "./chat-client";
 import PremiumPaywall from "@/components/layout/PremiumPaywall";
 
+export const dynamic = 'force-dynamic'
+
 export default async function ForumPage() {
-  const postsResponse = await getForumPosts();
+  const postsResponse = await getChatMessages('geral');
 
   if (postsResponse.error === 'premium_required') {
     return (
       <PremiumPaywall 
-        title="Comunidade de Investidores"
-        description="Junte-se à nossa comunidade fechada de investidores de alto nível. Compartilhe estratégias, discuta análises de ativos e tire dúvidas em um ambiente livre de spam e golpes."
-        featureName="Comunidade e Fórum"
+        title="Comunidade VIP de Investidores"
+        description="Junte-se ao chat exclusivo em tempo real. Troque ideias sobre ações, FIIs e cripto de forma rápida e segura, longe de spans e bots."
+        featureName="Chat VIP"
       />
     );
   }
 
-  return <ForumClient initialPosts={postsResponse.data || []} />;
+  return <ChatClient initialMessages={postsResponse.data || []} />;
 }
