@@ -141,7 +141,7 @@ export default function DashboardClient({ initialAssets }: { initialAssets: any[
           <h1 style={{ fontSize: "1.8rem", marginBottom: "4px" }}>Visão Geral</h1>
           <p style={{ color: "var(--text-tertiary)", fontSize: "0.9rem" }}>Acompanhe o crescimento do seu patrimônio e investimentos.</p>
         </div>
-        <button className="btn btn-secondary btn-sm" style={{ gap: "8px" }}>
+        <button className="btn btn-secondary btn-sm" style={{ gap: "8px" }} onClick={() => window.print()}>
           Gerar Relatório PDF
         </button>
       </div>

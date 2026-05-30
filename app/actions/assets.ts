@@ -110,8 +110,12 @@ export async function addAsset(formData: FormData) {
     if (error) return { error: error.message }
   }
 
+  const { syncRetroactiveXp } = await import('./gamification')
+  await syncRetroactiveXp()
+
   revalidatePath('/portfolio')
   revalidatePath('/dashboard')
+  revalidatePath('/', 'layout')
   return { success: true }
 }
 
@@ -121,8 +125,12 @@ export async function deleteAsset(id: string) {
   
   if (error) return { error: error.message }
   
+  const { syncRetroactiveXp } = await import('./gamification')
+  await syncRetroactiveXp()
+
   revalidatePath('/portfolio')
   revalidatePath('/dashboard')
+  revalidatePath('/', 'layout')
   return { success: true }
 }
 
@@ -158,7 +166,11 @@ export async function editAsset(id: string, formData: FormData) {
 
   if (error) return { error: error.message }
 
+  const { syncRetroactiveXp } = await import('./gamification')
+  await syncRetroactiveXp()
+
   revalidatePath('/portfolio')
   revalidatePath('/dashboard')
+  revalidatePath('/', 'layout')
   return { success: true }
 }
