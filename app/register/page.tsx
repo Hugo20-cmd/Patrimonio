@@ -100,7 +100,7 @@ function RegisterForm() {
           <div style={{ fontSize: "0.85rem", fontWeight: 600, color: plan === "premium" ? "var(--green-primary)" : "var(--text-secondary)", marginBottom: "4px", display: "flex", alignItems: "center", gap: "4px" }}>
             Premium <Zap size={12} fill="currentColor" />
           </div>
-          <div style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary)" }}>R$ 29<span style={{ fontSize: "0.7rem", color: "var(--text-tertiary)" }}>/mês</span></div>
+          <div style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary)" }}>R$ 19,99<span style={{ fontSize: "0.7rem", color: "var(--text-tertiary)" }}>/mês</span></div>
         </div>
       </div>
 

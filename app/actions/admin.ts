@@ -31,7 +31,7 @@ export async function getAdminStats() {
     .select('*', { count: 'exact', head: true })
     .eq('status', 'active')
 
-  const MRR = (premiumUsers || 0) * 29.90 // Exemplo de preço
+  const MRR = (premiumUsers || 0) * 19.99 // Exemplo de preço
 
   // Pegar últimos usuários
   const { data: latestUsers } = await supabaseAdmin
