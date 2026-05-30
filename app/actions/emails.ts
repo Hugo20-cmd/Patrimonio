@@ -57,3 +57,32 @@ export async function sendPremiumConfirmationEmail(email: string, name: string) 
     return { error: error.message };
   }
 }
+
+export async function sendNewFeedbackEmail(userName: string, category: string, content: string) {
+  try {
+    const data = await resend.emails.send({
+      from: 'Patrimônio+ Admin <contato@patrimonioplus.com>',
+      to: ['contatopennamc@gmail.com'], // E-mail do Administrador
+      subject: `[Patrimônio+] Novo Feedback: ${category.toUpperCase()}`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+          <h2 style="color: #00d4aa;">Novo Feedback Recebido</h2>
+          <p><strong>Usuário:</strong> ${userName}</p>
+          <p><strong>Categoria:</strong> ${category}</p>
+          <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+          <p><strong>Mensagem:</strong></p>
+          <p style="background: #f9f9f9; padding: 15px; border-radius: 8px; font-style: italic;">
+            "${content}"
+          </p>
+          <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+          <p>Acesse o <a href="https://patrimonio-plus.netlify.app/admin">Painel Administrativo</a> para responder.</p>
+        </div>
+      `,
+    });
+
+    return { success: true, data };
+  } catch (error: any) {
+    console.error('Error sending feedback email:', error);
+    return { error: error.message };
+  }
+}

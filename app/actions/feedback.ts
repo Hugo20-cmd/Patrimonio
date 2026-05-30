@@ -20,6 +20,11 @@ export async function submitFeedback(formData: FormData) {
     })
 
   if (error) return { error: error.message }
+  
+  // Enviar email para o admin
+  const { sendNewFeedbackEmail } = await import('./emails')
+  await sendNewFeedbackEmail(userData.user.user_metadata?.name || 'Usuário', category, message)
+
   return { success: true }
 }
 
