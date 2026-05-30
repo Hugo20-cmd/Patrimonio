@@ -25,7 +25,7 @@ export async function getChatMessages(channel: string = 'geral') {
   }
 
   // Fetch messages
-  const { data: messages, error } = await supabase
+  const { data: rawMessages, error } = await supabase
     .from('chat_messages')
     .select(`
       id,
@@ -34,18 +34,31 @@ export async function getChatMessages(channel: string = 'geral') {
       created_at,
       reply_to_id,
       is_pinned,
-      profiles:user_id (id, name, level)
+      user_id
     `)
     .eq('channel', channel)
-    .order('is_pinned', { ascending: false }) // Fixados primeiro no topo, ou a gente mantém ordem e destaca.
+    .order('is_pinned', { ascending: false })
     .order('created_at', { ascending: true })
     .limit(100)
 
   if (error) return { error: error.message }
 
-  // Ajustar ordenação: Mensagens normais em ordem cronológica. Fixados também, mas vamos fazer isso no client.
-  // Voltando pra order by created_at apenas e filtrando no front-end para não quebrar a ordem cronológica do chat.
-  return { success: true, data: messages || [] }
+  // Manual join with profiles
+  const userIds = [...new Set((rawMessages || []).map(m => m.user_id))]
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('id, name, level')
+    .in('id', userIds)
+
+  const messages = (rawMessages || []).map(msg => {
+    const profile = profiles?.find(p => p.id === msg.user_id)
+    return {
+      ...msg,
+      profiles: profile || { id: msg.user_id, name: 'Usuário', level: 1 }
+    }
+  })
+
+  return { success: true, data: messages }
 }
 
 export async function sendChatMessage(formData: FormData) {
