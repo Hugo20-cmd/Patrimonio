@@ -57,7 +57,7 @@ export async function unlockAchievement(userId: string, achievementKey: string) 
     .insert({ user_id: userId, achievement_key: achievementKey })
 
   // Se der erro (ex: já existe por causa do UNIQUE constraint), apenas ignora
-  if (error) return { unlocked: false }
+  if (error) return { unlocked: false, error: error.message }
 
   // Descobre o XP base da conquista, se existir na nossa lista
   const baseAch = BASE_ACHIEVEMENTS.find(a => a.key === achievementKey)
@@ -79,30 +79,34 @@ export async function checkTransactionAchievements(userId: string) {
 
   if (!transactions || transactions.length === 0) return
 
+  const results = [];
+
   // 1. Primeira transação
-  if (transactions.length === 1) {
-    await unlockAchievement(userId, 'primeira_transacao')
+  if (transactions.length >= 1) {
+    results.push(await unlockAchievement(userId, 'primeira_transacao'))
   }
 
   // 2. Primeiros Ativos (Ação, FII, ETF)
   const hasAcao = transactions.some(t => t.category && t.category.toLowerCase().includes('açã'))
-  if (hasAcao) await unlockAchievement(userId, 'primeira_acao')
+  if (hasAcao) results.push(await unlockAchievement(userId, 'primeira_acao'))
 
   const hasFII = transactions.some(t => t.category && t.category.toLowerCase().includes('fii'))
-  if (hasFII) await unlockAchievement(userId, 'primeiro_fii')
+  if (hasFII) results.push(await unlockAchievement(userId, 'primeiro_fii'))
 
   const hasETF = transactions.some(t => t.category && t.category.toLowerCase().includes('etf'))
-  if (hasETF) await unlockAchievement(userId, 'primeiro_etf')
+  if (hasETF) results.push(await unlockAchievement(userId, 'primeiro_etf'))
 
   // 3. Patrimônio / Investido (soma de entradas)
   const totalInvested = transactions
     .filter(t => t.type === 'income') // Ou expense dependendo de como está configurado no app, assumimos income como aporte
     .reduce((acc, t) => acc + Number(t.amount), 0)
 
-  if (totalInvested >= 1000) await unlockAchievement(userId, '1k_investido')
-  if (totalInvested >= 5000) await unlockAchievement(userId, '5k_investido')
-  if (totalInvested >= 10000) await unlockAchievement(userId, '10k_investido')
-  if (totalInvested >= 100000) await unlockAchievement(userId, '100k_lendario')
+  if (totalInvested >= 1000) results.push(await unlockAchievement(userId, '1k_investido'))
+  if (totalInvested >= 5000) results.push(await unlockAchievement(userId, '5k_investido'))
+  if (totalInvested >= 10000) results.push(await unlockAchievement(userId, '10k_investido'))
+  if (totalInvested >= 100000) results.push(await unlockAchievement(userId, '100k_lendario'))
+
+  return { totalInvested, results }
 }
 
 export async function checkGoalAchievements(userId: string, goalId: string) {
@@ -149,7 +153,7 @@ export async function syncRetroactiveXp() {
   const userId = userData.user.id
 
   // 1. Recalcular conquistas baseadas no histórico
-  await checkTransactionAchievements(userId)
+  const achievementsResult = await checkTransactionAchievements(userId)
 
   // 2. Dar XP por transações antigas que talvez não tenham dado XP
   const { data: transactions } = await supabase
@@ -157,8 +161,8 @@ export async function syncRetroactiveXp() {
     .select('amount, category')
     .eq('user_id', userId)
 
+  let totalXpToGive = 0;
   if (transactions && transactions.length > 0) {
-    let totalXpToGive = 0;
     const investmentCategories = ['ação', 'ações', 'etf', 'fii', 'cripto', 'investimento', 'renda fixa', 'tesouro']
     
     transactions.forEach(t => {
@@ -175,5 +179,5 @@ export async function syncRetroactiveXp() {
     }
   }
 
-  return { success: true }
+  return { success: true, achievementsResult, totalXpToGive }
 }
