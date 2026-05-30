@@ -194,6 +194,39 @@ export default function SettingsPage() {
       </div>
 
 
+      {/* Sync Retroactive XP Section */}
+      <div style={{
+        background: "var(--bg-card)",
+        border: "1px solid var(--border-default)",
+        borderRadius: "16px",
+        padding: "32px",
+        marginTop: "24px"
+      }}>
+        <h2 style={{ fontSize: "1.2rem", marginBottom: "8px", color: "var(--text-primary)" }}>Sincronização de Conquistas</h2>
+        <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", marginBottom: "16px" }}>
+          Se você realizou compras antes do sistema de níveis ser implementado e não recebeu seu XP, clique no botão abaixo para o sistema recalcular todo o seu histórico.
+        </p>
+        <button
+          onClick={async () => {
+            try {
+              const res = await fetch('/api/sync');
+              if (res.ok) {
+                alert("Conquistas e XP sincronizados com sucesso! Atualize a página para ver seu novo nível.");
+                window.location.reload();
+              } else {
+                alert("Erro ao sincronizar.");
+              }
+            } catch (err) {
+              alert("Erro na conexão.");
+            }
+          }}
+          className="btn"
+          style={{ background: "rgba(0,212,170,0.1)", color: "var(--green-primary)", border: "1px solid var(--green-primary)", padding: "10px 16px", fontWeight: 600 }}
+        >
+          Sincronizar Histórico e XP
+        </button>
+      </div>
+
     </motion.div>
   );
 }
