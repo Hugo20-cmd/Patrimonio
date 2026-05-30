@@ -92,8 +92,8 @@ export default function Sidebar({
       </div>
 
       {/* Nav Items */}
-      <nav style={{ flex: 1, padding: "0 16px", display: "flex", flexDirection: "column", gap: "6px" }}>
-        <div style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.08em", padding: "0 16px", marginBottom: "8px" }}>
+      <nav style={{ flex: 1, padding: "0 16px", display: "flex", flexDirection: "column", gap: "2px", overflowY: "auto", overflowX: "hidden" }}>
+        <div style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.08em", padding: "0 16px", marginBottom: "4px" }}>
           Menu Principal
         </div>
         
@@ -128,7 +128,7 @@ export default function Sidebar({
       </nav>
 
       {/* User / Bottom */}
-      <div style={{ padding: "24px 16px", borderTop: "1px solid var(--border-subtle)", display: "flex", flexDirection: "column", gap: "6px" }}>
+      <div style={{ padding: "16px", borderTop: "1px solid var(--border-subtle)", display: "flex", flexDirection: "column", gap: "6px" }}>
         <Link href="/settings" className={`sidebar-link ${pathname === "/settings" ? "active" : ""}`}>
           <Settings size={18} />
           Configurações
