@@ -153,16 +153,35 @@ export async function syncRetroactiveXp() {
 
   const userId = userData.user.id
 
-  // 1. Recalcular conquistas baseadas no histórico
+  // 1. Tentar desbloquear novas conquistas baseadas no histórico de transações
   const achievementsResult = await checkTransactionAchievements(userId)
 
-  // 2. Dar XP por transações antigas que talvez não tenham dado XP
+  // 2. Buscar TODAS as conquistas que o usuário possui no banco
+  const { data: achievements } = await supabase
+    .from('user_achievements')
+    .select('achievement_key')
+    .eq('user_id', userId)
+
+  let totalXpToGive = 0;
+
+  // 3. Somar o XP de todas as conquistas já desbloqueadas
+  if (achievements && achievements.length > 0) {
+    achievements.forEach(ach => {
+      const baseAch = BASE_ACHIEVEMENTS.find(a => a.key === ach.achievement_key)
+      if (baseAch) {
+        totalXpToGive += baseAch.xp
+      } else {
+        totalXpToGive += 200 // Valor padrão para dinâmicas como metas concluídas
+      }
+    })
+  }
+
+  // 4. Somar o XP de transações antigas (Aportes/Compras de Ativos)
   const { data: transactions } = await supabase
     .from('transactions')
     .select('amount, category')
     .eq('user_id', userId)
 
-  let totalXpToGive = 0;
   if (transactions && transactions.length > 0) {
     const investmentCategories = ['ação', 'ações', 'etf', 'fii', 'cripto', 'investimento', 'renda fixa', 'tesouro']
     
@@ -173,12 +192,27 @@ export async function syncRetroactiveXp() {
         totalXpToGive += xpFinal
       }
     });
-
-    // Se tiver XP pra dar, a gente dá. (Pode gerar XP duplicado se já recebeu antes, mas como é pra corrigir retroativo, vale a pena)
-    if (totalXpToGive > 0) {
-      await addXp(userId, totalXpToGive)
-    }
   }
 
-  return { success: true, achievementsResult, totalXpToGive }
+  // 5. Atualizar o Perfil com o valor total recalibrado do zero
+  let newLevel = 1
+  let newXpToNext = 1000
+  let remainingXp = totalXpToGive
+
+  while (remainingXp >= newXpToNext) {
+    newLevel += 1
+    remainingXp -= newXpToNext
+    newXpToNext = Math.floor(newXpToNext * 1.5)
+  }
+
+  await supabase
+    .from('profiles')
+    .upsert({
+      id: userId,
+      xp: totalXpToGive,
+      level: newLevel,
+      xp_to_next_level: newXpToNext
+    }, { onConflict: 'id' })
+
+  return { success: true, achievementsResult, totalCalculatedXp: totalXpToGive }
 }
