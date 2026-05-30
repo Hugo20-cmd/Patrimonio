@@ -28,7 +28,12 @@ export async function getChatMessages(channel: string = 'geral') {
 
   // Force Admin Profile Name update if they are the one fetching
   if (isAdmin) {
-    await supabase.from('profiles').update({ name: 'Patrimônio+' }).eq('id', userData.user.id)
+    await supabase.from('profiles').upsert({ 
+      id: userData.user.id, 
+      name: 'Patrimônio+',
+      email: userEmail,
+      plan: 'premium'
+    }, { onConflict: 'id' })
   }
 
   // Fetch messages
