@@ -8,44 +8,34 @@ export default async function TestDbPage() {
 
   const userId = userData.user.id
 
-  // Test 1: Insert into user_achievements
-  const { data: insertData, error: insertError } = await supabase
-    .from('user_achievements')
-    .insert({ user_id: userId, achievement_key: 'test_achievement_' + Date.now() })
-    .select()
-
-  // Test 2: Select from user_achievements
-  const { data: selectData, error: selectError } = await supabase
-    .from('user_achievements')
-    .select('*')
-    .eq('user_id', userId)
-
-  // Test 3: Upsert into profiles (XP)
-  const { data: profileUpdateData, error: profileUpdateError } = await supabase
+  // Upsert profile
+  const { error: upsertError } = await supabase
     .from('profiles')
     .upsert({
       id: userId,
-      xp: 150,
-      level: 1,
+      xp: 250,
+      level: 2,
       xp_to_next_level: 1000
     }, { onConflict: 'id' })
-    .select()
+
+  // Select profile
+  const { data: profileData, error: profileError } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
 
   return (
     <div style={{ padding: '40px', background: 'white', color: 'black', minHeight: '100vh', fontFamily: 'monospace' }}>
-      <h1>Debug Supabase - Profiles</h1>
+      <h1>Debug Profiles Final</h1>
       
-      <h2>3. Profile Upsert Error:</h2>
-      <pre style={{ color: 'red' }}>{JSON.stringify(profileUpdateError, null, 2)}</pre>
-      <h2>3. Profile Upsert Data:</h2>
-      <pre>{JSON.stringify(profileUpdateData, null, 2)}</pre>
+      <h2>1. Profile Upsert Error:</h2>
+      <pre style={{ color: 'red' }}>{JSON.stringify(upsertError, null, 2)}</pre>
 
-      <hr />
-
-      <h2>1. Insert Error:</h2>
-      <pre style={{ color: 'red' }}>{JSON.stringify(insertError, null, 2)}</pre>
-      <h2>2. Select Error:</h2>
-      <pre style={{ color: 'red' }}>{JSON.stringify(selectError, null, 2)}</pre>
+      <h2>2. Profile Select Error:</h2>
+      <pre style={{ color: 'red' }}>{JSON.stringify(profileError, null, 2)}</pre>
+      
+      <h2>3. Profile Data no Banco:</h2>
+      <pre>{JSON.stringify(profileData, null, 2)}</pre>
     </div>
   )
 }
