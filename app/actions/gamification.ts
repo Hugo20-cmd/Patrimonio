@@ -4,7 +4,7 @@ import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 // Lista de conquistas estáticas base do sistema
-export const BASE_ACHIEVEMENTS = [
+const BASE_ACHIEVEMENTS = [
   { key: 'primeiro_etf', title: 'Primeiro ETF', xp: 100 },
   { key: '10k_investido', title: 'R$10.000 Investidos', xp: 500 },
   { key: '100k_lendario', title: 'Centenário (100K)', xp: 2000 },
