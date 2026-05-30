@@ -53,21 +53,21 @@ export async function addTransaction(formData: FormData) {
   if (error) return { error: error.message }
 
   // Disparar gatilho de gamificação (milestones)
-  await checkTransactionAchievements(userData.user.id)
+  const { results: unlockedAchievements } = await checkTransactionAchievements(userData.user.id) || { results: [] }
 
   // XP dinâmico por Aporte / Compra de Ativos
-  // O usuário ganha XP proporcional ao valor investido (Ex: 1 XP a cada R$ 5)
+  let xpEarned = 0;
   const investmentCategories = ['ação', 'ações', 'etf', 'fii', 'cripto', 'investimento', 'renda fixa', 'tesouro']
   if (investmentCategories.some(c => category.toLowerCase().includes(c))) {
     const xpBase = Math.floor(amount / 5) // 1 XP a cada 5 reais investidos
-    const xpFinal = xpBase > 0 ? xpBase : 2 // Pelo menos 2 XP por qualquer compra
+    xpEarned = xpBase > 0 ? xpBase : 2 // Pelo menos 2 XP por qualquer compra
     
     const { addXp } = await import('./gamification')
-    await addXp(userData.user.id, xpFinal)
+    await addXp(userData.user.id, xpEarned)
   }
 
   revalidatePath('/transactions')
-  return { success: true }
+  return { success: true, unlockedAchievements, xpEarned }
 }
 
 export async function deleteTransaction(id: string) {

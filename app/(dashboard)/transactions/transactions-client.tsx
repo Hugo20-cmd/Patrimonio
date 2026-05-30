@@ -14,6 +14,7 @@ export default function TransactionsClient({ initialTransactions }: { initialTra
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [toastInfo, setToastInfo] = useState<{xp: number, achievements: number} | null>(null);
 
   // Form State
   const [description, setDescription] = useState("");
@@ -176,9 +177,19 @@ export default function TransactionsClient({ initialTransactions }: { initialTra
                 <form action={async (formData) => {
                   setLoading(true);
                   const res = editingId ? await editTransaction(editingId, formData) : await addTransaction(formData);
-                  if (res?.error) setErrorMsg(res.error);
-                  else window.location.reload();
-                  setLoading(false);
+                  
+                  if (res?.error) {
+                    setErrorMsg(res.error);
+                    setLoading(false);
+                  } else {
+                    if (res?.xpEarned || (res?.unlockedAchievements && res.unlockedAchievements.some((a: any) => a?.unlocked))) {
+                      setIsModalOpen(false);
+                      setToastInfo({ xp: res.xpEarned, achievements: res.unlockedAchievements?.filter((a: any) => a?.unlocked).length || 0 });
+                      setTimeout(() => window.location.reload(), 3500); // Dá tempo do usuário ver a festa antes de recarregar
+                    } else {
+                      window.location.reload();
+                    }
+                  }
                 }}>
                   <div style={{ marginBottom: "12px" }}>
                     <label>Descrição</label>
@@ -214,6 +225,34 @@ export default function TransactionsClient({ initialTransactions }: { initialTra
               </div>
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* Euphoria Toast */}
+      <AnimatePresence>
+        {toastInfo && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            style={{
+              position: "fixed", bottom: "40px", right: "40px", zIndex: 9999,
+              background: "linear-gradient(135deg, #00D4AA 0%, #00b38f 100%)",
+              color: "#fff", padding: "20px 24px", borderRadius: "16px",
+              boxShadow: "0 10px 25px rgba(0, 212, 170, 0.4)",
+              display: "flex", flexDirection: "column", gap: "8px", minWidth: "250px"
+            }}
+          >
+            <div style={{ fontSize: "1.2rem", fontWeight: 800 }}>🎉 Sucesso!</div>
+            <div style={{ fontSize: "0.95rem" }}>
+              Você ganhou <strong>+{toastInfo.xp} XP</strong> por investir!
+            </div>
+            {toastInfo.achievements > 0 && (
+              <div style={{ fontSize: "0.9rem", background: "rgba(255,255,255,0.2)", padding: "8px 12px", borderRadius: "8px", marginTop: "4px", fontWeight: 600 }}>
+                🏆 {toastInfo.achievements} Nova{toastInfo.achievements > 1 ? 's' : ''} Conquista{toastInfo.achievements > 1 ? 's' : ''} Desbloqueada{toastInfo.achievements > 1 ? 's' : ''}!
+              </div>
+            )}
+          </motion.div>
         )}
       </AnimatePresence>
     </motion.div>

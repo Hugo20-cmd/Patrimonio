@@ -210,8 +210,11 @@ export default function SettingsPage() {
           onClick={async () => {
             try {
               const res = await fetch('/api/sync');
+              const data = await res.json();
+              console.log("SYNC RESULT:", data);
+              
               if (res.ok) {
-                alert("Conquistas e XP sincronizados com sucesso! Atualize a página para ver seu novo nível.");
+                alert("Sincronização executada! Verifique o console (F12) para ver os detalhes: " + JSON.stringify(data.result.achievementsResult));
                 window.location.reload();
               } else {
                 alert("Erro ao sincronizar.");
