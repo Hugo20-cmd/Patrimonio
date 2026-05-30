@@ -233,7 +233,14 @@ export default function ChatClient({ initialMessages }: { initialMessages: any[]
         </div>
 
         {/* Barra de Digitação */}
-        <div style={{ padding: "20px", background: "var(--bg-elevated)", borderTop: "1px solid var(--border-subtle)" }}>
+        <div className="chat-input-container" style={{ padding: "20px", background: "var(--bg-elevated)", borderTop: "1px solid var(--border-subtle)" }}>
+          <style dangerouslySetInnerHTML={{__html: `
+            @media (max-width: 768px) {
+              .chat-input-container {
+                padding-bottom: 90px !important; /* Espaço para os botões flutuantes globais */
+              }
+            }
+          `}} />
           {replyTo && (
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "var(--bg-card)", padding: "8px 12px", borderRadius: "8px", marginBottom: "8px", borderLeft: "3px solid var(--green-primary)" }}>
               <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
