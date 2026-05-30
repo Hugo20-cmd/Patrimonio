@@ -2,6 +2,10 @@
 
 import { createClient } from '@/utils/supabase/server'
 
+// Hardcoded keys as requested
+const NEWSAPI_KEY = '64b63cb06fd99cc5e897e2324097eb2b';
+const FINNHUB_KEY = 'd8ck39hr01qidic89p30d8ck39hr01qidic89p3g';
+
 export async function getMarketNews() {
   const supabase = await createClient()
   const { data: userData } = await supabase.auth.getUser()
@@ -23,53 +27,82 @@ export async function getMarketNews() {
     return { error: 'premium_required' }
   }
 
-  // Em um ambiente real, aqui faríamos um fetch para NewsAPI, Finnhub ou Alpha Vantage
-  // fetch(`https://finnhub.io/api/v1/news?category=general&token=${process.env.FINNHUB_KEY}`)
-  
-  // Mock Realista Atualizado
-  return {
-    success: true,
-    data: [
+  let unifiedNews: any[] = [];
+  let idCounter = 1;
+
+  // 1. Fetch NewsAPI (Brazil Business)
+  try {
+    const newsApiRes = await fetch(`https://newsapi.org/v2/top-headlines?country=br&category=business&apiKey=${NEWSAPI_KEY}`, { next: { revalidate: 3600 } });
+    if (newsApiRes.ok) {
+      const data = await newsApiRes.json();
+      if (data.articles) {
+        data.articles.forEach((article: any) => {
+          if (article.title && article.title !== '[Removed]') {
+            unifiedNews.push({
+              id: idCounter++,
+              title: article.title,
+              summary: article.description || 'Leia a matéria completa na fonte original.',
+              source: article.source?.name || 'NewsAPI',
+              category: 'Economia e Negócios',
+              url: article.url,
+              imageUrl: article.urlToImage || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=800',
+              publishedAt: article.publishedAt || new Date().toISOString()
+            });
+          }
+        });
+      }
+    }
+  } catch (error) {
+    console.error("NewsAPI Error:", error);
+  }
+
+  // 2. Fetch Finnhub (Global Market News)
+  try {
+    const finnhubRes = await fetch(`https://finnhub.io/api/v1/news?category=general&token=${FINNHUB_KEY}`, { next: { revalidate: 3600 } });
+    if (finnhubRes.ok) {
+      const data = await finnhubRes.json();
+      if (Array.isArray(data)) {
+        // Limit Finnhub to 15 news so we don't overload the UI
+        data.slice(0, 15).forEach((article: any) => {
+          unifiedNews.push({
+            id: idCounter++,
+            title: article.headline,
+            summary: article.summary || 'Acompanhe as atualizações do mercado financeiro global.',
+            source: article.source || 'Finnhub',
+            category: article.category === 'general' ? 'Mercado Global' : article.category,
+            url: article.url,
+            imageUrl: article.image || 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=800',
+            // Finnhub returns datetime in unix timestamp seconds
+            publishedAt: new Date(article.datetime * 1000).toISOString()
+          });
+        });
+      }
+    }
+  } catch (error) {
+    console.error("Finnhub Error:", error);
+  }
+
+  // Se ambas falharem ou retornarem vazias, enviamos um mock elegante
+  if (unifiedNews.length === 0) {
+    unifiedNews = [
       {
-        id: 1,
-        title: "Copom mantém taxa Selic em 10,50% ao ano, em decisão unânime",
-        summary: "O Comitê de Política Monetária (Copom) do Banco Central decidiu manter a taxa básica de juros, indicando preocupações com a inflação de serviços e o cenário fiscal.",
-        source: "Valor Econômico",
-        category: "Política Econômica",
-        url: "#",
-        imageUrl: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=800",
-        publishedAt: new Date().toISOString()
-      },
-      {
-        id: 2,
-        title: "Bolsa fecha em alta puxada por balanços positivos de grandes bancos",
-        summary: "O Ibovespa encerrou o pregão com avanço significativo, impulsionado pelos resultados trimestrais acima do esperado do setor financeiro.",
-        source: "InfoMoney",
-        category: "Mercado Financeiro",
-        url: "#",
-        imageUrl: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=800",
-        publishedAt: new Date(Date.now() - 3600000).toISOString()
-      },
-      {
-        id: 3,
-        title: "Petróleo atinge maior valor em três meses com tensões geopolíticas",
-        summary: "O barril do Brent ultrapassou a marca de 85 dólares, impactando ações de petroleiras globais e pressionando expectativas de inflação.",
-        source: "Exame",
-        category: "Commodities",
+        id: idCounter++,
+        title: "Atualizações de Mercado Pausadas",
+        summary: "Nossos provedores de dados estão passando por manutenção momentânea. Tente atualizar a página em alguns instantes.",
+        source: "Patrimônio+ System",
+        category: "Aviso",
         url: "#",
         imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=800",
-        publishedAt: new Date(Date.now() - 7200000).toISOString()
-      },
-      {
-        id: 4,
-        title: "Reforma Tributária: Senado aprova texto-base após longas negociações",
-        summary: "Mudanças significativas no sistema de impostos brasileiro avançam no Congresso, com potencial impacto no setor de serviços.",
-        source: "G1 Economia",
-        category: "Política",
-        url: "#",
-        imageUrl: "https://images.unsplash.com/photo-1523292562811-8fa7962a78c8?auto=format&fit=crop&q=80&w=800",
-        publishedAt: new Date(Date.now() - 14400000).toISOString()
+        publishedAt: new Date().toISOString()
       }
-    ]
+    ];
+  } else {
+    // Sort combined array by publishedAt descending (newest first)
+    unifiedNews.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+  }
+
+  return {
+    success: true,
+    data: unifiedNews
   }
 }
