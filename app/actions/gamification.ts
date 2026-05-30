@@ -1,14 +1,7 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
-
-// Bypassa RLS garantindo que o sistema de gamificação tenha sempre acesso de gravação 
-const supabaseAdmin = createSupabaseClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
 
 // Lista de conquistas estáticas base do sistema
 const BASE_ACHIEVEMENTS = [
@@ -45,7 +38,7 @@ export async function addXp(userId: string, xpAmount: number) {
     newXpToNext = Math.floor(newXpToNext * 1.5) // Próximo nível requer 50% a mais de XP
   }
 
-  await supabaseAdmin
+  await supabase
     .from('profiles')
     .upsert({
       id: userId,
@@ -58,8 +51,8 @@ export async function addXp(userId: string, xpAmount: number) {
 export async function unlockAchievement(userId: string, achievementKey: string) {
   const supabase = await createClient()
 
-  // Tenta inserir a conquista com Admin para evitar erros de permissão de RLS
-  const { error } = await supabaseAdmin
+  // Tenta inserir a conquista
+  const { error } = await supabase
     .from('user_achievements')
     .insert({ user_id: userId, achievement_key: achievementKey })
 
