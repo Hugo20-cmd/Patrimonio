@@ -172,20 +172,6 @@ export default function Sidebar({
         </div>
       </div>
 
-      <style jsx global>{`
-        @media (max-width: 768px) {
-          .sidebar-container {
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-          }
-          .sidebar-container.open {
-            transform: translateX(0);
-          }
-          .mobile-close-btn {
-            display: block !important;
-          }
-        }
-      `}</style>
     </aside>
   );
 }
