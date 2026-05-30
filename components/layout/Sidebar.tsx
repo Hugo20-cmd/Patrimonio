@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { 
   TrendingUp, LayoutDashboard, PieChart, Target, 
   Award, Settings, LogOut, ArrowRightLeft, DollarSign, Link as LinkIcon, ArrowLeft,
-  Newspaper, MessageSquare, MessagesSquare
+  Newspaper, MessageSquare, MessagesSquare, Headphones
 } from "lucide-react";
 import { getProfile } from "@/app/actions/profile";
 import { logout } from "@/app/actions/auth";
@@ -23,6 +23,7 @@ const menuItems = [
   { icon: Newspaper, label: "Notícias", href: "/news" },
   { icon: MessageSquare, label: "Comunidade", href: "/community" },
   { icon: MessagesSquare, label: "Feedbacks", href: "/feedback" },
+  { icon: Headphones, label: "Central de Ajuda", href: "/support" },
   { icon: LinkIcon, label: "Conexões", href: "/connections" },
 ];
 
