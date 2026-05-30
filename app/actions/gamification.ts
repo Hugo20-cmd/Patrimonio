@@ -25,13 +25,11 @@ export async function addXp(userId: string, xpAmount: number) {
     .from('profiles')
     .select('xp, level, xp_to_next_level')
     .eq('id', userId)
-    .single()
+    .maybeSingle()
 
-  if (!profile) return
-
-  let newXp = (profile.xp || 0) + xpAmount
-  let newLevel = profile.level || 1
-  let newXpToNext = profile.xp_to_next_level || 1000
+  let newXp = (profile?.xp || 0) + xpAmount
+  let newLevel = profile?.level || 1
+  let newXpToNext = profile?.xp_to_next_level || 1000
 
   // Sistema simples de progressão de nível
   while (newXp >= newXpToNext) {
@@ -42,12 +40,12 @@ export async function addXp(userId: string, xpAmount: number) {
 
   await supabase
     .from('profiles')
-    .update({
+    .upsert({
+      id: userId,
       xp: newXp,
       level: newLevel,
       xp_to_next_level: newXpToNext
-    })
-    .eq('id', userId)
+    }, { onConflict: 'id' })
 }
 
 export async function unlockAchievement(userId: string, achievementKey: string) {
