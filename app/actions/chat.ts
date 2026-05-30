@@ -62,11 +62,17 @@ export async function getChatMessages(channel: string = 'geral') {
     .select('id, name, level, email')
     .in('id', userIds)
 
+  const adminId = isAdmin ? userData.user.id : null;
+
   const messages = (rawMessages || []).map(msg => {
     const profile = profiles?.find(p => p.id === msg.user_id)
     
     // Fallback if update didn't run yet or for other viewers checking the admin's message
-    const isMessageFromAdmin = profile?.email === 'contatopennamc@gmail.com' || profile?.name === 'Patrimônio+' || profile?.name === 'Patrimônio+ 👑'
+    const isMessageFromAdmin = 
+      (adminId && msg.user_id === adminId) || 
+      profile?.email === 'contatopennamc@gmail.com' || 
+      profile?.name === 'Patrimônio+' || 
+      profile?.name === 'Patrimônio+ 👑'
     
     return {
       ...msg,
