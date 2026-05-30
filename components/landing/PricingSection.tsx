@@ -46,7 +46,7 @@ const plans = [
       "Suporte prioritário",
     ],
     cta: "Assinar Premium",
-    ctaHref: "/register?plan=premium",
+    ctaHref: "https://buy.stripe.com/14A6oH0FIantgEh0NQcwg00",
     popular: true,
   },
 ];

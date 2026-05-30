@@ -111,7 +111,12 @@ export default function Sidebar({
         {/* UPGRADE BUTTON (IF FREE) */}
         {subStatus === "free" && (
           <div style={{ marginTop: "12px", marginBottom: "4px" }}>
-            <Link href="/register?plan=premium" className="btn btn-primary" style={{ width: "100%", justifyContent: "center", padding: "8px", fontSize: "0.85rem", gap: "6px" }}>
+            <Link 
+              href={profile?.id ? `https://buy.stripe.com/14A6oH0FIantgEh0NQcwg00?client_reference_id=${profile.id}` : "https://buy.stripe.com/14A6oH0FIantgEh0NQcwg00"} 
+              className="btn btn-primary" 
+              style={{ width: "100%", justifyContent: "center", padding: "8px", fontSize: "0.85rem", gap: "6px" }}
+              target="_blank"
+            >
               <Award size={16} /> Fazer Upgrade
             </Link>
           </div>

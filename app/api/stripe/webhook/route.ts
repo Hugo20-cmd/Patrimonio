@@ -31,24 +31,28 @@ export async function POST(req: Request) {
 
   try {
     switch (event.type) {
-      case 'checkout.session.completed': {
+      case 'checkout.session.completed':
+      case 'checkout.session.async_payment_succeeded': {
         const session = event.data.object as Stripe.Checkout.Session;
         
         if (session.client_reference_id) {
           const userId = session.client_reference_id;
+          const isPaid = session.payment_status === 'paid';
           
-          await supabaseAdmin.from('subscriptions').upsert({
-            user_id: userId,
-            stripe_customer_id: session.customer as string,
-            stripe_subscription_id: session.subscription as string,
-            status: 'active',
-          });
+          if (isPaid) {
+            await supabaseAdmin.from('subscriptions').upsert({
+              user_id: userId,
+              stripe_customer_id: session.customer as string,
+              stripe_subscription_id: session.subscription as string,
+              status: 'active',
+            });
 
-          // Fetch user info for email
-          const { data: user } = await supabaseAdmin.auth.admin.getUserById(userId);
-          if (user?.user?.email) {
-            const { sendPremiumConfirmationEmail } = await import('@/app/actions/emails');
-            await sendPremiumConfirmationEmail(user.user.email, user.user.user_metadata?.name || 'Investidor');
+            // Fetch user info for email
+            const { data: user } = await supabaseAdmin.auth.admin.getUserById(userId);
+            if (user?.user?.email) {
+              const { sendPremiumConfirmationEmail } = await import('@/app/actions/emails');
+              await sendPremiumConfirmationEmail(user.user.email, user.user.user_metadata?.name || 'Investidor');
+            }
           }
         }
         break;

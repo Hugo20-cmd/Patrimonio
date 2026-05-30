@@ -121,7 +121,7 @@ export default function Hero() {
                 Criar conta grátis
                 <ArrowRight size={16} />
               </Link>
-              <a href="#demo" className="btn btn-secondary btn-lg" style={{ gap: "10px" }}>
+              <a href="#features" className="btn btn-secondary btn-lg" style={{ gap: "10px" }}>
                 <Play size={16} fill="currentColor" />
                 Ver demonstração
               </a>
