@@ -140,3 +140,40 @@ export async function getUserAchievements() {
 
   return achievements || []
 }
+
+export async function syncRetroactiveXp() {
+  const supabase = await createClient()
+  const { data: userData } = await supabase.auth.getUser()
+  if (!userData?.user) return { error: 'Not authenticated' }
+
+  const userId = userData.user.id
+
+  // 1. Recalcular conquistas baseadas no histórico
+  await checkTransactionAchievements(userId)
+
+  // 2. Dar XP por transações antigas que talvez não tenham dado XP
+  const { data: transactions } = await supabase
+    .from('transactions')
+    .select('amount, category')
+    .eq('user_id', userId)
+
+  if (transactions && transactions.length > 0) {
+    let totalXpToGive = 0;
+    const investmentCategories = ['ação', 'ações', 'etf', 'fii', 'cripto', 'investimento', 'renda fixa', 'tesouro']
+    
+    transactions.forEach(t => {
+      if (t.category && investmentCategories.some(c => t.category.toLowerCase().includes(c))) {
+        const xpBase = Math.floor(Number(t.amount) / 5)
+        const xpFinal = xpBase > 0 ? xpBase : 2
+        totalXpToGive += xpFinal
+      }
+    });
+
+    // Se tiver XP pra dar, a gente dá. (Pode gerar XP duplicado se já recebeu antes, mas como é pra corrigir retroativo, vale a pena)
+    if (totalXpToGive > 0) {
+      await addXp(userId, totalXpToGive)
+    }
+  }
+
+  return { success: true }
+}
