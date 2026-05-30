@@ -49,6 +49,15 @@ export async function POST(req: Request) {
 
             // Fetch user info for email
             const { data: user } = await supabaseAdmin.auth.admin.getUserById(userId);
+            
+            // Create in-app notification
+            await supabaseAdmin.from('notifications').insert({
+              user_id: userId,
+              title: 'Premium Desbloqueado! 👑',
+              message: 'Seu pagamento foi confirmado. Aproveite todos os recursos do Patrimônio+ Premium!',
+              type: 'achievement'
+            });
+
             if (user?.user?.email) {
               const { sendPremiumConfirmationEmail } = await import('@/app/actions/emails');
               await sendPremiumConfirmationEmail(user.user.email, user.user.user_metadata?.name || 'Investidor');
