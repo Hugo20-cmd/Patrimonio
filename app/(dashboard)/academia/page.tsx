@@ -330,7 +330,7 @@ export default function AcademiaPage() {
               </div>
               
               <button 
-                onClick={() => { alert("Redirecionando para o Gateway de Pagamento (Mercado Pago / Stripe / Hotmart)..."); }}
+                onClick={() => { window.location.href = "https://buy.stripe.com/9B64gz602gLR4Vz8gicwg01"; }}
                 style={{ 
                   width: "100%", background: "linear-gradient(90deg, #D4AF37, #FFD700)", color: "#000", 
                   border: "none", padding: "16px", borderRadius: "16px", fontSize: "1.1rem", fontWeight: 900, 

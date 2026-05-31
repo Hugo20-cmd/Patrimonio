@@ -33,7 +33,7 @@ export const CURRICULUM = [
     title: "Módulo 2: O Motor da Riqueza",
     desc: "A mágica dos Juros Compostos. Entenda matematicamente por que o tempo e a constância vencem a genialidade e o timing.",
     icon: <TrendingUp size={28} />,
-    status: "in-progress",
+    status: "locked",
     color: "var(--text-tertiary)",
     lessons: ["Albert Einstein e os Juros", "Tempo vs Dinheiro", "A Bola de Neve"],
     slides: [
@@ -59,7 +59,7 @@ export const CURRICULUM = [
     title: "Módulo 3: O Fim das Correntes",
     desc: "Nenhum investimento rende mais que os juros do cartão. Como estancar a sangria das dívidas e limpar o seu nome.",
     icon: <ShieldAlert size={28} />,
-    status: "in-progress",
+    status: "locked",
     color: "var(--text-tertiary)",
     lessons: ["A Matemática da Dívida", "Dívida Boa vs Dívida Ruim", "O Plano de Quitação"],
     slides: [
@@ -85,7 +85,7 @@ export const CURRICULUM = [
     title: "Módulo 4: O Colchão de Ouro",
     desc: "A Reserva de Emergência. A blindagem oficial do seu patrimônio contra demissões, acidentes e imprevistos.",
     icon: <Umbrella size={28} />,
-    status: "in-progress",
+    status: "locked",
     color: "var(--text-tertiary)",
     lessons: ["O Que É a Reserva?", "Calculando o Seu Tamanho", "Onde Guardar?"],
     slides: [
@@ -111,7 +111,7 @@ export const CURRICULUM = [
     title: "Módulo 5: Dissecando a Renda Fixa",
     desc: "Entenda o que é o CDI, a Taxa Selic e a Inflação. Como o cenário macroeconômico dita o rendimento do seu dinheiro.",
     icon: <Landmark size={28} />,
-    status: "in-progress",
+    status: "locked",
     color: "var(--text-tertiary)",
     lessons: ["O Monstro da Inflação", "O Remédio Selic", "O Que é CDI?"],
     slides: [
@@ -137,7 +137,7 @@ export const CURRICULUM = [
     title: "Módulo 6: Tesouro Direto Prático",
     desc: "Emprestando dinheiro para o Governo. Conheça as diferenças entre Tesouro Selic, IPCA+ e Prefixado.",
     icon: <ShieldCheck size={28} />,
-    status: "in-progress",
+    status: "locked",
     color: "var(--text-tertiary)",
     lessons: ["O Investimento Mais Seguro", "Os 3 Tipos de Tesouro", "A Marcação a Mercado"],
     slides: [
@@ -163,7 +163,7 @@ export const CURRICULUM = [
     title: "Módulo 7: Bancos, CDBs e FGC",
     desc: "Aprenda a investir em Títulos Privados e como o Fundo Garantidor de Crédito protege o seu patrimônio.",
     icon: <Briefcase size={28} />,
-    status: "in-progress",
+    status: "locked",
     color: "var(--text-tertiary)",
     lessons: ["Emprestando para Bancos (CDB)", "LCI e LCA (Isenção de IR)", "A Garantia do FGC"],
     slides: [
@@ -189,7 +189,7 @@ export const CURRICULUM = [
     title: "Módulo 8: A Fábrica de Aluguéis (FIIs)",
     desc: "O fascinante mundo dos Fundos Imobiliários. Receba dinheiro limpo na sua conta todos os meses com shoppings e galpões.",
     icon: <Building2 size={28} />,
-    status: "in-progress",
+    status: "locked",
     color: "var(--text-tertiary)",
     lessons: ["Por que não comprar um imóvel?", "O que é um FII?", "A Mágica da Isenção"],
     slides: [
@@ -215,7 +215,7 @@ export const CURRICULUM = [
     title: "Módulo 9: Tijolo vs Papel",
     desc: "Descubra as diferentes categorias de FIIs e como montar uma carteira balanceada para todos os cenários.",
     icon: <Blocks size={28} />,
-    status: "in-progress",
+    status: "locked",
     color: "var(--text-tertiary)",
     lessons: ["FIIs de Tijolo (Imóveis Reais)", "FIIs de Papel (Recebíveis)", "Fiagros (O Poder do Agro)"],
     slides: [
