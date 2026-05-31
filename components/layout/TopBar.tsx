@@ -26,6 +26,28 @@ function NotifIcon({ type }: { type: string }) {
   return                             <div style={{ ...styles, background: "rgba(79,110,247,0.15)" }}><Info size={15} color="#4f6ef7" /></div>;
 }
 
+const POPULAR_ASSETS = [
+  { ticker: "PETR4", name: "Petrobras PN" },
+  { ticker: "VALE3", name: "Vale ON" },
+  { ticker: "ITUB4", name: "Itaú Unibanco PN" },
+  { ticker: "BBDC4", name: "Bradesco PN" },
+  { ticker: "BBAS3", name: "Banco do Brasil ON" },
+  { ticker: "WEGE3", name: "WEG ON" },
+  { ticker: "B3SA3", name: "B3 ON" },
+  { ticker: "ELET3", name: "Eletrobras ON" },
+  { ticker: "RENT3", name: "Localiza ON" },
+  { ticker: "BOVA11", name: "iShares Ibovespa (ETF)" },
+  { ticker: "IVVB11", name: "iShares S&P 500 (ETF)" },
+  { ticker: "SMAL11", name: "iShares Small Cap (ETF)" },
+  { ticker: "HASH11", name: "Hashdex Crypto (ETF)" },
+  { ticker: "NASD11", name: "XP Nasdaq 100 (ETF)" },
+  { ticker: "GOLD11", name: "XP Ouro (ETF)" },
+  { ticker: "XINA11", name: "Trend MSCI China (ETF)" },
+  { ticker: "URPR11", name: "Urca Prime Renda (FII)" },
+  { ticker: "MXRF11", name: "Maxi Renda (FII)" },
+  { ticker: "HGLG11", name: "CSHG Logística (FII)" }
+];
+
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   const [profile, setProfile]         = useState<any>(null);
@@ -33,9 +55,11 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   const [unread, setUnread]           = useState(0);
   const [showNotifs, setShowNotifs]   = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLFormElement>(null);
 
   // Fetch profile & notifications on route change
   useEffect(() => {
@@ -74,6 +98,9 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
     function handleClick(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setShowNotifs(false);
+      }
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
       }
     }
     document.addEventListener("mousedown", handleClick);
@@ -117,10 +144,12 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
         </button>
 
         <form 
+          ref={searchRef}
           onSubmit={(e) => {
             e.preventDefault();
             if (searchQuery.trim()) {
               router.push(`/ativos/${searchQuery.trim().toUpperCase()}`);
+              setShowSuggestions(false);
             }
           }}
           style={{ position: "relative", maxWidth: "400px", width: "100%" }} 
@@ -131,10 +160,49 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
             type="text"
             placeholder="Buscar ativos (ex: PETR4, IVVB11)..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => setShowSuggestions(true)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setShowSuggestions(true);
+            }}
             style={{ width: "100%", background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "12px", padding: "10px 16px 10px 40px", fontSize: "0.85rem", color: "var(--text-primary)", outline: "none" }}
           />
           <button type="submit" style={{ display: "none" }}>Buscar</button>
+          
+          {showSuggestions && searchQuery.trim().length > 0 && (
+            <div style={{
+              position: "absolute", top: "calc(100% + 8px)", left: 0, right: 0,
+              background: "var(--bg-card)", border: "1px solid var(--border-default)",
+              borderRadius: "12px", boxShadow: "0 10px 40px rgba(0,0,0,0.5)",
+              overflow: "hidden", zIndex: 50, animation: "slideDown 0.2s ease"
+            }}>
+              {POPULAR_ASSETS.filter(a => a.ticker.toLowerCase().includes(searchQuery.toLowerCase()) || a.name.toLowerCase().includes(searchQuery.toLowerCase())).slice(0, 6).map(asset => (
+                <div
+                  key={asset.ticker}
+                  onClick={() => {
+                    setSearchQuery(asset.ticker);
+                    setShowSuggestions(false);
+                    router.push(`/ativos/${asset.ticker}`);
+                  }}
+                  style={{
+                    padding: "12px 16px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center",
+                    borderBottom: "1px solid var(--border-subtle)", transition: "background 0.2s"
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                >
+                  <span style={{ fontWeight: 700, color: "var(--blue-primary)" }}>{asset.ticker}</span>
+                  <span style={{ fontSize: "0.8rem", color: "var(--text-tertiary)" }}>{asset.name}</span>
+                </div>
+              ))}
+              {POPULAR_ASSETS.filter(a => a.ticker.toLowerCase().includes(searchQuery.toLowerCase()) || a.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                <div style={{ padding: "12px 16px", fontSize: "0.8rem", color: "var(--text-tertiary)", textAlign: "center" }}>
+                  Pressione Enter para pesquisar "{searchQuery}"
+                </div>
+              )}
+            </div>
+          )}
+
           <div style={{ position: "absolute", right: "8px", top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.05)", border: "1px solid var(--border-default)", borderRadius: "6px", padding: "2px 6px", fontSize: "0.65rem", color: "var(--text-tertiary)", fontWeight: 600, pointerEvents: "none" }}>
             Enter ↵
           </div>
