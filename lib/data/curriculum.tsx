@@ -1,4 +1,4 @@
-import { ShieldAlert, TrendingUp, BrainCircuit, Building2, Briefcase, Globe2, BookOpen, Target, Landmark, Coins, LineChart, Wallet, Anchor, BarChart3, Binary, Blocks, Combine, Compass, Rocket, ShieldCheck, Gem, Pickaxe, Umbrella, Scale, Microscope, Plane } from "lucide-react";
+import { ShieldAlert, TrendingUp, BrainCircuit, Building2, Briefcase, Globe2, BookOpen, Target, Landmark, Coins, LineChart, Wallet, Anchor, BarChart3, Binary, Blocks, Combine, Compass, Rocket, ShieldCheck, Gem, Pickaxe, Umbrella, Scale, Microscope, Plane, AlertOctagon, Crown } from "lucide-react";
 import React from "react";
 
 export const CURRICULUM = [
