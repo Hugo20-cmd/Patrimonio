@@ -1,7 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import { PlayCircle, Lock, CheckCircle2, Crown, BrainCircuit, TrendingUp, ShieldAlert, Building2, Briefcase, Globe2 } from "lucide-react";
+import { PlayCircle, Lock, CheckCircle2, Crown, BrainCircuit, TrendingUp, ShieldAlert, Building2, Briefcase, Globe2, X, ChevronRight, ChevronLeft, PieChart, AlertOctagon, ShieldCheck } from "lucide-react";
+
+const MODULE_1_SLIDES = [
+  {
+    title: "O Mindset Correto",
+    content: "Muitas pessoas entram no mercado financeiro achando que é um cassino ou um esquema para ficar rico rápido. O verdadeiro investidor sabe que a bolsa de valores é um lugar para **se tornar sócio das melhores empresas do país**.\n\nInvestir não é sobre 'apostar', é sobre **plantar sementes com paciência hoje para colher uma floresta amanhã**.",
+    icon: <BrainCircuit size={48} color="var(--blue-primary)" />
+  },
+  {
+    title: "A Regra 50/30/20",
+    content: "Como dividir o seu salário para nunca faltar dinheiro?\n\n• **50% Gastos Essenciais**: Aluguel, supermercado, contas básicas.\n• **30% Estilo de Vida**: Lazer, restaurantes, hobbies (você precisa viver!).\n• **20% O Seu Futuro**: O dinheiro sagrado que vai para seus investimentos todos os meses.\n\nA regra de ouro é: **Pague a si mesmo primeiro**.",
+    icon: <PieChart size={48} color="var(--purple-primary)" />
+  },
+  {
+    title: "O Veneno das Dívidas",
+    content: "Nenhum investimento seguro do mundo rende mais do que os juros do cartão de crédito (que chegam a absurdos 400% ao ano no Brasil).\n\nSe você tem dívidas rotativas, **pare tudo**. O seu primeiro e melhor 'investimento' é quitar todas as suas dívidas ruins. Limpar o terreno é o primeiro passo para construir um castelo.",
+    icon: <AlertOctagon size={48} color="#FF4B4B" />
+  },
+  {
+    title: "O Colchão Financeiro",
+    content: "Antes de comprar a primeira ação, você precisa da sua **Reserva de Emergência**.\n\nEla deve cobrir de **3 a 6 meses do seu custo de vida mensal**. Esse dinheiro não é para render muito, é para te dar paz! Deve ficar em um lugar seguro e que você possa sacar a qualquer momento (como o Tesouro Selic ou um CDB 100% CDI).\n\nÉ a verdadeira blindagem do seu patrimônio!",
+    icon: <ShieldCheck size={48} color="var(--green-primary)" />
+  }
+];
 
 const CURRICULUM = [
   {
@@ -9,18 +32,19 @@ const CURRICULUM = [
     title: "Módulo 1: A Fundação",
     desc: "Ajuste de mindset. Investir não é loteria, é plantio. Aprenda a eliminar dívidas ruins e a montar a sua Reserva de Emergência intocável.",
     icon: <ShieldAlert size={28} />,
-    status: "completed",
-    lessons: ["Mentalidade do Investidor", "A Regra 50/30/20", "Montando o Colchão Financeiro"],
-    color: "var(--green-primary)"
+    status: "in-progress", // Changed to in-progress so user can click
+    lessons: ["Mentalidade do Investidor", "A Regra 50/30/20", "O Colchão Financeiro"],
+    color: "var(--blue-primary)",
+    slides: MODULE_1_SLIDES
   },
   {
     id: 2,
     title: "Módulo 2: O Motor da Riqueza",
     desc: "A mágica dos Juros Compostos. Entenda matematicamente por que o tempo e a constância vencem a genialidade e o timing de mercado.",
     icon: <TrendingUp size={28} />,
-    status: "in-progress",
+    status: "locked",
     lessons: ["A Matemática do Bola de Neve", "Por que o Tempo é Rei", "Roteiro do Primeiro Milhão"],
-    color: "var(--blue-primary)"
+    color: "var(--text-tertiary)"
   },
   {
     id: 3,
@@ -61,14 +85,41 @@ const CURRICULUM = [
 ];
 
 export default function AcademiaPage() {
-  const progress = 18; // 18% concluded
+  const [progress, setProgress] = useState(0); 
+  const [activeModule, setActiveModule] = useState<number | null>(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
-  const handleModuleClick = (status: string) => {
-    if (status === "locked") {
+  const handleModuleClick = (mod: any) => {
+    if (mod.status === "locked") {
       alert("🔒 Este módulo está bloqueado. Conclua as aulas anteriores ou assine o plano PRO para liberar.");
     } else {
-      alert("A aula completa de teste seria aberta em um modal aqui!");
+      setActiveModule(mod.id);
+      setCurrentSlide(0);
+      document.body.style.overflow = "hidden"; // Prevent background scroll
     }
+  };
+
+  const closeSlides = () => {
+    setActiveModule(null);
+    document.body.style.overflow = "auto";
+  };
+
+  const activeModData = CURRICULUM.find(m => m.id === activeModule);
+  const slides = activeModData?.slides || [];
+  const isLastSlide = currentSlide === slides.length - 1;
+
+  const nextSlide = () => {
+    if (!isLastSlide) setCurrentSlide(curr => curr + 1);
+  };
+
+  const prevSlide = () => {
+    if (currentSlide > 0) setCurrentSlide(curr => curr - 1);
+  };
+
+  const completeModule = () => {
+    setProgress(18); // Simulation of gaining progress
+    alert("🎉 Módulo Concluído com Sucesso! O Módulo 2 foi desbloqueado (simulação).");
+    closeSlides();
   };
 
   return (
@@ -84,7 +135,6 @@ export default function AcademiaPage() {
         position: "relative",
         overflow: "hidden"
       }}>
-        {/* Decorative Glow */}
         <div style={{ position: "absolute", top: "-50px", right: "-50px", width: "200px", height: "200px", background: "rgba(255, 215, 0, 0.15)", filter: "blur(60px)", borderRadius: "50%" }} />
         
         <div style={{ display: "flex", gap: "12px", alignItems: "center", marginBottom: "16px" }}>
@@ -117,13 +167,14 @@ export default function AcademiaPage() {
         <div style={{ display: "flex", flexDirection: "column", gap: "40px", position: "relative", zIndex: 1 }}>
           {CURRICULUM.map((mod, index) => {
             const isLocked = mod.status === "locked";
-            const isCompleted = mod.status === "completed";
-            const isInProgress = mod.status === "in-progress";
+            // For MVP demo, if progress > 0 we mark mod 1 as completed visually
+            const isCompleted = mod.id === 1 && progress > 0;
+            const isInProgress = mod.status === "in-progress" && !isCompleted;
 
             return (
               <div 
                 key={mod.id} 
-                onClick={() => handleModuleClick(mod.status)}
+                onClick={() => handleModuleClick(mod)}
                 style={{ 
                   display: "flex", 
                   gap: "32px", 
@@ -162,10 +213,9 @@ export default function AcademiaPage() {
                   boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
                   position: "relative"
                 }}>
-                  {/* Status Badge */}
                   {isInProgress && (
                     <div style={{ position: "absolute", top: "-12px", right: "32px", background: "var(--blue-primary)", color: "#fff", fontSize: "0.7rem", fontWeight: 800, padding: "4px 12px", borderRadius: "99px", letterSpacing: "1px" }}>
-                      CONTINUAR
+                      COMEÇAR
                     </div>
                   )}
 
@@ -196,6 +246,93 @@ export default function AcademiaPage() {
           })}
         </div>
       </div>
+
+      {/* SLIDESHOW MODAL (OVERLAY) */}
+      {activeModule && slides.length > 0 && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(0,0,0,0.85)", backdropFilter: "blur(10px)",
+          zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center",
+          animation: "fadeIn 0.3s ease"
+        }}>
+          <div style={{
+            width: "90%", maxWidth: "600px", background: "var(--bg-card)",
+            borderRadius: "24px", border: "1px solid var(--border-accent)",
+            overflow: "hidden", display: "flex", flexDirection: "column",
+            boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
+            maxHeight: "90vh"
+          }}>
+            
+            {/* Modal Header */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 24px", borderBottom: "1px solid var(--border-default)" }}>
+              <div style={{ display: "flex", gap: "8px", flex: 1 }}>
+                {slides.map((_, i) => (
+                  <div key={i} style={{ 
+                    height: "4px", flex: 1, borderRadius: "2px", 
+                    background: i <= currentSlide ? "var(--blue-primary)" : "var(--border-default)",
+                    transition: "background 0.3s"
+                  }} />
+                ))}
+              </div>
+              <button onClick={closeSlides} style={{ background: "none", border: "none", color: "var(--text-tertiary)", cursor: "pointer", marginLeft: "16px" }}>
+                <X size={24} />
+              </button>
+            </div>
+
+            {/* Slide Content */}
+            <div style={{ padding: "40px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", flex: 1, overflowY: "auto" }}>
+              <div style={{ width: "80px", height: "80px", borderRadius: "20px", background: "var(--bg-elevated)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "24px" }}>
+                {slides[currentSlide].icon}
+              </div>
+              <h2 style={{ fontSize: "2rem", fontWeight: 900, marginBottom: "24px", color: "var(--text-primary)" }}>
+                {slides[currentSlide].title}
+              </h2>
+              {/* Splitting content by double newline to create paragraphs */}
+              <div style={{ fontSize: "1.1rem", color: "var(--text-secondary)", lineHeight: 1.6, textAlign: "left", width: "100%" }}>
+                {slides[currentSlide].content.split("\n\n").map((paragraph, i) => (
+                  <p key={i} style={{ marginBottom: "16px" }} dangerouslySetInnerHTML={{ __html: paragraph.replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--text-primary)">$1</strong>') }} />
+                ))}
+              </div>
+            </div>
+
+            {/* Modal Footer / Controls */}
+            <div style={{ display: "flex", justifyContent: "space-between", padding: "24px", borderTop: "1px solid var(--border-default)", background: "var(--bg-elevated)" }}>
+              <button 
+                onClick={prevSlide}
+                disabled={currentSlide === 0}
+                style={{ 
+                  display: "flex", alignItems: "center", gap: "8px", padding: "12px 20px", borderRadius: "12px",
+                  background: "transparent", color: currentSlide === 0 ? "var(--text-tertiary)" : "var(--text-primary)",
+                  border: "none", cursor: currentSlide === 0 ? "not-allowed" : "pointer", fontWeight: 700
+                }}
+              >
+                <ChevronLeft size={20} /> Anterior
+              </button>
+              
+              {!isLastSlide ? (
+                <button 
+                  onClick={nextSlide}
+                  className="btn btn-primary"
+                  style={{ display: "flex", alignItems: "center", gap: "8px", padding: "12px 24px", borderRadius: "12px" }}
+                >
+                  Próximo <ChevronRight size={20} />
+                </button>
+              ) : (
+                <button 
+                  onClick={completeModule}
+                  style={{ 
+                    display: "flex", alignItems: "center", gap: "8px", padding: "12px 24px", borderRadius: "12px",
+                    background: "var(--green-primary)", color: "#000", border: "none", cursor: "pointer", fontWeight: 800
+                  }}
+                >
+                  <CheckCircle2 size={20} /> Concluir Módulo
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      <style>{`@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }`}</style>
     </div>
   );
 }
