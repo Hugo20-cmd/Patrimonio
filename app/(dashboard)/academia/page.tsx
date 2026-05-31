@@ -88,15 +88,22 @@ export default function AcademiaPage() {
   const [progress, setProgress] = useState(0); 
   const [activeModule, setActiveModule] = useState<number | null>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [showPaywall, setShowPaywall] = useState(false);
 
   const handleModuleClick = (mod: any) => {
     if (mod.status === "locked") {
-      alert("🔒 Este módulo está bloqueado. Conclua as aulas anteriores ou assine o plano PRO para liberar.");
+      setShowPaywall(true);
+      document.body.style.overflow = "hidden"; // Prevent scroll
     } else {
       setActiveModule(mod.id);
       setCurrentSlide(0);
       document.body.style.overflow = "hidden"; // Prevent background scroll
     }
+  };
+
+  const closePaywall = () => {
+    setShowPaywall(false);
+    document.body.style.overflow = "auto";
   };
 
   const closeSlides = () => {
@@ -328,6 +335,95 @@ export default function AcademiaPage() {
                   <CheckCircle2 size={20} /> Concluir Módulo
                 </button>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* PAYWALL MODAL */}
+      {showPaywall && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(0,0,0,0.85)", backdropFilter: "blur(10px)",
+          zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center",
+          animation: "fadeIn 0.3s ease", padding: "20px"
+        }}>
+          <div style={{
+            width: "100%", maxWidth: "480px", background: "var(--bg-card)",
+            borderRadius: "24px", border: "1px solid rgba(255,215,0,0.3)",
+            overflow: "hidden", display: "flex", flexDirection: "column",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.8)", position: "relative"
+          }}>
+            {/* Background Glow */}
+            <div style={{ position: "absolute", top: "-50px", left: "50%", transform: "translateX(-50%)", width: "200px", height: "200px", background: "rgba(255, 215, 0, 0.15)", filter: "blur(60px)", borderRadius: "50%", pointerEvents: "none" }} />
+
+            {/* Header */}
+            <div style={{ padding: "32px 32px 16px 32px", textAlign: "center", position: "relative", zIndex: 1 }}>
+              <button onClick={closePaywall} style={{ position: "absolute", top: "16px", right: "16px", background: "rgba(255,255,255,0.1)", border: "none", color: "var(--text-secondary)", cursor: "pointer", borderRadius: "50%", width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <X size={18} />
+              </button>
+              
+              <div style={{ width: "64px", height: "64px", background: "rgba(255,215,0,0.1)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px auto", border: "1px solid rgba(255,215,0,0.3)" }}>
+                <Crown size={32} color="#FFD700" />
+              </div>
+              <h2 style={{ fontSize: "1.8rem", fontWeight: 900, color: "#fff", marginBottom: "8px" }}>
+                Desbloqueie o PRO
+              </h2>
+              <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: 1.5 }}>
+                Você está a um passo de dominar a construção de riqueza e proteger o seu futuro.
+              </p>
+            </div>
+
+            {/* Benefits */}
+            <div style={{ padding: "0 32px 24px 32px", position: "relative", zIndex: 1 }}>
+              <div style={{ background: "rgba(0,0,0,0.3)", borderRadius: "16px", padding: "16px", border: "1px solid var(--border-subtle)" }}>
+                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
+                  <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                    <CheckCircle2 size={18} color="var(--green-primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
+                    <span style={{ fontSize: "0.9rem", color: "var(--text-primary)" }}>Acesso **Vitalício** a todos os Módulos.</span>
+                  </li>
+                  <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                    <CheckCircle2 size={18} color="var(--green-primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
+                    <span style={{ fontSize: "0.9rem", color: "var(--text-primary)" }}>Todas as atualizações futuras inclusas gratuitas.</span>
+                  </li>
+                  <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                    <CheckCircle2 size={18} color="var(--green-primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
+                    <span style={{ fontSize: "0.9rem", color: "var(--text-primary)" }}>Direto ao ponto, sem enrolação.</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Pricing Action */}
+            <div style={{ background: "linear-gradient(to right, rgba(255,215,0,0.05), rgba(255,215,0,0.1))", padding: "32px", borderTop: "1px solid rgba(255,215,0,0.2)", textAlign: "center" }}>
+              <div style={{ marginBottom: "16px" }}>
+                <span style={{ display: "block", color: "var(--text-tertiary)", fontSize: "0.85rem", textDecoration: "line-through", marginBottom: "4px" }}>De R$ 197,00</span>
+                <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: "4px" }}>
+                  <span style={{ fontSize: "1.2rem", color: "#FFD700", fontWeight: 700 }}>R$</span>
+                  <span style={{ fontSize: "3.5rem", color: "#FFD700", fontWeight: 900, lineHeight: 1 }}>29</span>
+                  <span style={{ fontSize: "1.5rem", color: "#FFD700", fontWeight: 700 }}>,90</span>
+                </div>
+                <span style={{ display: "inline-block", background: "rgba(255,255,255,0.1)", padding: "4px 12px", borderRadius: "99px", fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: 700, marginTop: "8px", textTransform: "uppercase", letterSpacing: "1px" }}>
+                  Pagamento Único
+                </span>
+              </div>
+              
+              <button 
+                onClick={() => { alert("Redirecionando para o Gateway de Pagamento (Mercado Pago / Stripe / Hotmart)..."); }}
+                style={{ 
+                  width: "100%", background: "linear-gradient(90deg, #D4AF37, #FFD700)", color: "#000", 
+                  border: "none", padding: "16px", borderRadius: "16px", fontSize: "1.1rem", fontWeight: 900, 
+                  cursor: "pointer", boxShadow: "0 10px 20px rgba(255,215,0,0.3)",
+                  transition: "transform 0.2s"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.02)"}
+                onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+              >
+                Desbloquear Acesso Agora
+              </button>
+              <p style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", marginTop: "16px" }}>
+                Sem mensalidades. Sem pegadinhas. Acesso para sempre.
+              </p>
             </div>
           </div>
         </div>
