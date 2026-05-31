@@ -2,8 +2,50 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, Plus, ShieldCheck, Building, Rocket } from "lucide-react";
+import { Search, Plus, ShieldCheck, Building, Rocket, Bitcoin, MapPin, Info } from "lucide-react";
 import { addAsset } from "@/app/actions/assets";
+
+function EduTooltip({ title, text, value }: { title: string, text: string, value: string }) {
+  const [show, setShow] = useState(false);
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+      <div 
+        style={{ position: "relative", display: "inline-flex", alignItems: "center", gap: "4px", cursor: "help" }}
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+      >
+        <span style={{ fontSize: "0.65rem", fontWeight: 700, color: "var(--text-tertiary)", borderBottom: "1px dashed var(--text-tertiary)", textTransform: "uppercase" }}>
+          {title}
+        </span>
+        <Info size={10} color="var(--blue-primary)" />
+        
+        {show && (
+          <div style={{
+            position: "absolute", bottom: "calc(100% + 8px)", left: "50%", transform: "translateX(-50%)",
+            background: "var(--bg-elevated)", border: "1px solid var(--blue-primary)",
+            padding: "12px", borderRadius: "12px", width: "max-content", maxWidth: "220px",
+            boxShadow: "0 10px 40px rgba(0,0,0,0.8)", zIndex: 100,
+            animation: "fadeIn 0.2s ease"
+          }}>
+            <p style={{ fontSize: "0.75rem", color: "var(--text-primary)", lineHeight: 1.5, margin: 0, fontWeight: 500, textAlign: "center" }}>
+              {text}
+            </p>
+            <div style={{ position: "absolute", bottom: "-6px", left: "50%", transform: "translateX(-50%)", width: "10px", height: "10px", background: "var(--bg-elevated)", borderRight: "1px solid var(--blue-primary)", borderBottom: "1px solid var(--blue-primary)", rotate: "45deg" }} />
+          </div>
+        )}
+      </div>
+      <span style={{ fontSize: "0.85rem", fontWeight: 800, color: "var(--text-primary)" }}>{value}</span>
+      <style>{`@keyframes fadeIn { from { opacity: 0; transform: translate(-50%, 5px); } to { opacity: 1; transform: translate(-50%, 0); } }`}</style>
+    </div>
+  );
+}
+
+const MACRO_DATA = [
+  { label: "Dólar Comercial", value: "R$ 5,06", desc: "Moeda forte mundial. Protege seu patrimônio contra a inflação local e crises." },
+  { label: "Taxa Selic", value: "10,50%", desc: "A taxa básica de juros do Brasil. Se a Selic sobe, a Renda Fixa paga mais." },
+  { label: "IPCA (Inflação)", value: "4,50%", desc: "Mede o custo de vida. Seu dinheiro precisa render sempre MAIS que o IPCA." },
+  { label: "Euro", value: "R$ 5,45", desc: "A moeda oficial de 20 países da Europa. Forte reserva de valor." }
+];
 
 const EDUCATIONAL_COLLECTIONS = [
   {
@@ -12,9 +54,8 @@ const EDUCATIONAL_COLLECTIONS = [
     description: "ETFs que compram dezenas de empresas de uma vez só. O jeito mais fácil, barato e seguro de começar a investir sem ter que escolher.",
     icon: <ShieldCheck size={24} color="var(--green-primary)" />,
     assets: [
-      { ticker: "BOVA11", name: "iShares Ibovespa", reason: "Compra as 80 maiores empresas do Brasil de uma só vez (Petrobras, Itaú, etc).", tags: ["Brasil", "Diversificado"] },
-      { ticker: "IVVB11", name: "iShares S&P 500", reason: "Investe nas 500 maiores empresas dos Estados Unidos. Proteção em dólar.", tags: ["EUA", "Dólar"] },
-      { ticker: "VT", name: "Vanguard Total World", reason: "Literalmente compra um pedacinho de quase todas as empresas do mundo.", tags: ["Global", "Baixo Risco"] }
+      { ticker: "BOVA11", name: "iShares Ibovespa", reason: "Compra as 80 maiores empresas do Brasil de uma só vez.", tags: ["Brasil", "Diversificado"], fundamentals: { var12m: "+12,5%" } },
+      { ticker: "IVVB11", name: "iShares S&P 500", reason: "Investe nas 500 maiores empresas dos Estados Unidos. Proteção em dólar.", tags: ["EUA", "Dólar"], fundamentals: { var12m: "+24,1%" } },
     ]
   },
   {
@@ -23,20 +64,39 @@ const EDUCATIONAL_COLLECTIONS = [
     description: "Ativos focados em te pagar dinheiro limpo na conta todo mês (como se fossem aluguéis).",
     icon: <Building size={24} color="var(--blue-primary)" />,
     assets: [
-      { ticker: "MXRF11", name: "Maxi Renda FII", reason: "Fundo imobiliário muito popular e barato que costuma pagar dividendos todos os meses.", tags: ["FII", "Renda Mensal"] },
-      { ticker: "HGLG11", name: "CSHG Logística", reason: "Dono de galpões logísticos gigantes alugados para grandes empresas no Brasil.", tags: ["FII", "Imóveis"] },
-      { ticker: "BBAS3", name: "Banco do Brasil", reason: "Um dos bancos mais sólidos do país, famoso por distribuir ótimos lucros aos sócios.", tags: ["Ação", "Dividendos"] }
+      { ticker: "MXRF11", name: "Maxi Renda FII", reason: "Fundo imobiliário muito popular que paga dividendos todos os meses.", tags: ["FII", "Renda Mensal"], fundamentals: { dy: "12,4%", pvp: "1,03", var12m: "+5,2%" } },
+      { ticker: "HGLG11", name: "CSHG Logística", reason: "Dono de galpões logísticos alugados para grandes empresas no Brasil.", tags: ["FII", "Imóveis"], fundamentals: { dy: "9,1%", pvp: "0,95", var12m: "+8,7%" } },
+      { ticker: "BBAS3", name: "Banco do Brasil", reason: "Banco sólido famoso por distribuir ótimos lucros aos sócios.", tags: ["Ação", "Dividendos"], fundamentals: { dy: "11,2%", pvp: "0,88", var12m: "+18,5%" } }
+    ]
+  },
+  {
+    id: "reits",
+    title: "REITs (Imóveis em Dólar)",
+    description: "Receba 'aluguéis' em dólar investindo nos maiores galpões, shoppings e hospitais dos Estados Unidos.",
+    icon: <MapPin size={24} color="#ff8c00" />,
+    assets: [
+      { ticker: "O", name: "Realty Income", reason: "Conhecido como 'The Monthly Dividend Company', paga dividendos todo mês nos EUA.", tags: ["REIT", "Mensal"], fundamentals: { dy: "5,8%", pvp: "1,41", var12m: "+13,8%" } },
+      { ticker: "PLD", name: "Prologis", reason: "Líder global em galpões logísticos, alugando espaço para gigantes como Amazon.", tags: ["REIT", "Logística"], fundamentals: { dy: "2,8%", pvp: "2,29", var12m: "+36,6%" } }
     ]
   },
   {
     id: "tecnologia",
     title: "Gigantes Globais (Crescimento)",
-    description: "Seja sócio das empresas que estão moldando o futuro, dominando a inteligência artificial e a internet.",
+    description: "Seja sócio das empresas que estão dominando a inteligência artificial e a internet.",
     icon: <Rocket size={24} color="var(--purple-primary)" />,
     assets: [
-      { ticker: "AAPL", name: "Apple Inc.", reason: "A fabricante do iPhone e uma das empresas mais valiosas e lucrativas do planeta.", tags: ["Ação EUA", "Tecnologia"] },
-      { ticker: "NASD11", name: "Trend Nasdaq 100", reason: "Um ETF brasileiro que investe num pacote com as 100 maiores techs dos EUA.", tags: ["ETF BR", "Crescimento"] },
-      { ticker: "TSLA", name: "Tesla Inc.", reason: "A gigante de Elon Musk, líder mundial em carros elétricos e energia limpa.", tags: ["Ação EUA", "Inovação"] }
+      { ticker: "AAPL", name: "Apple Inc.", reason: "A fabricante do iPhone e uma das empresas mais valiosas do planeta.", tags: ["Ação EUA", "Tecnologia"], fundamentals: { mcap: "US$ 3.1T", var12m: "+15,2%" } },
+      { ticker: "NVDA", name: "Nvidia Corp.", reason: "A rainha da inteligência artificial. Fabrica os chips mais procurados do mundo.", tags: ["Ação EUA", "IA"], fundamentals: { mcap: "US$ 2.8T", var12m: "+210%" } },
+    ]
+  },
+  {
+    id: "cripto",
+    title: "Criptomoedas (A Nova Economia)",
+    description: "Ativos digitais descentralizados. Altíssimo potencial de crescimento, mas com altíssima volatilidade.",
+    icon: <Bitcoin size={24} color="#f7931a" />,
+    assets: [
+      { ticker: "BTC", name: "Bitcoin", reason: "O ouro digital. A primeira, mais segura e maior criptomoeda do mundo.", tags: ["Cripto", "Reserva"], fundamentals: { mcap: "US$ 1.3T", var12m: "+120%" } },
+      { ticker: "ETH", name: "Ethereum", reason: "A base da internet descentralizada. Usada para contratos inteligentes e Web3.", tags: ["Cripto", "Web3"], fundamentals: { mcap: "US$ 400B", var12m: "+85%" } }
     ]
   }
 ];
@@ -54,7 +114,7 @@ export default function AtivosIndexPage() {
   };
 
   const handleAddAsset = async (e: React.MouseEvent, assetTicker: string) => {
-    e.stopPropagation(); // prevent clicking the card and routing
+    e.stopPropagation(); 
     setAddingTicker(assetTicker);
     try {
       const formData = new FormData();
@@ -78,6 +138,16 @@ export default function AtivosIndexPage() {
 
   return (
     <div style={{ paddingBottom: "80px" }}>
+      
+      {/* MACRO PANEL */}
+      <div style={{ display: "flex", gap: "16px", marginBottom: "32px", overflowX: "auto", paddingBottom: "8px" }}>
+        {MACRO_DATA.map(macro => (
+          <div key={macro.label} style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", padding: "16px 20px", minWidth: "200px", flex: 1, display: "flex", flexDirection: "column", gap: "6px" }}>
+            <EduTooltip title={macro.label} text={macro.desc} value={macro.value} />
+          </div>
+        ))}
+      </div>
+
       {/* Header Search */}
       <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "40px", background: "var(--bg-card)", padding: "32px", borderRadius: "24px", border: "1px solid var(--border-default)" }}>
         <h1 style={{ fontSize: "2.2rem", fontWeight: 800 }}>Explorar Mercado</h1>
@@ -116,7 +186,7 @@ export default function AtivosIndexPage() {
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "20px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "20px" }}>
               {collection.assets.map(asset => (
                 <div
                   key={asset.ticker}
@@ -157,6 +227,22 @@ export default function AtivosIndexPage() {
                         {tag}
                       </span>
                     ))}
+                  </div>
+
+                  {/* Fundamentals Strip */}
+                  <div style={{ display: "flex", gap: "16px", marginBottom: "16px", background: "var(--bg-elevated)", padding: "12px", borderRadius: "12px", border: "1px solid var(--border-subtle)" }}>
+                    {asset.fundamentals.dy && (
+                      <EduTooltip title="DY" text="Dividend Yield: A porcentagem que este ativo te devolveu em formato de lucro/aluguel nos últimos 12 meses. Dinheiro no seu bolso." value={asset.fundamentals.dy} />
+                    )}
+                    {asset.fundamentals.pvp && (
+                      <EduTooltip title="P/VP" text="Preço / Valor Patrimonial: Mostra se está caro ou barato. P/VP = 1 é preço justo. Abaixo de 1 significa que está com desconto!" value={asset.fundamentals.pvp} />
+                    )}
+                    {asset.fundamentals.mcap && (
+                      <EduTooltip title="Valor de Mercado" text="Market Cap: Qual o tamanho total e valor dessa empresa hoje no mercado mundial." value={asset.fundamentals.mcap} />
+                    )}
+                    {asset.fundamentals.var12m && (
+                      <EduTooltip title="Variação (1A)" text="O quanto a cotação (preço do ativo) subiu ou caiu no período de 1 ano." value={asset.fundamentals.var12m} />
+                    )}
                   </div>
 
                   {/* Educational Reason */}
