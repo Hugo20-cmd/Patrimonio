@@ -10,7 +10,7 @@ function EduTooltip({ title, text, value }: { title: string, text: string, value
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
       <div 
-        style={{ position: "relative", display: "inline-flex", alignItems: "center", gap: "4px", cursor: "help" }}
+        style={{ position: "relative", display: "inline-flex", alignItems: "center", gap: "4px", cursor: "pointer" }}
         onMouseEnter={() => setShow(true)}
         onMouseLeave={() => setShow(false)}
       >
@@ -21,7 +21,7 @@ function EduTooltip({ title, text, value }: { title: string, text: string, value
         
         {show && (
           <div style={{
-            position: "absolute", bottom: "calc(100% + 8px)", left: "50%", transform: "translateX(-50%)",
+            position: "absolute", top: "calc(100% + 8px)", left: "50%", transform: "translateX(-50%)",
             background: "var(--bg-elevated)", border: "1px solid var(--blue-primary)",
             padding: "12px", borderRadius: "12px", width: "max-content", maxWidth: "220px",
             boxShadow: "0 10px 40px rgba(0,0,0,0.8)", zIndex: 100,
@@ -30,7 +30,7 @@ function EduTooltip({ title, text, value }: { title: string, text: string, value
             <p style={{ fontSize: "0.75rem", color: "var(--text-primary)", lineHeight: 1.5, margin: 0, fontWeight: 500, textAlign: "center" }}>
               {text}
             </p>
-            <div style={{ position: "absolute", bottom: "-6px", left: "50%", transform: "translateX(-50%)", width: "10px", height: "10px", background: "var(--bg-elevated)", borderRight: "1px solid var(--blue-primary)", borderBottom: "1px solid var(--blue-primary)", rotate: "45deg" }} />
+            <div style={{ position: "absolute", top: "-6px", left: "50%", transform: "translateX(-50%)", width: "10px", height: "10px", background: "var(--bg-elevated)", borderLeft: "1px solid var(--blue-primary)", borderTop: "1px solid var(--blue-primary)", rotate: "45deg" }} />
           </div>
         )}
       </div>
@@ -140,7 +140,7 @@ export default function AtivosIndexPage() {
     <div style={{ paddingBottom: "80px" }}>
       
       {/* MACRO PANEL */}
-      <div style={{ display: "flex", gap: "16px", marginBottom: "32px", overflowX: "auto", paddingBottom: "8px" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", marginBottom: "32px", paddingBottom: "8px" }}>
         {MACRO_DATA.map(macro => (
           <div key={macro.label} style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", padding: "16px 20px", minWidth: "200px", flex: 1, display: "flex", flexDirection: "column", gap: "6px" }}>
             <EduTooltip title={macro.label} text={macro.desc} value={macro.value} />
