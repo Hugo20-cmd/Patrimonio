@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { 
   TrendingUp, LayoutDashboard, PieChart, Target, 
   Award, Settings, LogOut, ArrowRightLeft, DollarSign, Link as LinkIcon, ArrowLeft,
-  Newspaper, MessageSquare, MessagesSquare, Headphones
+  Newspaper, MessageSquare, MessagesSquare, Headphones, Search
 } from "lucide-react";
 import { getProfile } from "@/app/actions/profile";
 import { logout } from "@/app/actions/auth";
@@ -15,6 +15,7 @@ import { useEffect } from "react";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Visão Geral", href: "/dashboard" },
+  { icon: Search, label: "Explorar Mercado", href: "/ativos" },
   { icon: PieChart, label: "Carteira", href: "/portfolio" },
   { icon: ArrowRightLeft, label: "Lançamentos", href: "/transactions" },
   { icon: DollarSign, label: "Dividendos", href: "/dividends" },
