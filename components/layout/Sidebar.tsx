@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { 
   TrendingUp, LayoutDashboard, PieChart, Target, 
   Award, Settings, LogOut, ArrowRightLeft, DollarSign, Link as LinkIcon, ArrowLeft,
-  Newspaper, MessageSquare, MessagesSquare, Headphones, Search
+  Newspaper, MessageSquare, MessagesSquare, Headphones, Search, Crown
 } from "lucide-react";
 import { getProfile } from "@/app/actions/profile";
 import { logout } from "@/app/actions/auth";
@@ -15,6 +15,7 @@ import { useEffect } from "react";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Visão Geral", href: "/dashboard" },
+  { icon: Crown, label: "Academia PRO", href: "/academia", isPremium: true },
   { icon: Search, label: "Explorar Mercado", href: "/ativos" },
   { icon: PieChart, label: "Carteira", href: "/portfolio" },
   { icon: ArrowRightLeft, label: "Lançamentos", href: "/transactions" },
@@ -99,16 +100,36 @@ export default function Sidebar({
         </div>
         
         {menuItems.map((item) => {
-          const isActive = pathname === item.href || (pathname.startsWith(item.href) && item.href !== "/dashboard");
-          
+          const isActive = pathname === item.href;
           return (
-            <Link 
-              key={item.href} 
+            <Link
+              key={item.href}
               href={item.href}
-              className={`sidebar-link ${isActive ? "active" : ""}`}
+              style={{
+                display: "flex", alignItems: "center", gap: "12px", padding: "12px 16px",
+                borderRadius: "12px", textDecoration: "none",
+                background: isActive ? (item.isPremium ? "rgba(255, 215, 0, 0.15)" : "var(--blue-glow)") : "transparent",
+                color: isActive ? (item.isPremium ? "#FFD700" : "var(--blue-primary)") : "var(--text-secondary)",
+                fontWeight: isActive ? 700 : 500,
+                transition: "all 0.2s ease"
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.background = "var(--bg-elevated)";
+                  e.currentTarget.style.color = "var(--text-primary)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.color = "var(--text-secondary)";
+                }
+              }}
             >
-              <item.icon size={18} />
-              {item.label}
+              <item.icon size={20} color={item.isPremium ? "#FFD700" : undefined} />
+              <span style={{ color: item.isPremium ? "#FFD700" : "inherit", fontWeight: item.isPremium ? 800 : "inherit" }}>
+                {item.label}
+              </span>
             </Link>
           );
         })}
