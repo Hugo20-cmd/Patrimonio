@@ -23,9 +23,12 @@ export default function AssetDetailsClient() {
     script.type = "text/javascript";
     script.async = true;
 
+    const isBrazilian = /^[A-Z]{4}\d{1,2}$/i.test(ticker) || ticker === "IBOV";
+    const tvSymbol = isBrazilian ? `BMFBOVESPA:${ticker}` : ticker;
+
     const config = {
       autosize: true,
-      symbol: `BMFBOVESPA:${ticker}`,
+      symbol: tvSymbol,
       interval: "D",
       timezone: "America/Sao_Paulo",
       theme: "dark",

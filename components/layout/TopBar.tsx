@@ -40,12 +40,18 @@ const POPULAR_ASSETS = [
   { ticker: "IVVB11", name: "iShares S&P 500 (ETF)" },
   { ticker: "SMAL11", name: "iShares Small Cap (ETF)" },
   { ticker: "HASH11", name: "Hashdex Crypto (ETF)" },
-  { ticker: "NASD11", name: "XP Nasdaq 100 (ETF)" },
-  { ticker: "GOLD11", name: "XP Ouro (ETF)" },
-  { ticker: "XINA11", name: "Trend MSCI China (ETF)" },
+  { ticker: "NASD11", name: "XP Nasdaq 100 (ETF BR)" },
+  { ticker: "GOLD11", name: "XP Ouro (ETF BR)" },
+  { ticker: "XINA11", name: "Trend MSCI China (ETF BR)" },
   { ticker: "URPR11", name: "Urca Prime Renda (FII)" },
   { ticker: "MXRF11", name: "Maxi Renda (FII)" },
-  { ticker: "HGLG11", name: "CSHG Logística (FII)" }
+  { ticker: "HGLG11", name: "CSHG Logística (FII)" },
+  { ticker: "SPY", name: "SPDR S&P 500 (ETF EUA)" },
+  { ticker: "QQQ", name: "Invesco QQQ Trust (ETF EUA)" },
+  { ticker: "VOO", name: "Vanguard S&P 500 (ETF EUA)" },
+  { ticker: "DIA", name: "SPDR Dow Jones (ETF EUA)" },
+  { ticker: "ARKK", name: "ARK Innovation (ETF EUA)" },
+  { ticker: "VTI", name: "Vanguard Total Stock (ETF EUA)" }
 ];
 
 // ── Component ─────────────────────────────────────────────────────────────────
