@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search, Plus, ShieldCheck, Building, Rocket, Bitcoin, MapPin, Info } from "lucide-react";
 import { addAsset } from "@/app/actions/assets";
+import CryptoScreener from "@/components/market/CryptoScreener";
 
 function EduTooltip({ title, text, value }: { title: string, text: string, value: string }) {
   const [show, setShow] = useState(false);
@@ -281,6 +282,9 @@ export default function AtivosIndexPage() {
           </section>
         ))}
       </div>
+
+      {/* Crypto Screener */}
+      <CryptoScreener />
     </div>
   );
 }

@@ -23,8 +23,18 @@ export default function AssetDetailsClient() {
     script.type = "text/javascript";
     script.async = true;
 
+    let tvSymbol = ticker;
     const isBrazilian = /^[A-Z]{4}\d{1,2}$/i.test(ticker) || ticker === "IBOV";
-    const tvSymbol = isBrazilian ? `BMFBOVESPA:${ticker}` : ticker;
+    
+    if (isBrazilian) {
+      tvSymbol = `BMFBOVESPA:${ticker}`;
+    } else if (ticker === "BTC") {
+      tvSymbol = "BINANCE:BTCUSD";
+    } else if (ticker === "ETH") {
+      tvSymbol = "BINANCE:ETHUSD";
+    } else if (ticker === "SOL") {
+      tvSymbol = "BINANCE:SOLUSD";
+    }
 
     const config = {
       autosize: true,
