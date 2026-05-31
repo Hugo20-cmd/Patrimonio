@@ -2,59 +2,47 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, TrendingUp, Plus, BarChart2, Globe } from "lucide-react";
+import { Search, Plus, ShieldCheck, Building, Rocket } from "lucide-react";
 import { addAsset } from "@/app/actions/assets";
 
-const ASSET_CATEGORIES = {
-  "acoes-br": {
-    title: "Ações Brasileiras",
-    icon: <TrendingUp size={18} />,
+const EDUCATIONAL_COLLECTIONS = [
+  {
+    id: "iniciantes",
+    title: "O \"Feijão com Arroz\" (Para Iniciantes)",
+    description: "ETFs que compram dezenas de empresas de uma vez só. O jeito mais fácil, barato e seguro de começar a investir sem ter que escolher.",
+    icon: <ShieldCheck size={24} color="var(--green-primary)" />,
     assets: [
-      { ticker: "PETR4", name: "Petrobras PN" },
-      { ticker: "VALE3", name: "Vale ON" },
-      { ticker: "ITUB4", name: "Itaú Unibanco PN" },
-      { ticker: "BBDC4", name: "Bradesco PN" },
-      { ticker: "BBAS3", name: "Banco do Brasil ON" },
-      { ticker: "WEGE3", name: "WEG ON" },
-      { ticker: "B3SA3", name: "B3 ON" },
-      { ticker: "ELET3", name: "Eletrobras ON" },
-      { ticker: "RENT3", name: "Localiza ON" },
-      { ticker: "SUZB3", name: "Suzano ON" },
+      { ticker: "BOVA11", name: "iShares Ibovespa", reason: "Compra as 80 maiores empresas do Brasil de uma só vez (Petrobras, Itaú, etc).", tags: ["Brasil", "Diversificado"] },
+      { ticker: "IVVB11", name: "iShares S&P 500", reason: "Investe nas 500 maiores empresas dos Estados Unidos. Proteção em dólar.", tags: ["EUA", "Dólar"] },
+      { ticker: "VT", name: "Vanguard Total World", reason: "Literalmente compra um pedacinho de quase todas as empresas do mundo.", tags: ["Global", "Baixo Risco"] }
     ]
   },
-  "etfs-br": {
-    title: "ETFs Brasileiros",
-    icon: <BarChart2 size={18} />,
+  {
+    id: "renda",
+    title: "Construindo Renda (Imóveis e Dividendos)",
+    description: "Ativos focados em te pagar dinheiro limpo na conta todo mês (como se fossem aluguéis).",
+    icon: <Building size={24} color="var(--blue-primary)" />,
     assets: [
-      { ticker: "BOVA11", name: "iShares Ibovespa" },
-      { ticker: "IVVB11", name: "iShares S&P 500" },
-      { ticker: "SMAL11", name: "iShares Small Cap" },
-      { ticker: "HASH11", name: "Hashdex Crypto" },
-      { ticker: "NASD11", name: "XP Nasdaq 100" },
-      { ticker: "GOLD11", name: "XP Ouro" },
-      { ticker: "XINA11", name: "Trend MSCI China" },
+      { ticker: "MXRF11", name: "Maxi Renda FII", reason: "Fundo imobiliário muito popular e barato que costuma pagar dividendos todos os meses.", tags: ["FII", "Renda Mensal"] },
+      { ticker: "HGLG11", name: "CSHG Logística", reason: "Dono de galpões logísticos gigantes alugados para grandes empresas no Brasil.", tags: ["FII", "Imóveis"] },
+      { ticker: "BBAS3", name: "Banco do Brasil", reason: "Um dos bancos mais sólidos do país, famoso por distribuir ótimos lucros aos sócios.", tags: ["Ação", "Dividendos"] }
     ]
   },
-  "etfs-eua": {
-    title: "Mercado Americano",
-    icon: <Globe size={18} />,
+  {
+    id: "tecnologia",
+    title: "Gigantes Globais (Crescimento)",
+    description: "Seja sócio das empresas que estão moldando o futuro, dominando a inteligência artificial e a internet.",
+    icon: <Rocket size={24} color="var(--purple-primary)" />,
     assets: [
-      { ticker: "SPY", name: "SPDR S&P 500 ETF" },
-      { ticker: "QQQ", name: "Invesco QQQ Trust" },
-      { ticker: "VOO", name: "Vanguard S&P 500 ETF" },
-      { ticker: "DIA", name: "SPDR Dow Jones ETF" },
-      { ticker: "ARKK", name: "ARK Innovation ETF" },
-      { ticker: "VTI", name: "Vanguard Total Stock ETF" },
-      { ticker: "AAPL", name: "Apple Inc." },
-      { ticker: "MSFT", name: "Microsoft Corp." },
-      { ticker: "TSLA", name: "Tesla Inc." },
+      { ticker: "AAPL", name: "Apple Inc.", reason: "A fabricante do iPhone e uma das empresas mais valiosas e lucrativas do planeta.", tags: ["Ação EUA", "Tecnologia"] },
+      { ticker: "NASD11", name: "Trend Nasdaq 100", reason: "Um ETF brasileiro que investe num pacote com as 100 maiores techs dos EUA.", tags: ["ETF BR", "Crescimento"] },
+      { ticker: "TSLA", name: "Tesla Inc.", reason: "A gigante de Elon Musk, líder mundial em carros elétricos e energia limpa.", tags: ["Ação EUA", "Inovação"] }
     ]
   }
-};
+];
 
 export default function AtivosIndexPage() {
   const [ticker, setTicker] = useState("");
-  const [activeTab, setActiveTab] = useState<"acoes-br" | "etfs-br" | "etfs-eua">("acoes-br");
   const [addingTicker, setAddingTicker] = useState<string | null>(null);
   const router = useRouter();
 
@@ -89,23 +77,23 @@ export default function AtivosIndexPage() {
   };
 
   return (
-    <div style={{ paddingBottom: "60px" }}>
+    <div style={{ paddingBottom: "80px" }}>
       {/* Header Search */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "40px" }}>
-        <h1 style={{ fontSize: "2rem" }}>Explorar Mercado</h1>
-        <p style={{ color: "var(--text-tertiary)" }}>
-          Pesquise por qualquer ativo ou explore as categorias abaixo para acompanhar gráficos e adicionar à sua carteira.
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "40px", background: "var(--bg-card)", padding: "32px", borderRadius: "24px", border: "1px solid var(--border-default)" }}>
+        <h1 style={{ fontSize: "2.2rem", fontWeight: 800 }}>Explorar Mercado</h1>
+        <p style={{ color: "var(--text-tertiary)", fontSize: "1.05rem", maxWidth: "600px", lineHeight: 1.5 }}>
+          Não sabe por onde começar? Explore nossas Trilhas Educativas abaixo para descobrir os melhores ativos para o seu perfil. Ou busque qualquer ticker global diretamente na barra.
         </p>
 
-        <form onSubmit={handleSearch} style={{ display: "flex", gap: "12px", width: "100%", maxWidth: "500px" }}>
+        <form onSubmit={handleSearch} style={{ display: "flex", gap: "12px", width: "100%", maxWidth: "500px", marginTop: "8px" }}>
           <div style={{ position: "relative", flex: 1 }}>
             <Search size={18} style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", color: "var(--text-tertiary)" }} />
             <input
               type="text"
-              placeholder="Digite um ticker exato..."
+              placeholder="Buscar um ticker específico (ex: PETR4, NVDA)..."
               value={ticker}
               onChange={(e) => setTicker(e.target.value)}
-              style={{ width: "100%", padding: "14px 16px 14px 48px", borderRadius: "12px", border: "1px solid var(--border-default)", background: "var(--bg-card)", color: "var(--text-primary)", fontSize: "1rem", outline: "none" }}
+              style={{ width: "100%", padding: "14px 16px 14px 48px", borderRadius: "12px", border: "1px solid var(--border-accent)", background: "rgba(0,0,0,0.2)", color: "var(--text-primary)", fontSize: "1rem", outline: "none", transition: "border-color 0.2s" }}
             />
           </div>
           <button type="submit" className="btn btn-primary" style={{ padding: "0 24px" }} disabled={!ticker.trim()}>
@@ -114,81 +102,97 @@ export default function AtivosIndexPage() {
         </form>
       </div>
 
-      {/* Tabs */}
-      <div style={{ display: "flex", gap: "12px", borderBottom: "1px solid var(--border-subtle)", paddingBottom: "16px", marginBottom: "24px", overflowX: "auto" }}>
-        {(Object.keys(ASSET_CATEGORIES) as Array<keyof typeof ASSET_CATEGORIES>).map(key => (
-          <button
-            key={key}
-            onClick={() => setActiveTab(key as "acoes-br" | "etfs-br" | "etfs-eua")}
-            style={{
-              display: "flex", alignItems: "center", gap: "8px", padding: "10px 18px",
-              background: activeTab === key ? "var(--blue-glow)" : "transparent",
-              color: activeTab === key ? "var(--blue-primary)" : "var(--text-secondary)",
-              border: `1px solid ${activeTab === key ? "var(--blue-primary)" : "transparent"}`,
-              borderRadius: "999px", fontSize: "0.9rem", fontWeight: 600, cursor: "pointer", transition: "all 0.2s",
-              whiteSpace: "nowrap"
-            }}
-          >
-            {ASSET_CATEGORIES[key as "acoes-br" | "etfs-br" | "etfs-eua"].icon}
-            {ASSET_CATEGORIES[key as "acoes-br" | "etfs-br" | "etfs-eua"].title}
-          </button>
-        ))}
-      </div>
-
-      {/* Grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "16px" }}>
-        {ASSET_CATEGORIES[activeTab].assets.map(asset => (
-          <div
-            key={asset.ticker}
-            onClick={() => router.push(`/ativos/${asset.ticker}`)}
-            style={{
-              background: "var(--bg-card)",
-              border: "1px solid var(--border-default)",
-              borderRadius: "16px",
-              padding: "20px",
-              cursor: "pointer",
-              transition: "transform 0.2s, border-color 0.2s",
-              display: "flex", flexDirection: "column", gap: "16px",
-              position: "relative"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-2px)";
-              e.currentTarget.style.borderColor = "var(--border-hover)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.borderColor = "var(--border-default)";
-            }}
-          >
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary)" }}>{asset.ticker}</h3>
-                <span style={{ fontSize: "0.75rem", background: "rgba(255,255,255,0.05)", padding: "2px 8px", borderRadius: "6px", color: "var(--text-tertiary)" }}>
-                  {activeTab === "acoes-br" ? "AÇÃO" : (activeTab.includes("etfs") ? "ETF" : "ATIVO")}
-                </span>
+      {/* Educational Collections */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "48px" }}>
+        {EDUCATIONAL_COLLECTIONS.map(collection => (
+          <section key={collection.id}>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: "16px", marginBottom: "24px" }}>
+              <div style={{ width: "48px", height: "48px", borderRadius: "14px", background: "var(--bg-elevated)", border: "1px solid var(--border-default)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                {collection.icon}
               </div>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>{asset.name}</p>
+              <div>
+                <h2 style={{ fontSize: "1.6rem", fontWeight: 800, marginBottom: "4px" }}>{collection.title}</h2>
+                <p style={{ color: "var(--text-tertiary)", fontSize: "0.95rem", lineHeight: 1.5 }}>{collection.description}</p>
+              </div>
             </div>
-            
-            <button
-              onClick={(e) => handleAddAsset(e, asset.ticker)}
-              disabled={addingTicker === asset.ticker}
-              className="btn btn-secondary"
-              style={{
-                width: "100%", justifyContent: "center", gap: "6px",
-                background: "rgba(0, 212, 170, 0.1)", color: "var(--green-primary)",
-                border: "1px solid rgba(0, 212, 170, 0.2)"
-              }}
-            >
-              {addingTicker === asset.ticker ? (
-                "Adicionando..."
-              ) : (
-                <>
-                  <Plus size={16} /> Adicionar à Carteira
-                </>
-              )}
-            </button>
-          </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "20px" }}>
+              {collection.assets.map(asset => (
+                <div
+                  key={asset.ticker}
+                  onClick={() => router.push(`/ativos/${asset.ticker}`)}
+                  style={{
+                    background: "var(--bg-card)",
+                    border: "1px solid var(--border-default)",
+                    borderRadius: "20px",
+                    padding: "24px",
+                    cursor: "pointer",
+                    transition: "transform 0.2s, box-shadow 0.2s, border-color 0.2s",
+                    display: "flex", flexDirection: "column",
+                    position: "relative"
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-4px)";
+                    e.currentTarget.style.borderColor = "var(--blue-primary)";
+                    e.currentTarget.style.boxShadow = "0 10px 30px rgba(0,0,0,0.3)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.borderColor = "var(--border-default)";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                >
+                  {/* Header */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
+                    <div>
+                      <h3 style={{ fontSize: "1.4rem", fontWeight: 900, color: "var(--text-primary)" }}>{asset.ticker}</h3>
+                      <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: 600 }}>{asset.name}</p>
+                    </div>
+                  </div>
+
+                  {/* Tags */}
+                  <div style={{ display: "flex", gap: "8px", marginBottom: "16px", flexWrap: "wrap" }}>
+                    {asset.tags.map(tag => (
+                      <span key={tag} style={{ fontSize: "0.7rem", background: "rgba(255,255,255,0.06)", padding: "4px 10px", borderRadius: "8px", color: "var(--text-tertiary)", fontWeight: 700 }}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Educational Reason */}
+                  <div style={{ background: "rgba(79,110,247,0.05)", borderLeft: "3px solid var(--blue-primary)", padding: "12px 16px", borderRadius: "0 8px 8px 0", marginBottom: "24px", flex: 1 }}>
+                    <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: 1.5 }}>
+                      <strong style={{ color: "var(--blue-primary)", display: "block", marginBottom: "4px", fontSize: "0.75rem", textTransform: "uppercase" }}>Por que investir?</strong>
+                      {asset.reason}
+                    </p>
+                  </div>
+                  
+                  {/* Action */}
+                  <button
+                    onClick={(e) => handleAddAsset(e, asset.ticker)}
+                    disabled={addingTicker === asset.ticker}
+                    className="btn btn-secondary"
+                    style={{
+                      width: "100%", justifyContent: "center", gap: "8px",
+                      background: "transparent", color: "var(--text-primary)",
+                      border: "1px solid var(--border-default)", padding: "12px",
+                      borderRadius: "12px"
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(0, 212, 170, 0.1)"; e.currentTarget.style.color = "var(--green-primary)"; e.currentTarget.style.borderColor = "var(--green-primary)"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.borderColor = "var(--border-default)"; }}
+                  >
+                    {addingTicker === asset.ticker ? (
+                      "Adicionando..."
+                    ) : (
+                      <>
+                        <Plus size={16} /> Adicionar Rápido
+                      </>
+                    )}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </section>
         ))}
       </div>
     </div>
