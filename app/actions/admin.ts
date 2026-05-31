@@ -31,6 +31,14 @@ export async function getAdminStats() {
     .select('*', { count: 'exact', head: true })
     .eq('status', 'active')
 
+  // Novos usuários hoje
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const { count: newUsersToday } = await supabaseAdmin
+    .from('profiles')
+    .select('*', { count: 'exact', head: true })
+    .gte('created_at', today.toISOString())
+
   const MRR = (premiumUsers || 0) * 19.99 // Exemplo de preço
 
   // Pegar últimos usuários
@@ -84,6 +92,7 @@ export async function getAdminStats() {
     stats: {
       totalUsers: totalUsers || 0,
       premiumUsers: premiumUsers || 0,
+      newUsersToday: newUsersToday || 0,
       MRR,
     },
     latestUsers: formattedUsers,

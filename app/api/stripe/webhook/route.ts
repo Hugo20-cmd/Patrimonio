@@ -83,13 +83,33 @@ export async function POST(req: Request) {
       case 'customer.subscription.deleted': {
         const subscription = event.data.object as Stripe.Subscription;
         
-        await supabaseAdmin
+        const { data: updatedSub } = await supabaseAdmin
           .from('subscriptions')
           .update({
             status: 'canceled',
             current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
           })
-          .eq('stripe_subscription_id', subscription.id);
+          .eq('stripe_subscription_id', subscription.id)
+          .select('user_id')
+          .single();
+
+        if (updatedSub?.user_id) {
+          const userId = updatedSub.user_id;
+
+          // Downgrade to Free plan
+          await supabaseAdmin
+            .from('profiles')
+            .update({ plan: 'Free' })
+            .eq('id', userId);
+
+          // Add notification
+          await supabaseAdmin.from('notifications').insert({
+            user_id: userId,
+            title: 'Plano Atualizado para Free 📉',
+            message: 'Sua assinatura foi cancelada. O limite de 5 ativos foi aplicado e os ativos excedentes foram ocultados.',
+            type: 'system'
+          });
+        }
         break;
       }
     }

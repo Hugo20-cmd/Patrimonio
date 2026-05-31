@@ -4,6 +4,8 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 
+import { headers, cookies } from 'next/headers'
+
 export async function login(formData: FormData) {
   const supabase = await createClient()
 
@@ -14,10 +16,21 @@ export async function login(formData: FormData) {
     password: formData.get('password') as string,
   }
 
-  const { error } = await supabase.auth.signInWithPassword(data)
+  const { data: authData, error } = await supabase.auth.signInWithPassword(data)
 
   if (error) {
     return { error: error.message }
+  }
+
+  // Single Session implementation
+  if (authData.user) {
+    const sessionToken = crypto.randomUUID()
+    await supabase.from('profiles').update({
+      current_session_token: sessionToken
+    }).eq('id', authData.user.id)
+    
+    const cookieStore = await cookies()
+    cookieStore.set('session_token', sessionToken, { httpOnly: true, secure: true, path: '/' })
   }
 
   redirect('/dashboard')
@@ -33,10 +46,38 @@ export async function signup(formData: FormData) {
     password: formData.get('password') as string,
   }
 
-  const { data, error } = await supabase.auth.signUp(dataToSubmit)
+  const headersList = await headers()
+  const ip = headersList.get('x-forwarded-for') || 'unknown'
+
+  // IP Restriction
+  const { count } = await supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('last_ip', ip)
+  if (count && count >= 1) {
+    // Record attempt for audit
+    await supabase.from('audit_logs').insert({ type: 'multi_account_attempt', ip, email: dataToSubmit.email })
+    return { error: 'Acesso negado: Limite de contas por ambiente excedido.' }
+  }
+
+  const { data, error } = await supabase.auth.signUp({
+    ...dataToSubmit,
+    options: {
+      data: { last_ip: ip }
+    }
+  })
 
   if (error) {
     return { error: error.message }
+  }
+
+  // Generate initial session token
+  if (data.user) {
+    const sessionToken = crypto.randomUUID()
+    await supabase.from('profiles').update({
+      last_ip: ip,
+      current_session_token: sessionToken
+    }).eq('id', data.user.id)
+    
+    const cookieStore = await cookies()
+    cookieStore.set('session_token', sessionToken, { httpOnly: true, secure: true, path: '/' })
   }
 
   // Send Welcome Email

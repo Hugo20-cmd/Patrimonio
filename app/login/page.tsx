@@ -6,12 +6,19 @@ import Link from "next/link";
 import { TrendingUp, Mail, Lock, Eye, EyeOff, ArrowRight, Zap } from "lucide-react";
 import { login } from "@/app/actions/auth";
 
-export default function LoginPage() {
+import { useSearchParams } from "next/navigation";
+
+import { Suspense } from "react";
+
+function LoginPageContent() {
+  const searchParams = useSearchParams();
+  const urlError = searchParams.get('error');
+
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState(urlError || "");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,7 +32,6 @@ export default function LoginPage() {
       setErrorMsg(result.error);
       setLoading(false);
     }
-    // se sucesso, ocorrerá um redirect do server action, então o loading pode continuar ativo
   };
 
   return (
@@ -36,7 +42,6 @@ export default function LoginPage() {
       position: "relative",
       overflow: "hidden",
     }}>
-      {/* Background glows */}
       <div style={{
         position: "fixed", top: "-100px", left: "-100px",
         width: "500px", height: "500px",
@@ -50,7 +55,6 @@ export default function LoginPage() {
         pointerEvents: "none", zIndex: 0,
       }} />
 
-      {/* Left panel — illustration (hidden on mobile) */}
       <div style={{
         flex: 1,
         background: "var(--bg-secondary)",
@@ -68,7 +72,6 @@ export default function LoginPage() {
           background: "radial-gradient(circle, rgba(0,212,170,0.1) 0%, transparent 70%)",
         }} />
         <div style={{ position: "relative", zIndex: 1, maxWidth: "360px" }}>
-          {/* Logo */}
           <div style={{ marginBottom: "48px" }}>
             <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
               <div style={{
@@ -94,7 +97,6 @@ export default function LoginPage() {
             Acompanhe ETFs, ações, FIIs e dividendos em tempo real com gráficos inteligentes.
           </p>
 
-          {/* Mini stats */}
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {[
               { emoji: "📈", text: "Patrimônio médio: R$ 68.450 por usuário" },
@@ -116,7 +118,6 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Right panel — form */}
       <div style={{
         flex: 1, maxWidth: "560px",
         display: "flex", alignItems: "center", justifyContent: "center",
@@ -145,9 +146,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Form */}
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            {/* Email */}
             <div>
               <label htmlFor="email">E-mail</label>
               <div style={{ position: "relative" }}>
@@ -168,7 +167,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Password */}
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
                 <label htmlFor="password" style={{ margin: 0 }}>Senha</label>
@@ -209,7 +207,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Submit */}
             <button
               type="submit"
               className="btn btn-primary"
@@ -253,5 +250,13 @@ export default function LoginPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg-primary)" }}>Carregando...</div>}>
+      <LoginPageContent />
+    </Suspense>
   );
 }

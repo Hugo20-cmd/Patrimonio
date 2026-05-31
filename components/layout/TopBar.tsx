@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Bell, Search, Menu, Check, CheckCheck, Info, TrendingUp, DollarSign, Trophy } from "lucide-react";
 import { getProfile } from "@/app/actions/profile";
 import { getNotifications, getUnreadCount, markAsRead, markAllAsRead } from "@/app/actions/notifications";
+import { supabase } from "@/lib/supabase";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function timeAgo(dateStr: string) {
@@ -31,7 +32,9 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   const [notifs, setNotifs]           = useState<any[]>([]);
   const [unread, setUnread]           = useState(0);
   const [showNotifs, setShowNotifs]   = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const pathname = usePathname();
+  const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Fetch profile & notifications on route change
@@ -40,6 +43,31 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
     getNotifications().then(setNotifs);
     getUnreadCount().then(setUnread);
   }, [pathname]);
+
+  // Real-time notifications subscription
+  useEffect(() => {
+    let channel: any;
+    async function setupRealtime() {
+      const { data } = await supabase.auth.getUser();
+      if (!data?.user) return;
+
+      channel = supabase.channel('realtime-notifs')
+        .on(
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${data.user.id}` },
+          (payload) => {
+            setNotifs((prev) => [payload.new, ...prev]);
+            setUnread((prev) => prev + 1);
+          }
+        )
+        .subscribe();
+    }
+    setupRealtime();
+
+    return () => {
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, []);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -88,17 +116,29 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
           <Menu size={24} />
         </button>
 
-        <div style={{ position: "relative", maxWidth: "400px", width: "100%" }} className="desktop-search">
+        <form 
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (searchQuery.trim()) {
+              router.push(`/ativos/${searchQuery.trim().toUpperCase()}`);
+            }
+          }}
+          style={{ position: "relative", maxWidth: "400px", width: "100%" }} 
+          className="desktop-search"
+        >
           <Search size={16} style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "var(--text-tertiary)" }} />
           <input
             type="text"
             placeholder="Buscar ativos (ex: PETR4, IVVB11)..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             style={{ width: "100%", background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "12px", padding: "10px 16px 10px 40px", fontSize: "0.85rem", color: "var(--text-primary)", outline: "none" }}
           />
-          <div style={{ position: "absolute", right: "8px", top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.05)", border: "1px solid var(--border-default)", borderRadius: "6px", padding: "2px 6px", fontSize: "0.65rem", color: "var(--text-tertiary)", fontWeight: 600 }}>
-            Ctrl K
+          <button type="submit" style={{ display: "none" }}>Buscar</button>
+          <div style={{ position: "absolute", right: "8px", top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.05)", border: "1px solid var(--border-default)", borderRadius: "6px", padding: "2px 6px", fontSize: "0.65rem", color: "var(--text-tertiary)", fontWeight: 600, pointerEvents: "none" }}>
+            Enter ↵
           </div>
-        </div>
+        </form>
       </div>
 
       {/* Right – Level + Bell */}

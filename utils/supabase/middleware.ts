@@ -32,6 +32,22 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  if (user) {
+    const { data: profile } = await supabase.from('profiles').select('current_session_token').eq('id', user.id).single()
+    const localToken = request.cookies.get('session_token')?.value
+    
+    // Se o token existir no DB e for diferente do cookie local, a sessão é inválida (Single Session)
+    if (profile?.current_session_token && profile.current_session_token !== localToken) {
+      await supabase.auth.signOut()
+      const url = request.nextUrl.clone()
+      url.pathname = '/login'
+      // O Next.js permite redirecionar com o cookie apagado
+      const response = NextResponse.redirect(url)
+      response.cookies.delete('session_token')
+      return response
+    }
+  }
+
   // Proteger as rotas dentro do dashboard
   // Se o usuário não estiver logado e estiver acessando rotas protegidas (ex: /dashboard, /portfolio)
   if (

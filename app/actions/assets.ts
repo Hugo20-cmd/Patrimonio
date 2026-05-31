@@ -5,18 +5,37 @@ import { revalidatePath } from 'next/cache'
 
 export async function getAssets() {
   const supabase = await createClient()
+  const { data: userData } = await supabase.auth.getUser()
+  if (!userData.user) return []
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('plan')
+    .eq('id', userData.user.id)
+    .single()
+
+  const isFree = profile?.plan === 'Free' || !profile?.plan;
+
   const { data, error } = await supabase
     .from('assets')
     .select('*')
-    .order('created_at', { ascending: false })
+    .order('created_at', { ascending: true }) // Get oldest first
 
   if (error) {
     console.error('Error fetching assets:', error)
     return []
   }
 
+  let finalData = data || []
+  if (isFree && finalData.length > 5) {
+    finalData = finalData.slice(0, 5)
+  }
+  
+  // Sort descending for UI
+  finalData = finalData.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+
   // Map to the format expected by the frontend
-  return data.map((asset: any) => ({
+  return finalData.map((asset: any) => ({
     id: asset.id,
     ticker: asset.ticker,
     name: asset.name || asset.ticker,
@@ -38,6 +57,14 @@ export async function addAsset(formData: FormData) {
   if (userError || !userData.user) {
     return { error: 'Not authenticated' }
   }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('plan')
+    .eq('id', userData.user.id)
+    .single()
+
+  const isFree = profile?.plan === 'Free' || !profile?.plan;
 
   const ticker = formData.get('ticker') as string
   const type = formData.get('type') as string
@@ -62,6 +89,18 @@ export async function addAsset(formData: FormData) {
     .select('*')
     .eq('ticker', ticker)
     .single()
+
+  // Enforce limit if Free plan
+  if (isFree && !existingAsset) {
+    const { count } = await supabase
+      .from('assets')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userData.user.id)
+
+    if (count !== null && count >= 5) {
+      return { error: 'Limite do plano Free atingido (5 ativos). Faça upgrade para Premium para adicionar mais ativos.' }
+    }
+  }
 
   if (existingAsset) {
     // Update existing — round to 8 decimals to avoid float precision errors

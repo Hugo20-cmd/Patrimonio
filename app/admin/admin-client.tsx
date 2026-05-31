@@ -1,13 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Users, DollarSign, Activity, TrendingUp, ShieldAlert, ArrowLeft, Check, X } from "lucide-react";
 import Link from "next/link";
 import { updateFeedbackStatus } from "@/app/actions/admin";
+import { supabase } from "@/lib/supabase";
 
 export default function AdminClient({ stats, latestUsers, feedbacks }: { stats: any, latestUsers: any[], feedbacks: any[] }) {
   const [localFeedbacks, setLocalFeedbacks] = useState(feedbacks);
+  const [onlineUsers, setOnlineUsers] = useState(0);
+
+  useEffect(() => {
+    const channel = supabase.channel('online-users');
+    
+    channel.on('presence', { event: 'sync' }, () => {
+      const state = channel.presenceState();
+      // presenceState returns an object with keys = user identifiers
+      setOnlineUsers(Object.keys(state).length);
+    }).subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const handleUpdateStatus = async (id: string, newStatus: string) => {
     const res = await updateFeedbackStatus(id, newStatus);
@@ -37,12 +53,14 @@ export default function AdminClient({ stats, latestUsers, feedbacks }: { stats: 
         </div>
 
         {/* Global Metrics */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px", marginBottom: "40px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "20px", marginBottom: "40px" }}>
           {[
             { label: "Usuários Totais", value: stats.totalUsers, icon: Users, color: "var(--blue-primary)", bg: "var(--blue-glow)", trend: "Cadastrados no sistema" },
+            { label: "Usuários Online", value: onlineUsers, icon: Activity, color: "var(--green-primary)", bg: "var(--green-glow)", trend: "Tempo real (Dashboard)" },
+            { label: "Novos (Hoje)", value: stats.newUsersToday, icon: TrendingUp, color: "var(--blue-primary)", bg: "var(--blue-glow)", trend: "Registros diários" },
             { label: "Assinantes Premium", value: stats.premiumUsers, icon: Activity, color: "var(--purple-primary)", bg: "rgba(139,92,246,0.15)", trend: "Usuários ativos pagos" },
-            { label: "MRR (Receita Estimada)", value: `R$ ${stats.MRR.toFixed(2)}`, icon: DollarSign, color: "var(--green-primary)", bg: "var(--green-glow)", trend: "Recorrência Mensal" },
-            { label: "Feedbacks Pendentes", value: localFeedbacks.filter(f => f.status === 'pendente').length, icon: TrendingUp, color: "var(--orange-primary)", bg: "rgba(251,146,60,0.15)", trend: "Aguardando análise" },
+            { label: "MRR", value: `R$ ${stats.MRR.toFixed(2)}`, icon: DollarSign, color: "var(--green-primary)", bg: "var(--green-glow)", trend: "Recorrência Mensal" },
+            { label: "Feedbacks", value: localFeedbacks.filter(f => f.status === 'pendente').length, icon: TrendingUp, color: "var(--orange-primary)", bg: "rgba(251,146,60,0.15)", trend: "Pendentes" },
           ].map((m, i) => (
             <motion.div
               key={i}
@@ -51,22 +69,22 @@ export default function AdminClient({ stats, latestUsers, feedbacks }: { stats: 
               transition={{ delay: i * 0.1 }}
               style={{
                 background: "var(--bg-card)", border: "1px solid var(--border-default)",
-                borderRadius: "16px", padding: "24px",
+                borderRadius: "16px", padding: "20px",
                 boxShadow: "var(--shadow-sm)",
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "16px" }}>
-                <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: m.bg, color: m.color, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <m.icon size={20} />
+                <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: m.bg, color: m.color, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <m.icon size={18} />
                 </div>
               </div>
-              <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>
+              <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>
                 {m.label}
               </div>
-              <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--text-primary)", marginBottom: "8px" }}>
+              <div style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--text-primary)", marginBottom: "4px" }}>
                 {m.value}
               </div>
-              <div style={{ fontSize: "0.8rem", fontWeight: 600, color: m.color }}>
+              <div style={{ fontSize: "0.75rem", fontWeight: 600, color: m.color }}>
                 {m.trend}
               </div>
             </motion.div>

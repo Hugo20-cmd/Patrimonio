@@ -17,6 +17,7 @@ import {
 } from "@/lib/mock-data";
 import { getPortfolioSnapshots } from "@/app/actions/snapshots";
 import { getMultipleQuotes, getExchangeRate } from "@/app/actions/market";
+import MarketOverview from "@/components/dashboard/MarketOverview";
 
 export default function DashboardClient({ initialAssets }: { initialAssets: any[] }) {
   const [timeRange, setTimeRange] = useState<"1M" | "6M" | "1A" | "TUDO">("1A");
@@ -85,11 +86,11 @@ export default function DashboardClient({ initialAssets }: { initialAssets: any[
 
   useEffect(() => {
     if (!quotesLoading) {
-      getPortfolioSnapshots(metrics.totalInvested, metrics.totalCurrent)
+      getPortfolioSnapshots(metrics.totalInvested, metrics.totalCurrent, timeRange)
         .then(setHistoryData)
         .catch(console.error);
     }
-  }, [metrics.totalInvested, metrics.totalCurrent, quotesLoading]);
+  }, [metrics.totalInvested, metrics.totalCurrent, quotesLoading, timeRange]);
 
   // Prepare Pie Chart data
   const pieData = Object.entries(metrics.byType)
@@ -333,6 +334,9 @@ export default function DashboardClient({ initialAssets }: { initialAssets: any[
           </div>
         </div>
       </div>
+
+      {/* MARKET OVERVIEW */}
+      <MarketOverview />
 
       {/* TOP ASSETS TABLE */}
       <div style={{

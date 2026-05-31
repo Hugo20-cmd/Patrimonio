@@ -2,20 +2,24 @@
 
 import { createClient } from '@/utils/supabase/server'
 
-export async function getPortfolioSnapshots(currentInvested: number, currentTotal: number) {
+export async function getPortfolioSnapshots(currentInvested: number, currentTotal: number, timeRange: string = "1A") {
   const supabase = await createClient()
   const { data: userData } = await supabase.auth.getUser()
   if (!userData.user) return []
 
-  // Check if we have history
-  const { data: snapshots } = await supabase
-    .from('portfolio_snapshots')
-    .select('*')
-    .eq('user_id', userData.user.id)
-    .order('date', { ascending: true })
+  let queryDate = new Date()
+  if (timeRange === "1M") queryDate.setMonth(queryDate.getMonth() - 1)
+  else if (timeRange === "6M") queryDate.setMonth(queryDate.getMonth() - 6)
+  else if (timeRange === "1A") queryDate.setFullYear(queryDate.getFullYear() - 1)
+  else queryDate = new Date(0) // TUDO
 
-  // If we have less than 5 records, let's seed some mock data for the MVP so the chart looks good
-  if (!snapshots || snapshots.length < 5) {
+  const { count } = await supabase
+    .from('portfolio_snapshots')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', userData.user.id)
+
+  // If no records, let's seed some mock data for the MVP so the chart looks good
+  if (count === 0) {
     if (currentTotal === 0 && currentInvested === 0) return []
 
     const seedData = []
@@ -53,16 +57,19 @@ export async function getPortfolioSnapshots(currentInvested: number, currentTota
 
     // Insert seeds
     await supabase.from('portfolio_snapshots').insert(seedData)
-    
-    return seedData.map(s => ({
-      date: new Date(s.date).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' }),
-      invested: s.total_invested,
-      value: s.total_current
-    }))
+    // Re-fetch after insert
   }
 
+  // Fetch filtered data
+  const { data: snapshots } = await supabase
+    .from('portfolio_snapshots')
+    .select('*')
+    .eq('user_id', userData.user.id)
+    .gte('date', queryDate.toISOString())
+    .order('date', { ascending: true })
+
   // Map real data
-  return snapshots.map(s => ({
+  return (snapshots || []).map(s => ({
     date: new Date(s.date).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' }),
     invested: Number(s.total_invested),
     value: Number(s.total_current)

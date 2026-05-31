@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import TopBar from "@/components/layout/TopBar";
-import FeedbackButton from "@/components/ui/FeedbackButton";
 import { Menu } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import PresenceTracker from "@/components/layout/PresenceTracker";
+import TickerTape from "@/components/layout/TickerTape";
 
 export default function DashboardLayout({
   children,
@@ -12,6 +14,13 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) setUser(data.user);
+    });
+  }, []);
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)", position: "relative" }}>
@@ -44,9 +53,12 @@ export default function DashboardLayout({
         <TopBar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
         
         {/* Page Content */}
+        <div style={{ width: "100%", background: "#080810", padding: "0 24px" }}>
+          <TickerTape />
+        </div>
         <main style={{ 
           flex: 1, 
-          padding: "32px",
+          padding: "16px 32px 32px",
           maxWidth: "1400px",
           width: "100%",
           margin: "0 auto"
@@ -71,7 +83,7 @@ export default function DashboardLayout({
         <Menu size={24} />
       </button>
 
-      <FeedbackButton />
+      <PresenceTracker userEmail={user?.email || ""} userName={user?.user_metadata?.name || "User"} />
 
       <style jsx global>{`
         @media (max-width: 768px) {
