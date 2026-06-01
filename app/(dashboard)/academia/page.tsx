@@ -4,22 +4,28 @@ import { useState, useEffect } from "react";
 import { PlayCircle, Lock, CheckCircle2, Crown, BrainCircuit, TrendingUp, ShieldAlert, Building2, Briefcase, Globe2, X, ChevronRight, ChevronLeft, PieChart, AlertOctagon, ShieldCheck } from "lucide-react";
 import { getSubscriptionStatus } from "@/app/actions/subscription";
 
+import { supabase } from "@/lib/supabase";
+
 import { CURRICULUM } from "@/lib/data/curriculum";
 
 export default function AcademiaPage() {
   const [progress, setProgress] = useState(0); 
   const [activeModule, setActiveModule] = useState<number | null>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
-  const [subStatus, setSubStatus] = useState("free");
 
   useEffect(() => {
-    getSubscriptionStatus().then((res) => setSubStatus(res.status));
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user?.email === "contatopennamc@gmail.com") {
+        setIsAdmin(true);
+      }
+    });
   }, []);
 
   const displayCurriculum = CURRICULUM.map(mod => ({
     ...mod,
-    status: subStatus === "premium" ? "in-progress" : mod.status
+    status: isAdmin ? "in-progress" : mod.status
   }));
 
   const handleModuleClick = (mod: any) => {

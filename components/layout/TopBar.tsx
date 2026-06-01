@@ -6,6 +6,7 @@ import { Bell, Search, Menu, Check, CheckCheck, Info, TrendingUp, DollarSign, Tr
 import { getProfile } from "@/app/actions/profile";
 import { getNotifications, getUnreadCount, markAsRead, markAllAsRead } from "@/app/actions/notifications";
 import { supabase } from "@/lib/supabase";
+import PaywallModal from "@/components/layout/PaywallModal";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function timeAgo(dateStr: string) {
@@ -62,6 +63,7 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   const [showNotifs, setShowNotifs]   = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -243,7 +245,14 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
         {/* Bell + Dropdown */}
         <div style={{ position: "relative" }} ref={dropdownRef}>
           <button
-            onClick={() => setShowNotifs((v) => !v)}
+            onClick={() => {
+              const isAdmin = profile?.email === 'contatopennamc@gmail.com';
+              if (profile?.plan !== 'premium' && !isAdmin) {
+                setShowPaywall(true);
+              } else {
+                setShowNotifs((v) => !v);
+              }
+            }}
             style={{ width: "36px", height: "36px", borderRadius: "10px", background: "var(--bg-card)", border: `1px solid ${showNotifs ? "var(--blue-primary)" : "var(--border-default)"}`, display: "flex", alignItems: "center", justifyContent: "center", color: showNotifs ? "var(--blue-primary)" : "var(--text-secondary)", position: "relative", cursor: "pointer", transition: "all 0.2s" }}
           >
             <Bell size={18} />
@@ -324,6 +333,8 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
           )}
         </div>
       </div>
+
+      <PaywallModal isOpen={showPaywall} onClose={() => setShowPaywall(false)} />
 
       <style>{`
         @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
