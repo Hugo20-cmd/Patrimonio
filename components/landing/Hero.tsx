@@ -71,29 +71,6 @@ function MiniTicker({ ticker, value, change, positive }: { ticker: string; value
 }
 
 export default function Hero() {
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-
-  useEffect(() => {
-    const handleBeforeInstallPrompt = (e: any) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-    };
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-  }, []);
-
-  const handleInstallClick = async () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') {
-        setDeferredPrompt(null);
-      }
-    } else {
-      alert("Para instalar o app:\n\n📱 No Android: Toque nos 3 pontinhos do Chrome e depois em 'Adicionar à tela inicial'.\n\n🍎 No iPhone: Toque no ícone de Compartilhar do Safari e depois em 'Adicionar à Tela de Início'.");
-    }
-  };
-
   return (
     <section className="hero-bg" style={{ minHeight: "100vh", display: "flex", alignItems: "center", paddingTop: "72px" }}>
       <div className="container" style={{ padding: "80px 24px", position: "relative", zIndex: 1 }}>
@@ -145,10 +122,9 @@ export default function Hero() {
                 Criar conta grátis
                 <ArrowRight size={16} />
               </Link>
-              <button onClick={handleInstallClick} className="btn btn-secondary btn-lg" style={{ gap: "10px", cursor: "pointer" }}>
-                <Download size={16} />
-                Instalar o App
-              </button>
+              <Link href="/login" className="btn btn-secondary btn-lg" style={{ gap: "10px" }}>
+                Fazer Login
+              </Link>
             </motion.div>
 
             {/* Social proof */}

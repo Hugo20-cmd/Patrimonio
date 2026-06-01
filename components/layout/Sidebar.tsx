@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { 
   TrendingUp, LayoutDashboard, PieChart, Target, 
   Award, Settings, LogOut, ArrowRightLeft, DollarSign, Link as LinkIcon, ArrowLeft,
-  Newspaper, MessageSquare, MessagesSquare, Headphones, Search, Crown
+  Newspaper, MessageSquare, MessagesSquare, Headphones, Search, Crown, Download
 } from "lucide-react";
 import { getProfile } from "@/app/actions/profile";
 import { logout } from "@/app/actions/auth";
@@ -40,11 +40,33 @@ export default function Sidebar({
   const [isHovered, setIsHovered] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [subStatus, setSubStatus] = useState("free");
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 
   useEffect(() => {
     getProfile().then(setProfile);
     getSubscriptionStatus().then((res) => setSubStatus(res.status));
   }, [pathname]);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setDeferredPrompt(null);
+      }
+    } else {
+      alert("Para instalar o app:\n\n📱 No Android: Toque nos 3 pontinhos do Chrome e depois em 'Adicionar à tela inicial'.\n\n🍎 No iPhone: Toque no ícone de Compartilhar do Safari e depois em 'Adicionar à Tela de Início'.");
+    }
+  };
 
   return (
     <aside 
@@ -161,6 +183,15 @@ export default function Sidebar({
             Sair
           </button>
         </form>
+
+        {/* APP INSTALL BUTTON */}
+        <button 
+          onClick={handleInstallClick} 
+          className="btn btn-secondary" 
+          style={{ width: "100%", justifyContent: "center", padding: "8px", fontSize: "0.85rem", gap: "6px", marginTop: "12px", background: "var(--bg-elevated)", border: "1px solid var(--border-default)" }}
+        >
+          <Download size={16} /> Instalar o App
+        </button>
 
         {/* UPGRADE BUTTON (IF FREE) */}
         {subStatus === "free" && (
