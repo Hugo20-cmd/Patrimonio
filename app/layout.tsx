@@ -10,7 +10,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Patrimônio+",
+  title: "Patrimônio+ | Organize • Invista • Evolua",
   description:
     "Plataforma premium para acompanhamento de ETFs, ações, FIIs, Tesouro Direto, dividendos e evolução patrimonial. Invista com inteligência.",
   keywords: [
