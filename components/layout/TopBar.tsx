@@ -6,7 +6,7 @@ import { Bell, Search, Menu, Check, CheckCheck, Info, TrendingUp, DollarSign, Tr
 import { getProfile } from "@/app/actions/profile";
 import { getNotifications, getUnreadCount, markAsRead, markAllAsRead } from "@/app/actions/notifications";
 import { supabase } from "@/lib/supabase";
-import PaywallModal from "@/components/layout/PaywallModal";
+import PaywallModal from "@/components/PaywallModal";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function timeAgo(dateStr: string) {
