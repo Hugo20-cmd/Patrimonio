@@ -64,6 +64,18 @@ export default function Navbar() {
             }}>
               PATRIMÔNIO<span style={{ color: "var(--green-primary)" }}>+</span>
             </span>
+            <span className="desktop-slogan" style={{
+              marginLeft: "4px",
+              fontSize: "0.85rem",
+              color: "var(--text-secondary)",
+              fontWeight: 500,
+              display: "flex",
+              alignItems: "center",
+              gap: "8px"
+            }}>
+              <span style={{ color: "var(--border-subtle)", fontSize: "1rem" }}>|</span> 
+              Organize • Invista • Evolua
+            </span>
           </Link>
 
           {/* Desktop Nav */}
@@ -179,6 +191,7 @@ export default function Navbar() {
       <style jsx global>{`
         @media (max-width: 768px) {
           .desktop-nav { display: none !important; }
+          .desktop-slogan { display: none !important; }
           .mobile-nav { display: flex !important; }
         }
         @media (min-width: 769px) {
