@@ -10,7 +10,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Patrimônio+ | Organize • Invista • Evolua",
+  title: "Patrimônio+",
   description:
     "Plataforma premium para acompanhamento de ETFs, ações, FIIs, Tesouro Direto, dividendos e evolução patrimonial. Invista com inteligência.",
   keywords: [
@@ -23,14 +23,14 @@ export const metadata: Metadata = {
     title: "Patrimônio+",
   },
   openGraph: {
-    title: "Patrimônio+ | Organize • Invista • Evolua",
+    title: "Patrimônio+",
     description: "Acompanhe ETFs, ações, FIIs e patrimônio automaticamente com gráficos inteligentes.",
     type: "website",
     locale: "pt_BR",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Patrimônio+ | Organize • Invista • Evolua",
+    title: "Patrimônio+",
     description: "Plataforma premium de investimentos e patrimônio.",
   },
   robots: {
