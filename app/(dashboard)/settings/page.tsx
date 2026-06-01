@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Save, User, Image as ImageIcon } from "lucide-react";
+import { Save, User, Image as ImageIcon, Bell } from "lucide-react";
 import { getProfile, updateProfile } from "@/app/actions/profile";
 
 export default function SettingsPage() {
@@ -10,11 +10,18 @@ export default function SettingsPage() {
   const [name, setName] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
+  const [newsNotifications, setNewsNotifications] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
   useEffect(() => {
+    // Load local settings
+    const storedNewsPref = localStorage.getItem("news_notifications");
+    if (storedNewsPref === "true") {
+      setNewsNotifications(true);
+    }
+
     getProfile().then((p) => {
       setProfile(p);
       if (p) {
@@ -30,13 +37,16 @@ export default function SettingsPage() {
     setErrorMsg("");
     setSuccessMsg("");
 
+    // Save local preferences
+    localStorage.setItem("news_notifications", newsNotifications.toString());
+
     const formData = new FormData(e.currentTarget);
     const result = await updateProfile(formData);
     
     if (result.error) {
       setErrorMsg(result.error);
     } else {
-      setSuccessMsg("Perfil atualizado com sucesso!");
+      setSuccessMsg("Perfil e preferências atualizados com sucesso!");
       setAvatarUrl(result.avatarUrl);
     }
     // Refresh profile data from server to sync UI
@@ -176,6 +186,44 @@ export default function SettingsPage() {
                 borderRadius: "10px", color: "var(--text-tertiary)", outline: "none", cursor: "not-allowed"
               }}
             />
+          </div>
+
+          {/* Notifications Toggle */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px", background: "var(--bg-elevated)", border: "1px solid var(--border-default)", borderRadius: "10px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <div style={{ padding: "8px", background: "rgba(0, 212, 170, 0.1)", borderRadius: "8px", color: "var(--green-primary)" }}>
+                <Bell size={20} />
+              </div>
+              <div>
+                <h3 style={{ fontSize: "0.95rem", fontWeight: 600, margin: 0 }}>Notícias e Alertas de Mercado</h3>
+                <p style={{ fontSize: "0.85rem", color: "var(--text-tertiary)", margin: "4px 0 0 0" }}>Receba informações sobre investimentos, ações e ETFs.</p>
+              </div>
+            </div>
+            
+            <button
+              type="button"
+              onClick={() => setNewsNotifications(!newsNotifications)}
+              style={{
+                width: "44px", height: "24px",
+                borderRadius: "12px",
+                background: newsNotifications ? "var(--green-primary)" : "var(--border-strong)",
+                position: "relative",
+                border: "none",
+                cursor: "pointer",
+                transition: "background 0.3s"
+              }}
+            >
+              <div style={{
+                width: "20px", height: "20px",
+                background: "#fff",
+                borderRadius: "50%",
+                position: "absolute",
+                top: "2px",
+                left: newsNotifications ? "22px" : "2px",
+                transition: "left 0.3s",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
+              }} />
+            </button>
           </div>
 
           {/* Submit */}

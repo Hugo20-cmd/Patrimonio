@@ -38,7 +38,7 @@ export default function TickerTape() {
   }, []);
 
   return (
-    <div style={{ width: "100%", height: "46px", overflow: "hidden", marginBottom: "24px", borderRadius: "12px", border: "1px solid var(--border-subtle)" }}>
+    <div style={{ width: "100%", height: "72px", overflow: "hidden", marginBottom: "24px", borderRadius: "12px", border: "1px solid var(--border-subtle)" }}>
       <div className="tradingview-widget-container" ref={containerRef} style={{ width: "100%", height: "100%" }}>
         <div className="tradingview-widget-container__widget"></div>
       </div>

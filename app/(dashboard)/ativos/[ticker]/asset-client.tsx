@@ -83,7 +83,7 @@ export default function AssetDetailsClient() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px", height: "100%" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 w-full">
         <div>
           <button onClick={() => router.back()} style={{ background: "none", border: "none", color: "var(--text-tertiary)", display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", marginBottom: "16px", fontSize: "0.9rem" }}>
             <ArrowLeft size={16} /> Voltar
@@ -92,8 +92,8 @@ export default function AssetDetailsClient() {
           <p style={{ color: "var(--text-tertiary)", fontSize: "0.9rem" }}>Gráfico em tempo real fornecido pelo TradingView.</p>
         </div>
         <button 
-          className="btn btn-primary" 
-          style={{ gap: "8px" }} 
+          className="btn btn-primary w-full sm:w-auto" 
+          style={{ gap: "8px", display: "flex", justifyContent: "center", alignItems: "center" }} 
           onClick={handleAddAsset}
           disabled={adding}
         >
