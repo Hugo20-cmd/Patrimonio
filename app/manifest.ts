@@ -7,7 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'Acompanhe seus investimentos e patrimônio.',
     start_url: '/',
     display: 'standalone',
-    background_color: '#080810',
+    background_color: '#000000',
     theme_color: '#080810',
     icons: [
       {
