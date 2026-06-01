@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PlayCircle, Lock, CheckCircle2, Crown, BrainCircuit, TrendingUp, ShieldAlert, Building2, Briefcase, Globe2, X, ChevronRight, ChevronLeft, PieChart, AlertOctagon, ShieldCheck } from "lucide-react";
+import { getSubscriptionStatus } from "@/app/actions/subscription";
 
 import { CURRICULUM } from "@/lib/data/curriculum";
 
@@ -10,6 +11,16 @@ export default function AcademiaPage() {
   const [activeModule, setActiveModule] = useState<number | null>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [showPaywall, setShowPaywall] = useState(false);
+  const [subStatus, setSubStatus] = useState("free");
+
+  useEffect(() => {
+    getSubscriptionStatus().then((res) => setSubStatus(res.status));
+  }, []);
+
+  const displayCurriculum = CURRICULUM.map(mod => ({
+    ...mod,
+    status: subStatus === "premium" ? "in-progress" : mod.status
+  }));
 
   const handleModuleClick = (mod: any) => {
     if (mod.status === "locked") {
@@ -32,7 +43,7 @@ export default function AcademiaPage() {
     document.body.style.overflow = "auto";
   };
 
-  const activeModData = CURRICULUM.find(m => m.id === activeModule);
+  const activeModData = displayCurriculum.find(m => m.id === activeModule);
   const slides = activeModData?.slides || [];
   const isLastSlide = currentSlide === slides.length - 1;
 
@@ -93,7 +104,7 @@ export default function AcademiaPage() {
         <div style={{ position: "absolute", top: "20px", bottom: "20px", left: "54px", width: "3px", background: "var(--border-subtle)", borderRadius: "10px", zIndex: 0 }} />
 
         <div style={{ display: "flex", flexDirection: "column", gap: "40px", position: "relative", zIndex: 1 }}>
-          {CURRICULUM.map((mod, index) => {
+          {displayCurriculum.map((mod, index) => {
             const isLocked = mod.status === "locked";
             // For MVP demo, if progress > 0 we mark mod 1 as completed visually
             const isCompleted = mod.id === 1 && progress > 0;
