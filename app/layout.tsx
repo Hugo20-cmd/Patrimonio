@@ -1,5 +1,13 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  themeColor: "#080810",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export const metadata: Metadata = {
   title: "PATRIMÔNIO+ | Organize seus investimentos em um único lugar",
@@ -9,6 +17,11 @@ export const metadata: Metadata = {
     "ETF", "ações", "FII", "dividendos", "patrimônio", "investimentos",
     "Tesouro Direto", "carteira de investimentos", "renda passiva", "liberdade financeira"
   ],
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Patrimônio+",
+  },
   openGraph: {
     title: "PATRIMÔNIO+ | Organize seus investimentos",
     description: "Acompanhe ETFs, ações, FIIs e patrimônio automaticamente com gráficos inteligentes.",
