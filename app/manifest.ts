@@ -2,8 +2,8 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Patrimônio Plus',
-    short_name: 'Patrimônio',
+    name: 'Patrimônio+',
+    short_name: 'Patrimônio+',
     description: 'Acompanhe seus investimentos e patrimônio.',
     start_url: '/',
     display: 'standalone',
