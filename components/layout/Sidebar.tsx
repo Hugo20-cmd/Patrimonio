@@ -157,7 +157,7 @@ export default function Sidebar({
         })}
 
         {/* ADMIN LINK (Apenas para o Dono) */}
-        {profile?.email === 'contatopennamc@gmail.com' && (
+        {['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(profile?.email || '') && (
           <Link 
             href="/admin"
             className={`sidebar-link ${pathname.startsWith("/admin") ? "active" : ""}`}

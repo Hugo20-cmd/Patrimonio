@@ -14,7 +14,9 @@ export async function getAssets() {
     .eq('id', userData.user.id)
     .single()
 
-  const isFree = profile?.plan === 'Free' || !profile?.plan;
+  const ADMIN_EMAILS = ['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'];
+  const isAdmin = ADMIN_EMAILS.includes(userData.user.email?.toLowerCase().trim() || '');
+  const isFree = !isAdmin && (profile?.plan === 'Free' || profile?.plan === 'free' || !profile?.plan);
 
   const { data, error } = await supabase
     .from('assets')
@@ -64,7 +66,9 @@ export async function addAsset(formData: FormData) {
     .eq('id', userData.user.id)
     .single()
 
-  const isFree = profile?.plan === 'Free' || !profile?.plan;
+  const ADMIN_EMAILS = ['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'];
+  const isAdmin = ADMIN_EMAILS.includes(userData.user.email?.toLowerCase().trim() || '');
+  const isFree = !isAdmin && (profile?.plan === 'Free' || profile?.plan === 'free' || !profile?.plan);
 
   const ticker = formData.get('ticker') as string
   const type = formData.get('type') as string

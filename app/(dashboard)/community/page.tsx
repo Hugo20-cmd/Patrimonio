@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic'
 export default async function ForumPage() {
   const supabase = await createClient()
   const { data: userData } = await supabase.auth.getUser()
-  const ADMIN_EMAILS = ['contatopennamc@gmail.com']
+  const ADMIN_EMAILS = ['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br']
   const isAdmin = userData?.user?.email ? ADMIN_EMAILS.includes(userData.user.email.toLowerCase().trim()) : false
 
   const postsResponse = await getChatMessages('geral');

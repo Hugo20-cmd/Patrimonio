@@ -29,8 +29,8 @@ export async function sendSupportTicket(formData: FormData) {
 
   try {
     const { error } = await resend.emails.send({
-      from: 'Suporte Patrimônio+ <onboarding@resend.dev>', // Resend uses onboarding@resend.dev for unverified domains
-      to: 'contatopennamc@gmail.com', // Precisa ser este email devido à restrição do plano gratuito do Resend
+      from: 'Patrimônio+ <suporte@patrimoniomais.com.br>', // Resend uses onboarding@resend.dev for unverified domains
+      to: 'suporte@patrimoniomais.com.br', // Precisa ser este email devido à restrição do plano gratuito do Resend
       replyTo: userEmail, // Para o admin poder clicar em "Responder" no Gmail
       subject: `[Patrimônio+ Suporte] Novo Chamado de ${userName}`,
       html: `
