@@ -267,11 +267,17 @@ export default function SettingsPage() {
               onClick={async () => {
                 try {
                   const { createNotification } = await import('@/app/actions/notifications');
-                  await createNotification("🚀 Teste de Notificação", "As suas notificações estão funcionando perfeitamente no Patrimônio+", "info");
-                  alert("Notificação enviada! Olhe a tela do seu aparelho.");
+                  const res = await createNotification("🚀 Teste de Notificação", "As suas notificações estão funcionando perfeitamente no Patrimônio+", "info");
+                  if (res && res.error) {
+                    alert("Erro ao disparar: " + res.error);
+                  } else if (res && res.warning) {
+                    alert("Aviso: " + res.warning);
+                  } else {
+                    alert("Notificação enviada! Olhe a tela do seu aparelho e o sininho no topo.");
+                  }
                 } catch (e) {
                   console.error(e);
-                  alert("Erro ao enviar notificação.");
+                  alert("Erro ao executar ação.");
                 }
               }}
             >

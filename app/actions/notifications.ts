@@ -58,45 +58,66 @@ export async function createNotification(
 
   if (!targetUserId) {
     const { data: userData } = await supabase.auth.getUser()
-    if (!userData?.user) return
+    if (!userData?.user) return { success: false, error: 'User not found' }
     targetUserId = userData.user.id
   }
 
+  // Use the admin client to bypass RLS for inserts
+  const { createClient: createSupabaseClient } = await import('@supabase/supabase-js');
+  const supabaseAdmin = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
   // 1. Salvar no banco de dados para mostrar no painel
-  await supabase.from('notifications').insert({
+  const { error: insertError } = await supabaseAdmin.from('notifications').insert({
     user_id: targetUserId,
     title,
     message,
     type,
   })
 
+  if (insertError) {
+    console.error("Erro ao salvar notificação no banco:", insertError);
+  }
+
   // 2. Disparar notificação Push via OneSignal
   try {
     const appId = process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID;
     const apiKey = process.env.ONESIGNAL_REST_API_KEY;
 
-    if (appId && apiKey) {
-      const response = await fetch('https://onesignal.com/api/v1/notifications', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Basic ${apiKey}`
-        },
-        body: JSON.stringify({
-          app_id: appId,
-          include_aliases: {
-            external_id: [targetUserId]
-          },
-          target_channel: "push",
-          headings: { en: title, pt: title },
-          contents: { en: message, pt: message }
-        })
-      });
-      
-      const responseData = await response.json();
-      console.log('OneSignal Push Result:', responseData);
+    if (!appId || !apiKey) {
+      console.log('OneSignal não configurado. As chaves estão faltando.');
+      return { success: true, warning: 'Notificação salva no sino, mas o OneSignal não está configurado na Vercel.' };
     }
-  } catch (err) {
+
+    const response = await fetch('https://onesignal.com/api/v1/notifications', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${apiKey}`
+      },
+      body: JSON.stringify({
+        app_id: appId,
+        include_aliases: {
+          external_id: [targetUserId]
+        },
+        target_channel: "push",
+        headings: { en: title, pt: title },
+        contents: { en: message, pt: message }
+      })
+    });
+    
+    const responseData = await response.json();
+    console.log('OneSignal Push Result:', responseData);
+    
+    if (responseData.errors) {
+      return { success: false, error: 'Erro no OneSignal: ' + JSON.stringify(responseData.errors) };
+    }
+    
+    return { success: true };
+  } catch (err: any) {
     console.error('Falha ao enviar push notification:', err);
+    return { success: false, error: 'Falha na conexão com OneSignal: ' + err.message };
   }
 }
