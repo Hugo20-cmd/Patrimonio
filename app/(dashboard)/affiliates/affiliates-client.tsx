@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Users, Link as LinkIcon, DollarSign, ArrowRight, CheckCircle2, AlertCircle, Copy, Check } from "lucide-react";
+import { Users, Link as LinkIcon, DollarSign, ArrowRight, CheckCircle2, AlertCircle, Copy, Check, Award } from "lucide-react";
 import { formatCurrency } from "@/lib/mock-data";
 
 export default function AffiliatesClient({ initialData, error }: { initialData?: any, error?: string }) {
@@ -92,11 +92,11 @@ export default function AffiliatesClient({ initialData, error }: { initialData?:
         <div className="metric-card">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
             <div style={{ padding: "8px", borderRadius: "8px", background: "rgba(251,146,60,0.15)", color: "var(--orange-primary)" }}>
-              <DollarSign size={18} />
+              <Award size={18} />
             </div>
           </div>
-          <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Renda Mensal Estimada</div>
-          <div style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--orange-primary)" }}>{formatCurrency(monthlyCommission)}</div>
+          <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>XP Gerado (Estimado)</div>
+          <div style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--orange-primary)" }}>{initialData.premiumReferred * 1000} XP</div>
         </div>
       </div>
 
@@ -104,11 +104,9 @@ export default function AffiliatesClient({ initialData, error }: { initialData?:
       <div style={{ display: "flex", gap: "12px", background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "12px", padding: "16px 20px" }}>
         <AlertCircle size={20} color="var(--text-tertiary)" style={{ flexShrink: 0, marginTop: "2px" }} />
         <div style={{ fontSize: "0.9rem", color: "var(--text-secondary)", lineHeight: 1.5 }}>
-          <strong>Como funciona:</strong> Compartilhe o seu link exclusivo (acima). Quando um amigo se cadastrar e efetuar a assinatura do plano Premium, duas coisas acontecem assim que o pagamento for confirmado: 
+          <strong>Como funciona:</strong> Compartilhe o seu link exclusivo (acima). Quando um amigo se cadastrar e efetuar a assinatura do plano Premium, assim que o pagamento for confirmado, você ganha <strong>1.000 XP</strong> por amigo! 
           <br /><br />
-          1. Você ganha <strong>1.000 XP</strong> por amigo! (Os pontos de XP subirão seu nível no app e poderão ser trocados por prêmios, benefícios e acessos exclusivos no futuro).
-          <br />
-          2. Você recebe <strong>30% de comissão recorrente</strong> de todas as mensalidades dele enquanto a assinatura estiver ativa. Ganhos acima de R$ 50 já podem ser sacados.
+          Os pontos de XP subirão o seu nível dentro do aplicativo e, futuramente, poderão ser trocados por prêmios reais, benefícios na plataforma e acessos exclusivos.
         </div>
       </div>
 
@@ -132,7 +130,7 @@ export default function AffiliatesClient({ initialData, error }: { initialData?:
                 <th style={{ paddingLeft: "24px" }}>Data do Cadastro</th>
                 <th>Nome (Oculto)</th>
                 <th>Status</th>
-                <th style={{ textAlign: "right", paddingRight: "24px" }}>Comissão Gerada</th>
+                <th style={{ textAlign: "right", paddingRight: "24px" }}>Recompensa</th>
               </tr>
             </thead>
             <tbody>
@@ -158,8 +156,8 @@ export default function AffiliatesClient({ initialData, error }: { initialData?:
                     )}
                   </td>
                   <td style={{ textAlign: "right", paddingRight: "24px" }}>
-                    <div style={{ fontSize: "0.9rem", fontWeight: 700, color: ref.plan === 'premium' ? "var(--green-primary)" : "var(--text-tertiary)" }}>
-                      {ref.plan === 'premium' ? formatCurrency(6.00) + "/mês" : "-"}
+                    <div style={{ fontSize: "0.9rem", fontWeight: 700, color: ref.plan === 'premium' ? "var(--orange-primary)" : "var(--text-tertiary)" }}>
+                      {ref.xp}
                     </div>
                   </td>
                 </tr>

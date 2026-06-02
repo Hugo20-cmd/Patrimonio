@@ -119,3 +119,70 @@ export async function updateFeedbackStatus(id: string, status: string) {
   if (error) return { error: error.message }
   return { success: true }
 }
+
+export async function searchReferralsByCode(code: string) {
+  const supabase = await createServerClient()
+  const { data: userData } = await supabase.auth.getUser()
+
+  const ADMIN_EMAILS = ['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br']
+  const userEmail = userData?.user?.email?.toLowerCase().trim() || ''
+
+  if (!ADMIN_EMAILS.includes(userEmail)) {
+    return { error: 'Unauthorized' }
+  }
+
+  // Find user with this referral code
+  const { data: referrer, error: refErr } = await supabaseAdmin
+    .from('profiles')
+    .select('id, name, email, xp')
+    .ilike('referral_code', code)
+    .single()
+
+  if (refErr || !referrer) {
+    return { error: 'Código de indicação não encontrado' }
+  }
+
+  // Get users who were referred by this user
+  const { data: referrals } = await supabaseAdmin
+    .from('profiles')
+    .select('id, name, email, created_at')
+    .eq('referred_by', referrer.id)
+
+  const referralIds = (referrals || []).map(r => r.id);
+  
+  let activePremiumIds = new Set();
+  if (referralIds.length > 0) {
+    const { data: subsData } = await supabaseAdmin
+      .from('subscriptions')
+      .select('user_id, status')
+      .in('user_id', referralIds);
+
+    activePremiumIds = new Set(
+      (subsData || [])
+        .filter(s => s.status === 'active' || s.status === 'trialing')
+        .map(s => s.user_id)
+    );
+  }
+
+  const formattedReferrals = (referrals || []).map(r => ({
+    id: r.id,
+    name: r.name || 'Usuário',
+    email: r.email || 'N/A',
+    date: r.created_at,
+    isPremium: activePremiumIds.has(r.id)
+  })).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+
+  return {
+    success: true,
+    data: {
+      referrer: {
+        name: referrer.name,
+        email: referrer.email,
+        xp: referrer.xp
+      },
+      totalReferred: formattedReferrals.length,
+      premiumReferred: activePremiumIds.size,
+      referrals: formattedReferrals
+    }
+  }
+}

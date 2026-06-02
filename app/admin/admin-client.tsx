@@ -2,14 +2,36 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Users, DollarSign, Activity, TrendingUp, ShieldAlert, ArrowLeft, Check, X } from "lucide-react";
+import { Users, DollarSign, Activity, TrendingUp, ShieldAlert, ArrowLeft, Check, X, Search, Link as LinkIcon, Award } from "lucide-react";
 import Link from "next/link";
-import { updateFeedbackStatus } from "@/app/actions/admin";
+import { updateFeedbackStatus, searchReferralsByCode } from "@/app/actions/admin";
 import { supabase } from "@/lib/supabase";
 
 export default function AdminClient({ stats, latestUsers, feedbacks }: { stats: any, latestUsers: any[], feedbacks: any[] }) {
   const [localFeedbacks, setLocalFeedbacks] = useState(feedbacks);
   const [onlineUsers, setOnlineUsers] = useState(0);
+
+  const [searchCode, setSearchCode] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchResult, setSearchResult] = useState<any>(null);
+  const [searchError, setSearchError] = useState("");
+
+  const handleSearchReferral = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchCode.trim()) return;
+    
+    setSearchLoading(true);
+    setSearchError("");
+    setSearchResult(null);
+    
+    const res = await searchReferralsByCode(searchCode.trim());
+    if (res.error) {
+      setSearchError(res.error);
+    } else {
+      setSearchResult(res.data);
+    }
+    setSearchLoading(false);
+  };
 
   useEffect(() => {
     const channel = supabase.channel('online-users');
@@ -173,6 +195,105 @@ export default function AdminClient({ stats, latestUsers, feedbacks }: { stats: 
           </div>
 
         </div>
+
+        {/* Busca de Afiliados (Referral) */}
+        <div style={{ marginTop: "40px", background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", padding: "24px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
+            <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: "var(--blue-glow)", color: "var(--blue-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <LinkIcon size={20} />
+            </div>
+            <div>
+              <h3 style={{ fontSize: "1.1rem" }}>Rastreamento de Afiliados</h3>
+              <p style={{ fontSize: "0.85rem", color: "var(--text-tertiary)" }}>Busque pelo código de indicação de um usuário para ver todos que se cadastraram com ele.</p>
+            </div>
+          </div>
+
+          <form onSubmit={handleSearchReferral} style={{ display: "flex", gap: "12px", maxWidth: "500px", marginBottom: "24px" }}>
+            <div className="input-group" style={{ flex: 1 }}>
+              <Search size={18} className="input-icon" />
+              <input 
+                type="text" 
+                placeholder="Ex: JOSES123" 
+                className="input-field" 
+                value={searchCode}
+                onChange={(e) => setSearchCode(e.target.value)}
+              />
+            </div>
+            <button type="submit" className="btn btn-primary" disabled={searchLoading}>
+              {searchLoading ? "Buscando..." : "Buscar"}
+            </button>
+          </form>
+
+          {searchError && (
+            <div style={{ padding: "16px", background: "rgba(255,77,109,0.1)", color: "var(--red-primary)", borderRadius: "8px", border: "1px solid rgba(255,77,109,0.3)" }}>
+              {searchError}
+            </div>
+          )}
+
+          {searchResult && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+              <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+                <div style={{ flex: 1, minWidth: "250px", padding: "20px", background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)", borderRadius: "12px" }}>
+                  <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", textTransform: "uppercase", marginBottom: "8px" }}>Dono do Código</div>
+                  <div style={{ fontSize: "1.2rem", fontWeight: 700, color: "var(--text-primary)" }}>{searchResult.referrer.name}</div>
+                  <div style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>{searchResult.referrer.email}</div>
+                  <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", marginTop: "12px", background: "rgba(251,146,60,0.15)", color: "var(--orange-primary)", padding: "4px 12px", borderRadius: "20px", fontSize: "0.85rem", fontWeight: 700 }}>
+                    <Award size={14} /> {searchResult.referrer.xp} XP
+                  </div>
+                </div>
+                <div style={{ flex: 1, minWidth: "250px", padding: "20px", background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)", borderRadius: "12px", display: "flex", justifyContent: "space-around", alignItems: "center" }}>
+                  <div style={{ textAlign: "center" }}>
+                    <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--blue-primary)" }}>{searchResult.totalReferred}</div>
+                    <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)", textTransform: "uppercase" }}>Cadastros</div>
+                  </div>
+                  <div style={{ width: "1px", height: "40px", background: "var(--border-subtle)" }}></div>
+                  <div style={{ textAlign: "center" }}>
+                    <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--green-primary)" }}>{searchResult.premiumReferred}</div>
+                    <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)", textTransform: "uppercase" }}>Premium</div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4 style={{ fontSize: "1rem", marginBottom: "12px" }}>Lista de Cadastrados com este link:</h4>
+                <div style={{ overflowX: "auto", border: "1px solid var(--border-subtle)", borderRadius: "12px" }}>
+                  <table className="table-premium" style={{ width: "100%", margin: 0 }}>
+                    <thead style={{ background: "var(--bg-elevated)" }}>
+                      <tr>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Data</th>
+                        <th>Status Premium</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {searchResult.referrals.map((ref: any) => (
+                        <tr key={ref.id}>
+                          <td style={{ fontWeight: 600 }}>{ref.name}</td>
+                          <td style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>{ref.email}</td>
+                          <td style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>{new Date(ref.date).toLocaleDateString('pt-BR')}</td>
+                          <td>
+                            {ref.isPremium ? (
+                              <span className="badge badge-green">Ativo (+1000 XP)</span>
+                            ) : (
+                              <span className="badge">Free</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                      {searchResult.referrals.length === 0 && (
+                        <tr>
+                          <td colSpan={4} style={{ textAlign: "center", padding: "20px", color: "var(--text-tertiary)" }}>Ninguém se cadastrou com esse código ainda.</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
       </div>
     </div>
   );

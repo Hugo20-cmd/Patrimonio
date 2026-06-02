@@ -7,15 +7,30 @@ export async function getAffiliateData() {
   const { data: userData } = await supabase.auth.getUser()
   if (!userData?.user) return { error: 'Not authenticated' }
 
-  // Get my profile to find my referral code
-  const { data: myProfile, error: profileErr } = await supabase
-    .from('profiles')
-    .select('referral_code')
-    .eq('id', userData.user.id)
-    .single()
+  let profileErr = null;
+  let myProfile = null;
+
+  try {
+    const { data } = await supabase
+      .from('profiles')
+      .select('referral_code')
+      .eq('id', userData.user.id)
+      .single()
+    myProfile = data;
+  } catch (e: any) {
+    profileErr = e;
+  }
 
   if (profileErr) {
     return { error: profileErr.message }
+  }
+
+  let referralCode = myProfile?.referral_code;
+
+  // Auto-generate for existing users who don't have it
+  if (!referralCode) {
+    referralCode = crypto.randomUUID().split('-')[0].toUpperCase();
+    await supabase.from('profiles').update({ referral_code: referralCode }).eq('id', userData.user.id);
   }
 
   // Get users who were referred by me
@@ -43,9 +58,6 @@ export async function getAffiliateData() {
 
   const totalReferred = referrals?.length || 0
   const premiumReferred = activePremiumIds.size
-  
-  // Calculate estimated commission (ex: 30% of R$ 19.99 = R$ 6.00 per active premium user)
-  const monthlyCommission = premiumReferred * 6.00
 
   // Format referral list for UI
   const formattedReferrals = (referrals || []).map(r => {
@@ -60,17 +72,17 @@ export async function getAffiliateData() {
       name: maskedName,
       date: r.created_at,
       plan: isPremium ? 'premium' : 'free',
-      status: isPremium ? 'Ativo (Gerando Comissão)' : 'Aguardando Assinatura'
+      status: isPremium ? 'Premium Ativo' : 'Aguardando Assinatura',
+      xp: isPremium ? '+1000 XP' : '-'
     }
   }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
   return {
     success: true,
     data: {
-      referralCode: myProfile.referral_code,
+      referralCode: referralCode,
       totalReferred,
       premiumReferred,
-      monthlyCommission,
       referrals: formattedReferrals
     }
   }
