@@ -259,7 +259,24 @@ export default function SettingsPage() {
             </button>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              style={{ padding: "8px 16px", fontSize: "0.85rem", background: "transparent", border: "1px solid var(--border-subtle)" }}
+              onClick={async () => {
+                try {
+                  const state = await OneSignal.User.PushSubscription.optedIn;
+                  const token = await OneSignal.User.PushSubscription.id;
+                  const extId = OneSignal.User.externalId;
+                  alert(`OneSignal Debug:\nOpted In: ${state}\nToken ID: ${token}\nExt ID: ${extId}\nApp ID: ${process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID?.substring(0,8)}...`);
+                } catch(e: any) {
+                  alert("Debug error: " + e.message);
+                }
+              }}
+            >
+              Diagnóstico OneSignal
+            </button>
             <button
               type="button"
               className="btn btn-secondary btn-sm"
