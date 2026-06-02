@@ -86,7 +86,8 @@ export async function signup(formData: FormData) {
       last_ip: ip,
       current_session_token: sessionToken,
       referral_code: myReferralCode,
-      referred_by: referredById
+      referred_by: referredById,
+      email: dataToSubmit.email
     }).eq('id', data.user.id)
     
     const cookieStore = await cookies()
