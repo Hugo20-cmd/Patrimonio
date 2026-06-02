@@ -55,7 +55,7 @@ export default function SupportClient() {
       
       {/* Header */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "12px", marginBottom: "16px" }}>
-        <div style={{ width: "64px", height: "64px", borderRadius: "24px", background: "var(--green-glow)", border: "1px solid rgba(0, 212, 170, 0.2)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "8px", boxShadow: "0 0 30px rgba(0, 212, 170, 0.15)" }}>
+        <div style={{ width: "64px", height: "64px", borderRadius: "4px", background: "var(--green-glow)", border: "1px solid rgba(0, 212, 170, 0.2)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "8px", boxShadow: "0 0 30px rgba(0, 212, 170, 0.15)" }}>
           <Headphones size={32} style={{ color: "var(--green-primary)" }} />
         </div>
         <h1 style={{ fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 800, color: "var(--text-primary)", letterSpacing: "-0.02em" }}>
@@ -70,7 +70,7 @@ export default function SupportClient() {
         
         {/* Left Column - FAQ */}
         <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-          <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", padding: "32px", boxShadow: "var(--shadow-sm)" }}>
+          <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "4px", padding: "32px", boxShadow: "var(--shadow-sm)" }}>
             <h2 style={{ fontSize: "1.4rem", marginBottom: "24px", color: "var(--text-primary)" }}>Perguntas Frequentes</h2>
             
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -80,7 +80,7 @@ export default function SupportClient() {
                   style={{ 
                     background: openFaq === index ? "var(--green-glow)" : "var(--bg-elevated)",
                     border: `1px solid ${openFaq === index ? "var(--border-accent)" : "var(--border-subtle)"}`,
-                    borderRadius: "12px", 
+                    borderRadius: "4px", 
                     overflow: "hidden", 
                     transition: "all 0.3s ease"
                   }}
@@ -90,7 +90,7 @@ export default function SupportClient() {
                     style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px", textAlign: "left", fontWeight: 600, color: openFaq === index ? "var(--text-primary)" : "var(--text-secondary)", background: "none", border: "none", cursor: "pointer" }}
                   >
                     <span style={{ paddingRight: "16px" }}>{faq.question}</span>
-                    <div style={{ flexShrink: 0, width: "32px", height: "32px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: openFaq === index ? "var(--green-glow-strong)" : "var(--bg-card)", transition: "all 0.3s ease" }}>
+                    <div style={{ flexShrink: 0, width: "32px", height: "32px", borderRadius: "4px", display: "flex", alignItems: "center", justifyContent: "center", background: openFaq === index ? "var(--green-glow-strong)" : "var(--bg-card)", transition: "all 0.3s ease" }}>
                       <ChevronDown 
                         size={16} 
                         style={{ color: openFaq === index ? "var(--green-primary)" : "var(--text-tertiary)", transform: openFaq === index ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.3s ease" }} 
@@ -115,9 +115,9 @@ export default function SupportClient() {
 
         {/* Right Column - Contact Form */}
         <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-          <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", padding: "32px", boxShadow: "var(--shadow-sm)" }}>
+          <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "4px", padding: "32px", boxShadow: "var(--shadow-sm)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "32px", paddingBottom: "24px", borderBottom: "1px solid var(--border-subtle)" }}>
-              <div style={{ width: "48px", height: "48px", borderRadius: "16px", background: "var(--bg-elevated)", border: "1px solid var(--border-strong)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <div style={{ width: "48px", height: "48px", borderRadius: "4px", background: "var(--bg-elevated)", border: "1px solid var(--border-strong)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                 <Mail size={22} style={{ color: "var(--text-secondary)" }} />
               </div>
               <div>
@@ -130,7 +130,7 @@ export default function SupportClient() {
               <motion.div 
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                style={{ background: "var(--green-glow)", border: "1px solid var(--border-accent)", borderRadius: "16px", padding: "32px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "20px" }}
+                style={{ background: "var(--green-glow)", border: "1px solid var(--border-accent)", borderRadius: "4px", padding: "32px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "20px" }}
               >
                 <div style={{ width: "80px", height: "80px", borderRadius: "50%", background: "var(--green-glow)", display: "flex", alignItems: "center", justifyContent: "center", border: "4px solid rgba(0, 212, 170, 0.1)" }}>
                   <CheckCircle2 size={40} style={{ color: "var(--green-primary)" }} />
@@ -142,7 +142,7 @@ export default function SupportClient() {
                 <button 
                   onClick={() => setSuccess(false)}
                   className="btn btn-secondary"
-                  style={{ marginTop: "8px" }}
+                  style={{ marginTop: "8px", borderRadius: "4px" }}
                 >
                   Enviar nova mensagem
                 </button>
@@ -151,7 +151,7 @@ export default function SupportClient() {
               <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                 
                 {errorMsg && (
-                  <div style={{ padding: "16px", background: "var(--red-glow)", border: "1px solid rgba(255, 77, 109, 0.3)", color: "var(--red-primary)", fontSize: "0.9rem", borderRadius: "12px", fontWeight: 500 }}>
+                  <div style={{ padding: "16px", background: "var(--red-glow)", border: "1px solid rgba(255, 77, 109, 0.3)", color: "var(--red-primary)", fontSize: "0.9rem", borderRadius: "4px", fontWeight: 500 }}>
                     {errorMsg}
                   </div>
                 )}
@@ -164,7 +164,7 @@ export default function SupportClient() {
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Descreva seu problema, dúvida ou sugestão com o máximo de detalhes..."
                     style={{
-                      width: "100%", minHeight: "160px", padding: "20px", background: "var(--bg-elevated)", border: "1px solid var(--border-default)", borderRadius: "12px", color: "var(--text-primary)", outline: "none", resize: "vertical", fontSize: "0.95rem", lineHeight: 1.6
+                      width: "100%", minHeight: "160px", padding: "20px", background: "var(--bg-elevated)", border: "1px solid var(--border-default)", borderRadius: "4px", color: "var(--text-primary)", outline: "none", resize: "vertical", fontSize: "0.95rem", lineHeight: 1.6
                     }}
                     onFocus={(e) => { e.target.style.borderColor = "var(--green-primary)"; e.target.style.boxShadow = "0 0 0 3px var(--green-glow)"; }}
                     onBlur={(e) => { e.target.style.borderColor = "var(--border-default)"; e.target.style.boxShadow = "none"; }}
@@ -176,7 +176,7 @@ export default function SupportClient() {
                   type="submit" 
                   disabled={isSubmitting || !message.trim()}
                   className="btn btn-primary"
-                  style={{ width: "100%", justifyContent: "center", padding: "16px", fontSize: "1.05rem", marginTop: "8px" }}
+                  style={{ width: "100%", justifyContent: "center", padding: "16px", fontSize: "1.05rem", marginTop: "8px", borderRadius: "4px" }}
                 >
                   {isSubmitting ? (
                     "Enviando..."
