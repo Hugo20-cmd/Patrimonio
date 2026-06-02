@@ -268,49 +268,51 @@ export default function SettingsPage() {
             </button>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <button
-              type="button"
-              className="btn btn-secondary btn-sm"
-              style={{ padding: "8px 16px", fontSize: "0.85rem", background: "transparent", border: "1px solid var(--border-subtle)" }}
-              onClick={async () => {
-                try {
-                  const state = await OneSignal.User.PushSubscription.optedIn;
-                  const token = await OneSignal.User.PushSubscription.id;
-                  const extId = OneSignal.User.externalId;
-                  const initErr = (window as any).oneSignalError || "Nenhum erro de inicio";
-                  alert(`OneSignal Debug:\nOpted In: ${state}\nToken ID: ${token}\nExt ID: ${extId}\nApp ID: ${process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID?.substring(0,8)}...\nInit Erro: ${initErr}`);
-                } catch(e: any) {
-                  alert("Debug error: " + e.message);
-                }
-              }}
-            >
-              Diagnóstico OneSignal
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary btn-sm"
-              style={{ padding: "8px 16px", fontSize: "0.85rem" }}
-              onClick={async () => {
-                try {
-                  const { createNotification } = await import('@/app/actions/notifications');
-                  const res = await createNotification("🚀 Teste de Notificação", "As suas notificações estão funcionando perfeitamente no Patrimônio+", "info");
-                  if (res && res.error) {
-                    alert("Erro ao disparar: " + res.error);
-                  } else if (res && res.warning) {
-                    alert("Aviso: " + res.warning);
-                  } else {
-                    alert("Notificação enviada! Olhe a tela do seu aparelho e o sininho no topo.");
+          {profile?.email === 'contatopennamc@gmail.com' && (
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "12px" }}>
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm"
+                style={{ padding: "8px 16px", fontSize: "0.85rem", background: "transparent", border: "1px solid var(--border-subtle)" }}
+                onClick={async () => {
+                  try {
+                    const state = await OneSignal.User.PushSubscription.optedIn;
+                    const token = await OneSignal.User.PushSubscription.id;
+                    const extId = OneSignal.User.externalId;
+                    const initErr = (window as any).oneSignalError || "Nenhum erro de inicio";
+                    alert(`OneSignal Debug:\nOpted In: ${state}\nToken ID: ${token}\nExt ID: ${extId}\nApp ID: ${process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID?.substring(0,8)}...\nInit Erro: ${initErr}`);
+                  } catch(e: any) {
+                    alert("Debug error: " + e.message);
                   }
-                } catch (e) {
-                  console.error(e);
-                  alert("Erro ao executar ação.");
-                }
-              }}
-            >
-              Disparar Notificação de Teste
-            </button>
-          </div>
+                }}
+              >
+                Diagnóstico OneSignal
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm"
+                style={{ padding: "8px 16px", fontSize: "0.85rem" }}
+                onClick={async () => {
+                  try {
+                    const { createNotification } = await import('@/app/actions/notifications');
+                    const res = await createNotification("🚀 Teste de Notificação", "As suas notificações estão funcionando perfeitamente no Patrimônio+", "info");
+                    if (res && res.error) {
+                      alert("Erro ao disparar: " + res.error);
+                    } else if (res && res.warning) {
+                      alert("Aviso: " + res.warning);
+                    } else {
+                      alert("Notificação enviada! Olhe a tela do seu aparelho e o sininho no topo.");
+                    }
+                  } catch (e) {
+                    console.error(e);
+                    alert("Erro ao executar ação.");
+                  }
+                }}
+              >
+                Disparar Notificação de Teste
+              </button>
+            </div>
+          )}
 
           {/* Submit */}
           <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "16px" }}>
