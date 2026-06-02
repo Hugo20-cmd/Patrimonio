@@ -17,7 +17,7 @@ export default function AcademiaPage() {
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      if (['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(data.user?.email || '')) {
+      if (data.user?.email === "contatopennamc@gmail.com") {
         setIsAdmin(true);
       }
     });

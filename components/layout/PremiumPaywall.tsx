@@ -67,23 +67,9 @@ export default function PremiumPaywall({ title, description, featureName }: Prem
           target="_blank" 
           rel="noopener noreferrer"
           className="btn btn-primary"
-          style={{ 
-            width: "100%", 
-            padding: "16px 12px", 
-            fontSize: "1rem", 
-            display: "flex", 
-            flexWrap: "wrap", 
-            justifyContent: "center", 
-            alignItems: "center",
-            gap: "8px",
-            textAlign: "center",
-            height: "auto",
-            minHeight: "56px",
-            lineHeight: 1.4
-          }}
+          style={{ width: "100%", padding: "16px", fontSize: "1.1rem", display: "flex", justifyContent: "center", gap: "8px" }}
         >
-          <Zap size={20} style={{ flexShrink: 0 }} /> 
-          <span>Desbloquear {featureName} por R$ 19,99</span>
+          <Zap size={20} /> Desbloquear {featureName} por R$ 19,99
         </a>
       </div>
     </div>

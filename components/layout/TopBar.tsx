@@ -246,7 +246,7 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
         <div style={{ position: "relative" }} ref={dropdownRef}>
           <button
             onClick={() => {
-              const isAdmin = profile?.email === ['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(profile?.email || userData?.user?.email);
+              const isAdmin = profile?.email === 'contatopennamc@gmail.com';
               if (profile?.plan !== 'premium' && !isAdmin) {
                 setShowPaywall(true);
               } else {
