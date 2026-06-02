@@ -69,31 +69,8 @@ export async function getMarketNews() {
     console.error("NewsAPI Error:", error);
   }
 
-  // 2. Fetch Finnhub (Global Market News)
-  try {
-    const finnhubRes = await fetch(`https://finnhub.io/api/v1/news?category=general&token=${FINNHUB_KEY}`, { next: { revalidate: 3600 } });
-    if (finnhubRes.ok) {
-      const data = await finnhubRes.json();
-      if (Array.isArray(data)) {
-        // Limit Finnhub to 15 news so we don't overload the UI
-        data.slice(0, 15).forEach((article: any) => {
-          unifiedNews.push({
-            id: idCounter++,
-            title: article.headline,
-            summary: article.summary || 'Acompanhe as atualizações do mercado financeiro global.',
-            source: article.source || 'Finnhub',
-            category: article.category === 'general' ? 'Mercado Global' : article.category,
-            url: article.url,
-            imageUrl: article.image || getFallbackImage(idCounter),
-            // Finnhub returns datetime in unix timestamp seconds
-            publishedAt: new Date(article.datetime * 1000).toISOString()
-          });
-        });
-      }
-    }
-  } catch (error) {
-    console.error("Finnhub Error:", error);
-  }
+  // Finnhub disabled because user requested all news to be in Portuguese
+  // and Finnhub only provides news in English.
 
   // Se ambas falharem ou retornarem vazias, enviamos um mock elegante
   if (unifiedNews.length === 0) {
