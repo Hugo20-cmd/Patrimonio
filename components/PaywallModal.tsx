@@ -140,7 +140,7 @@ export default function PaywallModal({
                         <div style={{ textAlign: "left" }}>
                           <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", fontWeight: 600, textTransform: "uppercase" }}>Plano Premium</div>
                           <div style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--text-primary)" }}>
-                            R$ 19,90<span style={{ fontSize: "1rem", color: "var(--text-tertiary)", fontWeight: 500 }}>/mí­Âªs</span>
+                            R$ 19,90<span style={{ fontSize: "1rem", color: "var(--text-tertiary)", fontWeight: 500 }}>/mês</span>
                           </div>
                         </div>
                       </div>

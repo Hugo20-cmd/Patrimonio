@@ -33,7 +33,7 @@ export default function GoalsClient({ initialGoals }: { initialGoals: any[] }) {
     
     await addGoal(fd);
     setIsAddModalOpen(false);
-    // Para simplificar, num projeto real farí­Â­amos refetch aqui ou usarí­Â­amos startTransition,
+    // Para simplificar, num projeto real faríamos refetch aqui ou usaríamos startTransition,
     // mas o Next cache revalidatePath cuidará do recarregamento de página.
     window.location.reload();
   };
@@ -63,7 +63,7 @@ export default function GoalsClient({ initialGoals }: { initialGoals: any[] }) {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <h1 style={{ fontSize: "1.8rem", marginBottom: "4px" }}>Metas Financeiras</h1>
-          <p style={{ color: "var(--text-tertiary)", fontSize: "0.9rem" }}>Defina e acompanhe seus objetivos de vida e independí­Âªncia.</p>
+          <p style={{ color: "var(--text-tertiary)", fontSize: "0.9rem" }}>Defina e acompanhe seus objetivos de vida e independência.</p>
         </div>
         <button 
           className="btn btn-primary" 
@@ -162,7 +162,7 @@ export default function GoalsClient({ initialGoals }: { initialGoals: any[] }) {
                 
                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: "8px" }}>
                   <div style={{ fontSize: "0.8rem", fontWeight: 700, color: goal.color }}>
-                    {formatPercent(progressPercent)} concluí­Â­do
+                    {formatPercent(progressPercent)} concluído
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "0.75rem", color: "var(--text-tertiary)" }}>
                     <Calendar size={12} /> Prazo: {new Date(goal.deadline).toLocaleDateString("pt-BR")}
@@ -236,7 +236,7 @@ export default function GoalsClient({ initialGoals }: { initialGoals: any[] }) {
 
               <div style={{ padding: "24px" }}>
                 <div style={{ marginBottom: "20px" }}>
-                  <label>Tí­Â­tulo da Meta</label>
+                  <label>Título da Meta</label>
                   <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Ex: Liberdade Financeira, Carro Novo..." />
                 </div>
 
@@ -260,9 +260,9 @@ export default function GoalsClient({ initialGoals }: { initialGoals: any[] }) {
                   <label>Categoria</label>
                   <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ width: "100%" }}>
                     <option value="patrimonio">Patrimônio</option>
-                    <option value="reserva">Reserva de Emergí­Âªncia</option>
+                    <option value="reserva">Reserva de Emergência</option>
                     <option value="aposentadoria">Aposentadoria</option>
-                    <option value="objetivo">Objetivo Especí­Â­fico (Carro, Casa, Viagem)</option>
+                    <option value="objetivo">Objetivo Específico (Carro, Casa, Viagem)</option>
                   </select>
                 </div>
 

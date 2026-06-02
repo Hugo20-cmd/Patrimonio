@@ -8,15 +8,15 @@ import { sendSupportTicket } from "@/app/actions/support";
 const FAQS = [
   {
     question: "Como funciona a Comunidade VIP?",
-    answer: "A Comunidade VIP é um espaço exclusivo para troca de experií­Âªncias, onde vocí­Âª pode conversar nas salas temáticas (Geral, Açí­Âµes, FIIs, etc) e tirar dí­Âºvidas com outros investidores e com o Administrador."
+    answer: "A Comunidade VIP é um espaço exclusivo para troca de experiências, onde você pode conversar nas salas temáticas (Geral, Ações, FIIs, etc) e tirar dúvidas com outros investidores e com o Administrador."
   },
   {
-    question: "Como subo de Ní­Â­vel (XP)?",
-    answer: "Vocí­Âª ganha XP participando da plataforma. Cada vez que vocí­Âª acessa, envia uma mensagem no Chat ou realiza uma ação, vocí­Âª ganha pontos que te fazem subir de ní­Â­vel."
+    question: "Como subo de Nível (XP)?",
+    answer: "Você ganha XP participando da plataforma. Cada vez que você acessa, envia uma mensagem no Chat ou realiza uma ação, você ganha pontos que te fazem subir de nível."
   },
   {
     question: "Não encontrei o que procuro, o que fazer?",
-    answer: "Utilize o formulário de suporte nesta página para enviar um e-mail diretamente para nossa equipe. Responderemos o mais rápido possí­Â­vel!"
+    answer: "Utilize o formulário de suporte nesta página para enviar um e-mail diretamente para nossa equipe. Responderemos o mais rápido possível!"
   }
 ];
 
@@ -128,7 +128,7 @@ export default function SupportClient() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white mb-2">Mensagem Enviada!</h3>
-                  <p className="text-gray-400 text-sm">Recebemos o seu ticket. Nossa equipe irá responder no e-mail cadastrado em sua conta o mais breve possí­Â­vel.</p>
+                  <p className="text-gray-400 text-sm">Recebemos o seu ticket. Nossa equipe irá responder no e-mail cadastrado em sua conta o mais breve possível.</p>
                 </div>
                 <button 
                   onClick={() => setSuccess(false)}
@@ -152,7 +152,7 @@ export default function SupportClient() {
                     id="message"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Descreva seu problema ou dí­Âºvida em detalhes..."
+                    placeholder="Descreva seu problema ou dúvida em detalhes..."
                     className="w-full min-h-[150px] p-4 bg-[#141417] border border-[#2a2a2e] rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 resize-y transition-all"
                     disabled={isSubmitting}
                   />
@@ -173,7 +173,7 @@ export default function SupportClient() {
                   )}
                 </button>
                 <p className="text-xs text-center text-gray-500 mt-2">
-                  Vocí­Âª receberá a resposta no seu e-mail cadastrado.
+                  Você receberá a resposta no seu e-mail cadastrado.
                 </p>
               </form>
             )}

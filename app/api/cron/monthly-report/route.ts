@@ -24,7 +24,7 @@ export async function GET(req: Request) {
     const { data: profiles } = await supabaseAdmin
       .from('profiles')
       .select('id, name, email, plan')
-      .eq('plan', 'Premium'); // Apenas envia para Premium como benefí­Â­cio extra
+      .eq('plan', 'Premium'); // Apenas envia para Premium como benefício extra
 
     if (!profiles || profiles.length === 0) {
       return NextResponse.json({ message: 'No premium users found to send reports' });
@@ -56,9 +56,9 @@ export async function GET(req: Request) {
       // Montar HTML do e-mail
       const htmlContent = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9f9f9; padding: 20px; border-radius: 8px;">
-          <h2 style="color: #333; text-align: center;">Seu Relatí­Â³rio Mensal - Patrimônio+</h2>
+          <h2 style="color: #333; text-align: center;">Seu Relatório Mensal - Patrimônio+</h2>
           <p>Olá, <strong>${profile.name}</strong>!</p>
-          <p>Aqui está o resumo do fechamento da sua carteira no í­Âºltimo mí­Âªs:</p>
+          <p>Aqui está o resumo do fechamento da sua carteira no último mês:</p>
           
           <div style="background-color: #fff; padding: 20px; border-radius: 8px; border: 1px solid #eaeaea; margin-bottom: 20px;">
             <h3 style="margin-top: 0; color: #555;">Resumo Patrimonial</h3>
@@ -69,14 +69,14 @@ export async function GET(req: Request) {
             </p>
           </div>
           
-          <p>Para baixar seu relatí­Â³rio detalhado em PDF, acesse o painel e clique em "Gerar Relatí­Â³rio PDF".</p>
+          <p>Para baixar seu relatório detalhado em PDF, acesse o painel e clique em "Gerar Relatório PDF".</p>
           <div style="text-align: center; margin-top: 30px;">
             <a href="https://patrimonioplus.com/dashboard" style="background-color: #4f6ef7; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
               Acessar Meu Painel
             </a>
           </div>
           <p style="font-size: 12px; color: #999; text-align: center; margin-top: 40px;">
-            Enviado automaticamente pelo Patrimônio+. Para cancelar o recebimento, altere suas configuraçí­Âµes de notificação.
+            Enviado automaticamente pelo Patrimônio+. Para cancelar o recebimento, altere suas configurações de notificação.
           </p>
         </div>
       `;
@@ -87,7 +87,7 @@ export async function GET(req: Request) {
           await resend.emails.send({
             from: 'Patrimônio+ <relatorios@patrimonioplus.com>',
             to: profile.email,
-            subject: 'Seu Relatí­Â³rio Mensal de Investimentos chegou!',
+            subject: 'Seu Relatório Mensal de Investimentos chegou!',
             html: htmlContent,
           });
           emailsSent.push(profile.email);

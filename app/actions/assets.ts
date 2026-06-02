@@ -14,7 +14,7 @@ export async function getAssets() {
     .eq('id', userData.user.id)
     .single()
 
-  const ADMIN_EMAILS = ['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br']; const isAdmin = ADMIN_EMAILS.includes(userData.user.email?.toLowerCase().trim() || ''); const isFree = !isAdmin && (profile?.plan === 'Free' || profile?.plan === 'free' || !profile?.plan);
+  const isFree = profile?.plan === 'Free' || !profile?.plan;
 
   const { data, error } = await supabase
     .from('assets')
@@ -64,7 +64,7 @@ export async function addAsset(formData: FormData) {
     .eq('id', userData.user.id)
     .single()
 
-  const ADMIN_EMAILS = ['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br']; const isAdmin = ADMIN_EMAILS.includes(userData.user.email?.toLowerCase().trim() || ''); const isFree = !isAdmin && (profile?.plan === 'Free' || profile?.plan === 'free' || !profile?.plan);
+  const isFree = profile?.plan === 'Free' || !profile?.plan;
 
   const ticker = formData.get('ticker') as string
   const type = formData.get('type') as string
@@ -103,7 +103,7 @@ export async function addAsset(formData: FormData) {
   }
 
   if (existingAsset) {
-    // Update existing í¢ÂÂ round to 8 decimals to avoid float precision errors
+    // Update existing — round to 8 decimals to avoid float precision errors
     const newQuantity = parseFloat((Number(existingAsset.quantity) + quantity).toFixed(8))
     
     // Calculate new average price (only if buying)

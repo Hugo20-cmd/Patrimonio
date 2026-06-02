@@ -31,11 +31,11 @@ export async function addXp(userId: string, xpAmount: number) {
   let newLevel = profile?.level || 1
   let newXpToNext = profile?.xp_to_next_level || 1000
 
-  // Sistema simples de progressão de ní­Â­vel
+  // Sistema simples de progressão de nível
   while (newXp >= newXpToNext) {
     newLevel += 1
     newXp -= newXpToNext
-    newXpToNext = Math.floor(newXpToNext * 1.5) // Prí­Â³ximo ní­Â­vel requer 50% a mais de XP
+    newXpToNext = Math.floor(newXpToNext * 1.5) // Próximo nível requer 50% a mais de XP
   }
 
   await supabase
@@ -61,7 +61,7 @@ export async function unlockAchievement(userId: string, achievementKey: string) 
 
   // Descobre o XP base da conquista, se existir na nossa lista
   const baseAch = BASE_ACHIEVEMENTS.find(a => a.key === achievementKey)
-  const xpReward = baseAch ? baseAch.xp : 200 // XP padrão para conquistas diní­Â¢micas
+  const xpReward = baseAch ? baseAch.xp : 200 // XP padrão para conquistas dinâmicas
 
   await addXp(userId, xpReward)
   
@@ -71,7 +71,7 @@ export async function unlockAchievement(userId: string, achievementKey: string) 
 export async function checkTransactionAchievements(userId: string) {
   const supabase = await createClient()
 
-  // Analisa histí­Â³rico do usuário (Lançamentos e Carteira)
+  // Analisa histórico do usuário (Lançamentos e Carteira)
   const { data: transactions } = await supabase
     .from('transactions')
     .select('amount, type, category')
@@ -153,7 +153,7 @@ export async function checkGoalAchievements(userId: string, goalId: string) {
   const percentage = (Number(goal.current_amount) / Number(goal.target_amount)) * 100
 
   if (percentage >= 50 && percentage < 100) {
-    // Conquista diní­Â¢mica
+    // Conquista dinâmica
     await unlockAchievement(userId, `meta_50pct_${goalId}`)
   } else if (percentage >= 100) {
     await unlockAchievement(userId, 'meta_concluida')
@@ -183,7 +183,7 @@ export async function syncRetroactiveXp() {
 
   const userId = userData.user.id
 
-  // 1. Tentar desbloquear novas conquistas baseadas no histí­Â³rico de transaçí­Âµes
+  // 1. Tentar desbloquear novas conquistas baseadas no histórico de transações
   const achievementsResult = await checkTransactionAchievements(userId)
 
   // 2. Buscar TODAS as conquistas que o usuário possui no banco
@@ -201,19 +201,19 @@ export async function syncRetroactiveXp() {
       if (baseAch) {
         totalXpToGive += baseAch.xp
       } else {
-        totalXpToGive += 200 // Valor padrão para diní­Â¢micas como metas concluí­Â­das
+        totalXpToGive += 200 // Valor padrão para dinâmicas como metas concluídas
       }
     })
   }
 
-  // 4. Somar o XP de transaçí­Âµes antigas (Lançamentos e Carteira)
+  // 4. Somar o XP de transações antigas (Lançamentos e Carteira)
   const { data: transactions } = await supabase
     .from('transactions')
     .select('amount, category')
     .eq('user_id', userId)
 
   if (transactions && transactions.length > 0) {
-    const investmentCategories = ['ação', 'açí­Âµes', 'etf', 'fii', 'cripto', 'investimento', 'renda fixa', 'tesouro']
+    const investmentCategories = ['ação', 'ações', 'etf', 'fii', 'cripto', 'investimento', 'renda fixa', 'tesouro']
     
     transactions.forEach(t => {
       if (t.category && investmentCategories.some(c => t.category.toLowerCase().includes(c))) {

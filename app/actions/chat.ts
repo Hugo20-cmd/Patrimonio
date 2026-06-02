@@ -16,7 +16,7 @@ export async function getChatMessages(channel: string = 'geral') {
     .eq('id', userData.user.id)
     .single()
 
-  const ADMIN_EMAILS = ['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br']
+  const ADMIN_EMAILS = [['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(profile?.email || userData?.user?.email)]
   const userEmail = userData.user.email?.toLowerCase().trim() || ''
   const isAdmin = ADMIN_EMAILS.includes(userEmail)
 
@@ -72,7 +72,7 @@ export async function getChatMessages(channel: string = 'geral') {
       (adminId && msg.user_id === adminId) || 
       profile?.email === ['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(profile?.email || userData?.user?.email) || 
       profile?.name === 'Patrimônio+' || 
-      profile?.name === 'Patrimônio+ í°ÂÂÂ'
+      profile?.name === 'Patrimônio+ 👑'
     
     return {
       ...msg,
@@ -119,7 +119,7 @@ export async function togglePinMessage(id: string, currentPinStatus: boolean) {
   const { data: userData } = await supabase.auth.getUser()
   if (!userData?.user) return { error: 'Not authenticated' }
 
-  const ADMIN_EMAILS = ['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br']
+  const ADMIN_EMAILS = [['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(profile?.email || userData?.user?.email)]
   const userEmail = userData.user.email?.toLowerCase().trim() || ''
   
   if (!ADMIN_EMAILS.includes(userEmail)) {

@@ -32,7 +32,7 @@ export default function PluggyConnectSection() {
         setConnectToken(data.accessToken);
         setShowWidget(true);
       } else {
-        setStatusMsg({ type: "error", text: "Não foi possí­Â­vel gerar o token de conexão." });
+        setStatusMsg({ type: "error", text: "Não foi possível gerar o token de conexão." });
       }
     } catch {
       setStatusMsg({ type: "error", text: "Erro ao conectar com o servidor." });
@@ -73,10 +73,10 @@ export default function PluggyConnectSection() {
             <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "linear-gradient(135deg, #4f6ef7, #00d4aa)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Landmark size={17} color="#fff" />
             </div>
-            <h2 style={{ fontSize: "1.1rem", fontWeight: 700 }}>Open Finance í¢ÂÂ Conectar Corretora</h2>
+            <h2 style={{ fontSize: "1.1rem", fontWeight: 700 }}>Open Finance — Conectar Corretora</h2>
           </div>
           <p style={{ fontSize: "0.82rem", color: "var(--text-tertiary)", maxWidth: "480px" }}>
-            Conecte sua corretora via <strong style={{ color: "var(--text-secondary)" }}>Pluggy</strong> e seus ativos serão importados automaticamente í¢ÂÂ sem digitar nada.
+            Conecte sua corretora via <strong style={{ color: "var(--text-secondary)" }}>Pluggy</strong> e seus ativos serão importados automaticamente — sem digitar nada.
           </p>
         </div>
         <button
@@ -170,7 +170,7 @@ export default function PluggyConnectSection() {
           <Landmark size={32} color="var(--text-tertiary)" style={{ opacity: 0.4, marginBottom: "12px" }} />
           <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary)", marginBottom: "4px" }}>Nenhuma corretora conectada</div>
           <div style={{ fontSize: "0.78rem", color: "var(--text-tertiary)" }}>
-            Compatí­Â­vel com XP, Clear, Rico, BTG, Nubank, Inter e mais de 30 instituiçí­Âµes
+            Compatível com XP, Clear, Rico, BTG, Nubank, Inter e mais de 30 instituições
           </div>
         </div>
       )}

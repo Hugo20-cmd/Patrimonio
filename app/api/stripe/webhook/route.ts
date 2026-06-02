@@ -53,7 +53,7 @@ export async function POST(req: Request) {
             // Create in-app notification
             await supabaseAdmin.from('notifications').insert({
               user_id: userId,
-              title: 'Premium Desbloqueado! í°ÂÂÂ',
+              title: 'Premium Desbloqueado! 👑',
               message: 'Seu pagamento foi confirmado. Aproveite todos os recursos do Patrimônio+ Premium!',
               type: 'achievement'
             });
@@ -105,7 +105,7 @@ export async function POST(req: Request) {
           // Add notification
           await supabaseAdmin.from('notifications').insert({
             user_id: userId,
-            title: 'Plano Atualizado para Free í°ÂÂÂ',
+            title: 'Plano Atualizado para Free 📉',
             message: 'Sua assinatura foi cancelada. O limite de 5 ativos foi aplicado e os ativos excedentes foram ocultados.',
             type: 'system'
           });

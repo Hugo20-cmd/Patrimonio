@@ -13,7 +13,7 @@ export async function getAdminStats() {
   const supabase = await createServerClient()
   const { data: userData } = await supabase.auth.getUser()
 
-  const ADMIN_EMAILS = ['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br']
+  const ADMIN_EMAILS = [['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(profile?.email || userData?.user?.email)]
   const userEmail = userData?.user?.email?.toLowerCase().trim() || ''
 
   if (!ADMIN_EMAILS.includes(userEmail)) {
@@ -41,7 +41,7 @@ export async function getAdminStats() {
 
   const MRR = (premiumUsers || 0) * 19.99 // Exemplo de preço
 
-  // Pegar í­Âºltimos usuários
+  // Pegar últimos usuários
   const { data: latestUsers } = await supabaseAdmin
     .from('profiles')
     .select('id, name, email, plan, created_at')
@@ -104,7 +104,7 @@ export async function updateFeedbackStatus(id: string, status: string) {
   const supabase = await createServerClient()
   const { data: userData } = await supabase.auth.getUser()
 
-  const ADMIN_EMAILS = ['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br']
+  const ADMIN_EMAILS = [['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(profile?.email || userData?.user?.email)]
   const userEmail = userData?.user?.email?.toLowerCase().trim() || ''
 
   if (!ADMIN_EMAILS.includes(userEmail)) {

@@ -10,7 +10,7 @@ export async function sendSupportTicket(formData: FormData) {
   const { data: userData } = await supabase.auth.getUser()
 
   if (!userData?.user) {
-    return { error: 'Vocí­Âª precisa estar logado para enviar um ticket.' }
+    return { error: 'Você precisa estar logado para enviar um ticket.' }
   }
 
   const { data: profile } = await supabase
@@ -29,13 +29,13 @@ export async function sendSupportTicket(formData: FormData) {
 
   try {
     const { error } = await resend.emails.send({
-      from: 'Patrimônio+ <suporte@patrimoniomais.com.br>', // Resend uses onboarding@resend.dev for unverified domains
-      to: ['suporte@patrimoniomais.com.br', 'suporte@patrimoniomais.com.br'].includes(profile?.email || userData?.user?.email), // Precisa ser este email devido í­Â  restrição do plano gratuito do Resend
+      from: 'Patrim�nio+ <suporte@patrimoniomais.com.br>', // Resend uses onboarding@resend.dev for unverified domains
+      to: ['suporte@patrimoniomais.com.br', 'suporte@patrimoniomais.com.br'].includes(profile?.email || userData?.user?.email), // Precisa ser este email devido à restrição do plano gratuito do Resend
       replyTo: userEmail, // Para o admin poder clicar em "Responder" no Gmail
       subject: `[Patrimônio+ Suporte] Novo Chamado de ${userName}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 10px;">
-          <h2 style="color: #00d4aa;">Novo Ticket de Suporte í°ÂÂÂ</h2>
+          <h2 style="color: #00d4aa;">Novo Ticket de Suporte 🚀</h2>
           <p><strong>Usuário:</strong> ${userName}</p>
           <p><strong>E-mail:</strong> <a href="mailto:${userEmail}">${userEmail}</a></p>
           <hr style="border: none; border-top: 1px solid #eaeaea; margin: 20px 0;" />

@@ -100,7 +100,7 @@ function RegisterForm() {
           <div style={{ fontSize: "0.85rem", fontWeight: 600, color: plan === "premium" ? "var(--green-primary)" : "var(--text-secondary)", marginBottom: "4px", display: "flex", alignItems: "center", gap: "4px" }}>
             Premium <Zap size={12} fill="currentColor" />
           </div>
-          <div style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary)" }}>R$ 19,99<span style={{ fontSize: "0.7rem", color: "var(--text-tertiary)" }}>/mí­Âªs</span></div>
+          <div style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary)" }}>R$ 19,99<span style={{ fontSize: "0.7rem", color: "var(--text-tertiary)" }}>/mês</span></div>
         </div>
       </div>
 
@@ -193,7 +193,7 @@ function RegisterForm() {
               name="password"
               id="password"
               type={showPassword ? "text" : "password"}
-              placeholder="Mí­Â­nimo 8 caracteres"
+              placeholder="Mínimo 8 caracteres"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -243,9 +243,9 @@ function RegisterForm() {
       )}
 
       <p style={{ textAlign: "center", marginTop: "20px", fontSize: "0.78rem", color: "var(--text-tertiary)", lineHeight: 1.6 }}>
-        Ao se registrar, vocí­Âª concorda com nossos{" "}
+        Ao se registrar, você concorda com nossos{" "}
         <a href="#" style={{ color: "var(--text-secondary)" }}>Termos de Uso</a> e{" "}
-        <a href="#" style={{ color: "var(--text-secondary)" }}>Polí­Â­tica de Privacidade</a>.
+        <a href="#" style={{ color: "var(--text-secondary)" }}>Política de Privacidade</a>.
       </p>
     </motion.div>
   );
@@ -274,7 +274,7 @@ export default function RegisterPage() {
         pointerEvents: "none", zIndex: 0,
       }} />
 
-      {/* Right panel í¢ÂÂ form */}
+      {/* Right panel — form */}
       <div style={{
         flex: 1, maxWidth: "560px",
         display: "flex", alignItems: "center", justifyContent: "center",
@@ -286,7 +286,7 @@ export default function RegisterPage() {
         </Suspense>
       </div>
 
-      {/* Left panel í¢ÂÂ illustration (hidden on mobile) */}
+      {/* Left panel — illustration (hidden on mobile) */}
       <div style={{
         flex: 1,
         background: "var(--bg-secondary)",
@@ -317,7 +317,7 @@ export default function RegisterPage() {
                 <TrendingUp size={22} color="#000" strokeWidth={2.5} />
               </div>
               <span style={{ fontWeight: 800, fontSize: "1.2rem", color: "var(--text-primary)" }}>
-                PATRIMí­ÂNIO<span style={{ color: "var(--green-primary)" }}>+</span>
+                PATRIMÔNIO<span style={{ color: "var(--green-primary)" }}>+</span>
               </span>
             </Link>
           </div>

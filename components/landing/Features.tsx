@@ -10,15 +10,15 @@ const features = [
   {
     icon: <TrendingUp size={22} />,
     title: "Evolução Patrimonial",
-    description: "Visualize o crescimento do seu patrimônio mí­Âªs a mí­Âªs com gráficos animados e comparativos histí­Â³ricos.",
+    description: "Visualize o crescimento do seu patrimônio mês a mês com gráficos animados e comparativos históricos.",
     color: "#00d4aa",
     glow: "rgba(0,212,170,0.15)",
-    tag: "ETFs & Açí­Âµes",
+    tag: "ETFs & Ações",
   },
   {
     icon: <Globe size={22} />,
     title: "ETFs Nacionais e Globais",
-    description: "BOVA11, IVVB11, HASH11 e ETFs internacionais com atualização automática de cotaçí­Âµes.",
+    description: "BOVA11, IVVB11, HASH11 e ETFs internacionais com atualização automática de cotações.",
     color: "#4f6ef7",
     glow: "rgba(79,110,247,0.15)",
     tag: "Mercado Global",
@@ -42,7 +42,7 @@ const features = [
   {
     icon: <BarChart3 size={22} />,
     title: "Dashboard Inteligente",
-    description: "Visão 360íÂ° da sua carteira: P&L, diversificação, setores, alocação e muito mais.",
+    description: "Visão 360° da sua carteira: P&L, diversificação, setores, alocação e muito mais.",
     color: "#00d4aa",
     glow: "rgba(0,212,170,0.15)",
     tag: "Analytics",
@@ -93,7 +93,7 @@ export default function Features() {
             Funcionalidades Premium
           </div>
           <h2 style={{ marginBottom: "16px" }}>
-            Tudo que vocí­Âª precisa para{" "}
+            Tudo que você precisa para{" "}
             <span className="gradient-text">crescer patrimônio</span>
           </h2>
           <p style={{ fontSize: "1.1rem", maxWidth: "560px", margin: "0 auto" }}>

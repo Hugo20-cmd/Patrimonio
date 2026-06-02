@@ -90,7 +90,7 @@ export default function PatrimonioSection() {
             <span className="gradient-text">crescer na prática</span>
           </h2>
           <p style={{ fontSize: "1.05rem", maxWidth: "520px", margin: "0 auto" }}>
-            Gráficos detalhados que mostram a evolução real do seu portfí­Â³lio, investimentos realizados e renda passiva gerada.
+            Gráficos detalhados que mostram a evolução real do seu portfólio, investimentos realizados e renda passiva gerada.
           </p>
         </motion.div>
 
@@ -126,7 +126,7 @@ export default function PatrimonioSection() {
               <div style={{ fontSize: "1.4rem", fontWeight: 800, color: "var(--text-primary)", marginBottom: "4px" }}>{s.value}</div>
               <div style={{ fontSize: "0.78rem", color: "var(--text-tertiary)", marginBottom: "6px" }}>{s.label}</div>
               <div style={{ fontSize: "0.8rem", fontWeight: 600, color: s.positive ? "var(--green-primary)" : "var(--red-primary)" }}>
-                {s.positive && "í¢ÂÂ"} {s.change}
+                {s.positive && "↑"} {s.change}
               </div>
             </motion.div>
           ))}
@@ -282,10 +282,10 @@ export default function PatrimonioSection() {
               padding: "14px",
               display: "flex", alignItems: "center", gap: "12px",
             }}>
-              <div style={{ fontSize: "1.5rem" }}>í°ÂÂÂ°</div>
+              <div style={{ fontSize: "1.5rem" }}>💰</div>
               <div>
-                <div style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--text-primary)" }}>Prí­Â³ximo dividendo</div>
-                <div style={{ fontSize: "0.75rem", color: "var(--green-primary)", fontWeight: 600 }}>MXRF11 í¢ÂÂ R$ 527,50 em 14/Jun</div>
+                <div style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--text-primary)" }}>Próximo dividendo</div>
+                <div style={{ fontSize: "0.75rem", color: "var(--green-primary)", fontWeight: 600 }}>MXRF11 — R$ 527,50 em 14/Jun</div>
               </div>
             </div>
           </motion.div>

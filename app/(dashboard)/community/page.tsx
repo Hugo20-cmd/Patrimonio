@@ -17,7 +17,7 @@ export default async function ForumPage() {
     return (
       <PremiumPaywall 
         title="Comunidade VIP de Investidores"
-        description="Junte-se ao chat exclusivo em tempo real. Troque ideias sobre açí­Âµes, FIIs e cripto de forma rápida e segura, longe de spans e bots."
+        description="Junte-se ao chat exclusivo em tempo real. Troque ideias sobre ações, FIIs e cripto de forma rápida e segura, longe de spans e bots."
         featureName="Chat VIP"
       />
     );

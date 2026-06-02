@@ -13,8 +13,8 @@ export default function NewsClient({ initialNews }: { initialNews: any[] }) {
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <h1 style={{ fontSize: "1.8rem", marginBottom: "4px" }}>Hub de Informaçí­Âµes</h1>
-          <p style={{ color: "var(--text-tertiary)", fontSize: "0.9rem" }}>Notí­Â­cias do mercado atualizadas em tempo real para assinantes.</p>
+          <h1 style={{ fontSize: "1.8rem", marginBottom: "4px" }}>Hub de Informações</h1>
+          <p style={{ color: "var(--text-tertiary)", fontSize: "0.9rem" }}>Notícias do mercado atualizadas em tempo real para assinantes.</p>
         </div>
       </div>
 

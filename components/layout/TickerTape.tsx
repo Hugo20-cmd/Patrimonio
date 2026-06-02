@@ -20,7 +20,7 @@ export default function TickerTape() {
         { proName: "BMFBOVESPA:IBOV", title: "Ibovespa" },
         { proName: "BMFBOVESPA:PETR4", title: "Petrobras" },
         { proName: "BMFBOVESPA:VALE3", title: "Vale" },
-        { proName: "BMFBOVESPA:ITUB4", title: "Itaí­Âº" },
+        { proName: "BMFBOVESPA:ITUB4", title: "Itaú" },
         { proName: "BMFBOVESPA:BOVA11", title: "BOVA11" },
         { proName: "BMFBOVESPA:SMAL11", title: "SMAL11" },
         { proName: "NASDAQ:AAPL", title: "Apple" },

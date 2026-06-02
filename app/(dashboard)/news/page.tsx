@@ -8,9 +8,9 @@ export default async function NewsPage() {
   if (newsResponse.error === 'premium_required') {
     return (
       <PremiumPaywall 
-        title="Central de Informaçí­Âµes de Mercado"
-        description="Receba atualizaçí­Âµes em tempo real sobre o mercado financeiro, economia, polí­Â­tica e as principais notí­Â­cias que afetam seus investimentos. Exclusivo para assinantes Premium."
-        featureName="Notí­Â­cias"
+        title="Central de Informações de Mercado"
+        description="Receba atualizações em tempo real sobre o mercado financeiro, economia, política e as principais notícias que afetam seus investimentos. Exclusivo para assinantes Premium."
+        featureName="Notícias"
       />
     );
   }

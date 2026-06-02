@@ -83,7 +83,7 @@ export default function TransactionsClient({ initialTransactions }: { initialTra
         </div>
 
         <div className="metric-card">
-          <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Saldo Lí­Â­quido</div>
+          <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Saldo Líquido</div>
           <div style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--text-primary)" }}>{formatCurrency(balance)}</div>
         </div>
       </div>
@@ -97,7 +97,7 @@ export default function TransactionsClient({ initialTransactions }: { initialTra
         overflow: "hidden",
       }}>
         <div style={{ padding: "20px 24px", borderBottom: "1px solid var(--border-subtle)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h3 style={{ fontSize: "1.1rem" }}>Histí­Â³rico</h3>
+          <h3 style={{ fontSize: "1.1rem" }}>Histórico</h3>
           <button className="btn btn-ghost btn-sm" style={{ padding: "4px" }}>
             <Filter size={16} />
           </button>
@@ -111,7 +111,7 @@ export default function TransactionsClient({ initialTransactions }: { initialTra
                 <th>Descrição</th>
                 <th>Categoria</th>
                 <th style={{ textAlign: "right" }}>Valor</th>
-                <th style={{ textAlign: "right", paddingRight: "24px" }}>Açí­Âµes</th>
+                <th style={{ textAlign: "right", paddingRight: "24px" }}>Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -243,13 +243,13 @@ export default function TransactionsClient({ initialTransactions }: { initialTra
               display: "flex", flexDirection: "column", gap: "8px", minWidth: "250px"
             }}
           >
-            <div style={{ fontSize: "1.2rem", fontWeight: 800 }}>í°ÂÂÂ Sucesso!</div>
+            <div style={{ fontSize: "1.2rem", fontWeight: 800 }}>🎉 Sucesso!</div>
             <div style={{ fontSize: "0.95rem" }}>
-              Vocí­Âª ganhou <strong>+{toastInfo.xp} XP</strong> por investir!
+              Você ganhou <strong>+{toastInfo.xp} XP</strong> por investir!
             </div>
             {toastInfo.achievements > 0 && (
               <div style={{ fontSize: "0.9rem", background: "rgba(255,255,255,0.2)", padding: "8px 12px", borderRadius: "8px", marginTop: "4px", fontWeight: 600 }}>
-                í°ÂÂÂ {toastInfo.achievements} Nova{toastInfo.achievements > 1 ? 's' : ''} Conquista{toastInfo.achievements > 1 ? 's' : ''} Desbloqueada{toastInfo.achievements > 1 ? 's' : ''}!
+                🏆 {toastInfo.achievements} Nova{toastInfo.achievements > 1 ? 's' : ''} Conquista{toastInfo.achievements > 1 ? 's' : ''} Desbloqueada{toastInfo.achievements > 1 ? 's' : ''}!
               </div>
             )}
           </motion.div>
