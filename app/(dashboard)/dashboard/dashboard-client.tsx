@@ -19,7 +19,7 @@ import { getPortfolioSnapshots } from "@/app/actions/snapshots";
 import { getMultipleQuotes, getExchangeRate } from "@/app/actions/market";
 import MarketOverview from "@/components/dashboard/MarketOverview";
 
-export default function DashboardClient({ initialAssets }: { initialAssets: any[] }) {
+export default function DashboardClient({ initialAssets, dividends = [] }: { initialAssets: any[], dividends?: any[] }) {
   const [timeRange, setTimeRange] = useState<"1M" | "6M" | "1A" | "TUDO">("1A");
   const [historyData, setHistoryData] = useState<any[]>([]);
   const [quotes, setQuotes] = useState<Record<string, any>>({});
@@ -130,6 +130,18 @@ export default function DashboardClient({ initialAssets }: { initialAssets: any[
 
   const [activeIndex, setActiveIndex] = useState(0);
 
+  // Calculate current month dividends
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+  const currentMonthDividends = dividends
+    .filter(d => {
+      const date = new Date(d.paymentDate);
+      return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+    })
+    .reduce((sum, d) => sum + d.amount, 0);
+
+  const hasDividends = currentMonthDividends > 0;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -185,11 +197,15 @@ export default function DashboardClient({ initialAssets }: { initialAssets: any[
             <div style={{ padding: "8px", borderRadius: "8px", background: "rgba(251,146,60,0.15)", color: "var(--orange-primary)" }}>
               <DollarSign size={18} />
             </div>
-            <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--text-tertiary)" }}>Sem dados</span>
+            {hasDividends ? (
+              <div className="badge" style={{ background: "rgba(251,146,60,0.2)", color: "var(--orange-primary)" }}>Ativo</div>
+            ) : (
+              <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--text-tertiary)" }}>Sem dados</span>
+            )}
           </div>
           <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Dividendos (Mês)</div>
           <div style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--text-primary)" }}>
-            R$ 0,00
+            {formatCurrency(currentMonthDividends)}
           </div>
         </div>
 
