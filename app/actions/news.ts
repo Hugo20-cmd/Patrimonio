@@ -42,6 +42,19 @@ export async function getMarketNews() {
             }
           } catch(e) {}
 
+          let pubDate = new Date().toISOString();
+          if (article.data_publicacao) {
+            const parts = article.data_publicacao.split(' ');
+            if (parts.length === 2) {
+              const dateParts = parts[0].split('/');
+              if (dateParts.length === 3) {
+                // dateParts is [DD, MM, YYYY]
+                // Construct standard ISO string YYYY-MM-DDTHH:mm:ss.000Z
+                pubDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}T${parts[1]}.000Z`;
+              }
+            }
+          }
+
           unifiedNews.push({
             id: idCounter++,
             title: article.titulo,
@@ -50,7 +63,7 @@ export async function getMarketNews() {
             category: 'Economia Nacional',
             url: article.link,
             imageUrl: imageUrl,
-            publishedAt: article.data_publicacao // Format: DD/MM/YYYY HH:MM:SS
+            publishedAt: pubDate
           });
         });
       }
