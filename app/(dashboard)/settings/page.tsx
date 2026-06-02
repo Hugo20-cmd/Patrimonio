@@ -278,7 +278,8 @@ export default function SettingsPage() {
                   const state = await OneSignal.User.PushSubscription.optedIn;
                   const token = await OneSignal.User.PushSubscription.id;
                   const extId = OneSignal.User.externalId;
-                  alert(`OneSignal Debug:\nOpted In: ${state}\nToken ID: ${token}\nExt ID: ${extId}\nApp ID: ${process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID?.substring(0,8)}...`);
+                  const initErr = (window as any).oneSignalError || "Nenhum erro de inicio";
+                  alert(`OneSignal Debug:\nOpted In: ${state}\nToken ID: ${token}\nExt ID: ${extId}\nApp ID: ${process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID?.substring(0,8)}...\nInit Erro: ${initErr}`);
                 } catch(e: any) {
                   alert("Debug error: " + e.message);
                 }

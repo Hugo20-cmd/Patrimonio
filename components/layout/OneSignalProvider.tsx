@@ -23,8 +23,11 @@ export default function OneSignalProvider({ user }: { user: any }) {
         if (user && user.id) {
           OneSignal.login(user.id);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Erro ao inicializar OneSignal:", error);
+        if (typeof window !== "undefined") {
+          (window as any).oneSignalError = error.message || error.toString();
+        }
       }
     }
 
