@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { 
   TrendingUp, LayoutDashboard, PieChart, Target, 
   Award, Settings, LogOut, ArrowRightLeft, DollarSign, Link as LinkIcon, ArrowLeft,
-  Newspaper, MessageSquare, MessagesSquare, Headphones, Search, Crown, Download, Users
+  Newspaper, MessageSquare, MessagesSquare, Headphones, Search, Crown, Download, Users, Sparkles
 } from "lucide-react";
 import { getProfile } from "@/app/actions/profile";
 import { logout } from "@/app/actions/auth";
@@ -236,11 +236,17 @@ export default function Sidebar({
             <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--text-primary)", whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden" }}>
               {profile?.name || "Novo Investidor"}
             </div>
-            <div style={{ fontSize: "0.75rem", color: subStatus === "premium" ? "var(--purple-primary)" : "var(--green-primary)", fontWeight: 600, display: "flex", alignItems: "center", gap: "4px" }}>
-              {subStatus === "premium" ? (
+            <div style={{ fontSize: "0.75rem", color: (subStatus === "premium" || subStatus === "pro") ? "var(--purple-primary)" : "var(--green-primary)", fontWeight: 600, display: "flex", alignItems: "center", gap: "4px" }}>
+              {(subStatus === "premium" || subStatus === "pro") ? (
                 <>Premium <Award size={12} /></>
               ) : "Free"}
             </div>
+            {/* Selo Pioneiro */}
+            {(subStatus === "premium" || subStatus === "pro") && (
+              <div style={{ marginTop: "4px", display: "inline-flex", alignItems: "center", gap: "4px", background: "linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(255,165,0,0.1) 100%)", border: "1px solid rgba(255,215,0,0.3)", padding: "2px 6px", borderRadius: "8px", color: "#FFD700", fontSize: "0.65rem", fontWeight: 700 }}>
+                <Sparkles size={10} /> Pioneiro Open Finance
+              </div>
+            )}
           </div>
         </div>
       </div>
