@@ -5,21 +5,21 @@ import Link from "next/link";
 
 const footerLinks = {
   produto: [
-    { label: "Funcionalidades", href: "#" },
-    { label: "Preços", href: "#" },
-    { label: "Ativos Suportados", href: "#" },
-    { label: "Integrações", href: "#" },
+    { label: "Funcionalidades", href: "#features" },
+    { label: "Preços", href: "#planos" },
+    { label: "Comunidade", href: "#comunidade" },
+    { label: "Academia PRO", href: "/academia" },
   ],
   empresa: [
     { label: "Sobre", href: "#" },
-    { label: "Blog", href: "#" },
-    { label: "Carreiras", href: "#" },
-    { label: "Contato", href: "#" },
+    { label: "Suporte", href: "/support" },
+    { label: "Entrar", href: "/login" },
+    { label: "Criar Conta", href: "/register" },
   ],
   legal: [
-    { label: "Termos de Uso", href: "#" },
-    { label: "Privacidade", href: "#" },
-    { label: "Segurança", href: "#" },
+    { label: "Termos de Uso", href: "/termos" },
+    { label: "Privacidade", href: "/termos" },
+    { label: "Segurança", href: "/termos" },
   ]
 };
 
@@ -63,13 +63,13 @@ export default function Footer() {
             </p>
             
             <div style={{ display: "flex", gap: "16px" }}>
-              <a href="#" style={{ color: "var(--text-tertiary)", transition: "color 0.2s" }} onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"} onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)"}>
+              <a href="https://patrimoniomais.com.br" target="_blank" rel="noopener noreferrer" style={{ color: "var(--text-tertiary)", transition: "color 0.2s" }} onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"} onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)"}>
                 <Globe size={20} />
               </a>
-              <a href="#" style={{ color: "var(--text-tertiary)", transition: "color 0.2s" }} onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"} onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)"}>
+              <a href="https://instagram.com/patrimoniomais" target="_blank" rel="noopener noreferrer" style={{ color: "var(--text-tertiary)", transition: "color 0.2s" }} onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"} onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)"}>
                 <MessageCircle size={20} />
               </a>
-              <a href="#" style={{ color: "var(--text-tertiary)", transition: "color 0.2s" }} onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"} onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)"}>
+              <a href="mailto:contato@patrimoniomais.com.br" style={{ color: "var(--text-tertiary)", transition: "color 0.2s" }} onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"} onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)"}>
                 <Mail size={20} />
               </a>
             </div>

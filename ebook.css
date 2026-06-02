@@ -1,0 +1,48 @@
+body { 
+  font-family: 'Georgia', serif; 
+  font-size: 18px; 
+  line-height: 1.8; 
+  color: #222; 
+  margin: 0;
+  padding: 0;
+} 
+
+h1, h2, h3 { 
+  font-family: 'Helvetica', sans-serif; 
+  color: #111; 
+} 
+
+p { 
+  margin-bottom: 20px; 
+}
+
+.illustration {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin: 20px 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.cover-page {
+  position: absolute;
+  top: -25mm;
+  left: -25mm;
+  width: calc(100% + 50mm);
+  height: calc(100% + 50mm);
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000;
+}
+
+.cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

@@ -1,7 +1,8 @@
----
-title: A Trilha do Investidor
-author: Patrimônio+
----
+<div class="cover-page">
+  <img src="assets/ebook/cover.png" alt="Capa" class="cover-img" />
+</div>
+
+<div style="page-break-after: always;"></div>
 
 # A Trilha do Investidor
 **Do Início dos Tempos à Era Digital: O Guia Definitivo para a Construção de Riqueza**
@@ -24,6 +25,8 @@ A jornada começa há mais de 400 anos, cruza oceanos, sobrevive a guerras, pand
 
 ## Capítulo 1: As Origens – Amsterdã e o Oceano de Oportunidades
 
+<img src="assets/ebook/amsterdam.png" alt="Navio Holandês" class="illustration" />
+
 No início do século XVII, o mundo estava em efervescência. As navegações prometiam riquezas inimagináveis do "Novo Mundo" e das Índias Orientais, com navios retornando carregados de especiarias (cravo, canela, noz-moscada) e sedas. No entanto, financiar essas expedições era extremamente caro e perigoso. Tempestades, piratas e doenças frequentemente destruíam frotas inteiras. Um único mercador raramente tinha capital suficiente para equipar um navio e, se o navio afundasse, a ruína financeira era certa.
 
 Foi então que surgiu uma das ideias mais brilhantes da história da economia moderna: a **Companhia Holandesa das Índias Orientais (VOC)**, fundada em 1602. Em vez de um único indivíduo arcar com todo o risco de uma expedição, a VOC decidiu abrir a possibilidade de qualquer cidadão financiar as viagens. 
@@ -37,6 +40,8 @@ O conceito de fracionar negócios para pulverizar o risco e distribuir os lucros
 <div style="page-break-after: always;"></div>
 
 ## Capítulo 2: A Evolução de Wall Street – O Sonho Americano em Papel
+
+<img src="assets/ebook/wallstreet.png" alt="Wall Street" class="illustration" />
 
 Quase dois séculos depois de Amsterdã, do outro lado do oceano Atlântico, os Estados Unidos tinham acabado de conquistar sua independência e estavam endividados pela Guerra Revolucionária. Para reerguer o país, o governo emitiu títulos da dívida pública, e logo os bancos e recém-criadas seguradoras começaram a emitir as suas próprias ações.
 
@@ -85,6 +90,8 @@ A fórmula matemática dos juros compostos é implacável: nela, o "Tempo" é um
 
 ## Capítulo 5: A Era Moderna – ETFs, FIIs e a Democratização Total
 
+<img src="assets/ebook/modern.png" alt="Era Digital" class="illustration" />
+
 Chegamos aos dias de hoje. Historicamente, investir era uma atividade cara (corretagens de 50, 100 reais por ordem) e elitista. Somente quem detinha "A Informação" conseguia ganhar dinheiro, enquanto o cidadão comum era empurrado para fundos ruins geridos por gerentes de bancos.
 
 A internet e as FinTechs implodiram esse sistema. O advento das corretoras digitais (com corretagem **Zero**) transferiu o poder diretamente para as suas mãos. Você agora está no comando.
@@ -120,3 +127,9 @@ O próximo capítulo da história quem escreve é você. E será uma história d
 **Acelere.**
 
 *© 2026 Patrimônio+ - Academia PRO*
+
+<div style="page-break-after: always;"></div>
+
+<div class="cover-page">
+  <img src="assets/ebook/backcover.png" alt="Contracapa" class="cover-img" />
+</div>
