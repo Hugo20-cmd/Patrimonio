@@ -809,8 +809,8 @@ export default function PortfolioClient({ initialAssets, subscriptionStatus }: {
                   </div>
 
                   <div style={{ marginBottom: "24px" }}>
-                    <label>Data da Operação</label>
-                    <input name="date" type="date" defaultValue={editingAssetId ? assets.find(a => a.id === editingAssetId)?.purchaseDate : new Date().toISOString().split("T")[0]} required />
+                    <label>Data e Hora da Operação</label>
+                    <input name="date" type="datetime-local" defaultValue={editingAssetId ? new Date(new Date(assets.find(a => a.id === editingAssetId)?.purchaseDate || Date.now()).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)} required />
                   </div>
 
                   {assetType !== "treasury" && (
