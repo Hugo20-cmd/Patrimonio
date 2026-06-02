@@ -7,6 +7,7 @@ import { Menu } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import PresenceTracker from "@/components/layout/PresenceTracker";
 import TickerTape from "@/components/layout/TickerTape";
+import OneSignalProvider from "@/components/layout/OneSignalProvider";
 
 export default function DashboardLayout({
   children,
@@ -84,6 +85,7 @@ export default function DashboardLayout({
       </button>
 
       <PresenceTracker userEmail={user?.email || ""} userName={user?.user_metadata?.name || "User"} />
+      <OneSignalProvider user={user} />
 
       <style jsx global>{`
         @media (max-width: 768px) {

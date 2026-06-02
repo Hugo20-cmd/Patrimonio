@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Save, User, Image as ImageIcon, Bell } from "lucide-react";
 import { getProfile, updateProfile } from "@/app/actions/profile";
+import OneSignal from "react-onesignal";
 
 export default function SettingsPage() {
   const [profile, setProfile] = useState<any>(null);
@@ -202,7 +203,17 @@ export default function SettingsPage() {
             
             <button
               type="button"
-              onClick={() => setNewsNotifications(!newsNotifications)}
+              onClick={() => {
+                const newValue = !newsNotifications;
+                setNewsNotifications(newValue);
+                if (newValue) {
+                  try {
+                    OneSignal.Slidedown.promptPush();
+                  } catch(e) {
+                    console.error("OneSignal prompt erro:", e);
+                  }
+                }
+              }}
               style={{
                 width: "44px", height: "24px",
                 borderRadius: "12px",
