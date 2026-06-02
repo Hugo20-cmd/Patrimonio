@@ -225,12 +225,21 @@ export default function SettingsPage() {
             
             <button
               type="button"
-              onClick={() => {
+              onClick={async () => {
                 const newValue = !newsNotifications;
                 setNewsNotifications(newValue);
                 if (newValue) {
                   try {
-                    OneSignal.Slidedown.promptPush();
+                    // Try the native browser permission prompt first (most reliable)
+                    if (OneSignal.Notifications && OneSignal.Notifications.requestPermission) {
+                      await OneSignal.Notifications.requestPermission();
+                    } else if (OneSignal.Slidedown && OneSignal.Slidedown.promptPush) {
+                      await OneSignal.Slidedown.promptPush();
+                    }
+                    // Force OneSignal login just to be sure Ext ID is set
+                    if (profile && profile.id) {
+                      await OneSignal.login(profile.id);
+                    }
                   } catch(e) {
                     console.error("OneSignal prompt erro:", e);
                   }
