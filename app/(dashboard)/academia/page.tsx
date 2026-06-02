@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { PlayCircle, Lock, CheckCircle2, Crown, BrainCircuit, TrendingUp, ShieldAlert, Building2, Briefcase, Globe2, X, ChevronRight, ChevronLeft, PieChart, AlertOctagon, ShieldCheck } from "lucide-react";
 import { getSubscriptionStatus } from "@/app/actions/subscription";
 
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 
 import { CURRICULUM } from "@/lib/data/curriculum";
 
@@ -16,11 +16,16 @@ export default function AcademiaPage() {
   const [showPaywall, setShowPaywall] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(data.user?.email || '')) {
+    const fetchUser = async () => {
+      const supabase = createClient();
+      // Use standard App Router client pattern, or fallback to direct fetch if imported supabase has session
+      const { data } = await supabase.auth.getUser();
+      const email = data?.user?.email?.toLowerCase().trim() || '';
+      if (['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(email)) {
         setIsAdmin(true);
       }
-    });
+    };
+    fetchUser();
   }, []);
 
   const displayCurriculum = CURRICULUM.map(mod => ({
