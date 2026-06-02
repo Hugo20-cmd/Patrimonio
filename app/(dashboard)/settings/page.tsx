@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Save, User, Image as ImageIcon, Bell } from "lucide-react";
-import { getProfile, updateProfile } from "@/app/actions/profile";
+import { Save, User, Image as ImageIcon, Bell, AlertTriangle } from "lucide-react";
+import { getProfile, updateProfile, deleteAccount } from "@/app/actions/profile";
+import { logout } from "@/app/actions/auth";
 import OneSignal from "react-onesignal";
 
 export default function SettingsPage() {
@@ -15,6 +16,27 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDeleteAccount = async () => {
+    const confirm1 = window.confirm("CUIDADO: Você está prestes a excluir sua conta definitivamente. Todos os seus dados, lançamentos e XP serão perdidos para sempre. Deseja continuar?");
+    if (!confirm1) return;
+    
+    const confirm2 = window.prompt("Para confirmar a exclusão, digite a palavra 'DELETAR' abaixo:");
+    if (confirm2 !== "DELETAR") {
+      alert("Exclusão cancelada.");
+      return;
+    }
+
+    setIsDeleting(true);
+    const result = await deleteAccount();
+    if (result.error) {
+      alert("Erro ao deletar conta: " + result.error);
+      setIsDeleting(false);
+    } else {
+      await logout();
+    }
+  };
 
   useEffect(() => {
     // Load local settings
@@ -286,6 +308,31 @@ export default function SettingsPage() {
           style={{ background: "rgba(0,212,170,0.1)", color: "var(--green-primary)", border: "1px solid var(--green-primary)", padding: "10px 16px", fontWeight: 600 }}
         >
           Sincronizar Histórico e XP
+        </button>
+      </div>
+
+      {/* Delete Account Section */}
+      <div style={{
+        background: "rgba(255, 77, 109, 0.05)",
+        border: "1px solid rgba(255, 77, 109, 0.3)",
+        borderRadius: "16px",
+        padding: "32px",
+        marginTop: "24px"
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+          <AlertTriangle size={24} color="var(--red-primary)" />
+          <h2 style={{ fontSize: "1.2rem", margin: 0, color: "var(--red-primary)" }}>Excluir Conta</h2>
+        </div>
+        <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", marginBottom: "16px" }}>
+          Esta ação é <strong>irreversível</strong>. Ao excluir sua conta, todos os seus dados de lançamentos, investimentos, metas e conquistas serão removidos permanentemente dos nossos servidores.
+        </p>
+        <button
+          onClick={handleDeleteAccount}
+          disabled={isDeleting}
+          className="btn"
+          style={{ background: "var(--red-primary)", color: "#fff", border: "none", padding: "10px 16px", fontWeight: 600, opacity: isDeleting ? 0.7 : 1 }}
+        >
+          {isDeleting ? "Excluindo..." : "Excluir minha conta definitivamente"}
         </button>
       </div>
 

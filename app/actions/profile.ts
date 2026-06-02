@@ -121,3 +121,27 @@ export async function debugBuckets() {
   const { data, error } = await supabase.storage.listBuckets()
   return { data, error }
 }
+
+export async function deleteAccount() {
+  const supabase = await createClient()
+  const { data: userData } = await supabase.auth.getUser()
+  
+  if (!userData?.user) {
+    return { error: 'Usuário não autenticado' }
+  }
+
+  const { createClient: createAdminClient } = await import('@supabase/supabase-js')
+  const supabaseAdmin = createAdminClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://dummy.supabase.co',
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'dummy_key'
+  )
+
+  const { error } = await supabaseAdmin.auth.admin.deleteUser(userData.user.id)
+  
+  if (error) {
+    console.error('Erro ao deletar conta:', error)
+    return { error: error.message }
+  }
+
+  return { success: true }
+}
