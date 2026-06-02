@@ -48,8 +48,11 @@ function calcMetrics(assets: any[], quotes: Record<string, any>, globalCurrency:
 // ----------------------------------------------------------------
 // Component
 // ----------------------------------------------------------------
-export default function PortfolioClient({ initialAssets, subscriptionStatus }: { initialAssets: any[], subscriptionStatus: string }) {
+export default function PortfolioClient({ initialAssets, initialTransactions = [], subscriptionStatus }: { initialAssets: any[], initialTransactions?: any[], subscriptionStatus: string }) {
   const [assets, setAssets] = useState<any[]>(initialAssets);
+  const [transactions, setTransactions] = useState<any[]>(initialTransactions);
+  const [activeTab, setActiveTab] = useState<"portfolio" | "history">("portfolio");
+  const [historyFilter, setHistoryFilter] = useState<"ALL" | "buy" | "sell" | "dividend">("ALL");
   const [quotes, setQuotes] = useState<Record<string, any>>({});
   const [quotesLoading, setQuotesLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
@@ -258,11 +261,24 @@ export default function PortfolioClient({ initialAssets, subscriptionStatus }: {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <h1 style={{ fontSize: "1.8rem", marginBottom: "4px" }}>Minha Carteira</h1>
-          <p style={{ color: "var(--text-tertiary)", fontSize: "0.9rem" }}>
-            Cotações ao vivo da B3 via Brapi.
-            {lastUpdated && (
-              <span style={{ marginLeft: "8px", color: "var(--green-primary)", fontWeight: 600 }}>
-                Atualizado às {lastUpdated.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+          <p style={{ color: "var(--text-tertiary)", fontSize: "0.9rem", display: "flex", alignItems: "center", gap: "12px" }}>
+            <span style={{ display: "flex", alignItems: "center", gap: "4px", background: "var(--bg-elevated)", padding: "4px 8px", borderRadius: "8px", border: "1px solid var(--border-default)" }}>
+              <button 
+                onClick={() => setActiveTab("portfolio")}
+                style={{ background: activeTab === "portfolio" ? "var(--text-primary)" : "transparent", color: activeTab === "portfolio" ? "var(--bg-card)" : "var(--text-secondary)", border: "none", padding: "4px 12px", borderRadius: "6px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s" }}
+              >
+                Posição Consolidada
+              </button>
+              <button 
+                onClick={() => setActiveTab("history")}
+                style={{ background: activeTab === "history" ? "var(--text-primary)" : "transparent", color: activeTab === "history" ? "var(--bg-card)" : "var(--text-secondary)", border: "none", padding: "4px 12px", borderRadius: "6px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s" }}
+              >
+                Movimentações
+              </button>
+            </span>
+            {lastUpdated && activeTab === "portfolio" && (
+              <span style={{ color: "var(--green-primary)", fontWeight: 600 }}>
+                Cotações ao vivo via Brapi às {lastUpdated.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
               </span>
             )}
           </p>
@@ -318,28 +334,30 @@ export default function PortfolioClient({ initialAssets, subscriptionStatus }: {
         </div>
       </div>
 
-      {/* Summary Cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px" }}>
-        {[
-          { label: "Total Investido", value: formatCurrency(metrics.totalInvested, globalCurrency), color: "var(--text-primary)" },
-          { label: "Valor Atual", value: formatCurrency(metrics.totalCurrent, globalCurrency), color: "var(--text-primary)" },
-          {
-            label: "Resultado",
-            value: formatCurrency(metrics.totalProfit, globalCurrency),
-            sub: formatPercent(metrics.totalProfitPercent),
-            color: metrics.totalProfit >= 0 ? "var(--green-primary)" : "var(--red-primary)",
-          },
-          { label: "Posições", value: `${assets.length} ativos`, color: "var(--text-primary)" },
-        ].map((card) => (
-          <div key={card.label} style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "12px", padding: "16px" }}>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>{card.label}</div>
-            <div style={{ fontSize: "1.4rem", fontWeight: 800, color: card.color }}>{card.value}</div>
-            {card.sub && <div style={{ fontSize: "0.8rem", fontWeight: 700, color: card.color }}>{card.sub}</div>}
-          </div>
-        ))}
-      </div>
+      {activeTab === "portfolio" && (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px" }}>
+          {[
+            { label: "Total Investido", value: formatCurrency(metrics.totalInvested, globalCurrency), color: "var(--text-primary)" },
+            { label: "Valor Atual", value: formatCurrency(metrics.totalCurrent, globalCurrency), color: "var(--text-primary)" },
+            {
+              label: "Resultado",
+              value: formatCurrency(metrics.totalProfit, globalCurrency),
+              sub: formatPercent(metrics.totalProfitPercent),
+              color: metrics.totalProfit >= 0 ? "var(--green-primary)" : "var(--red-primary)",
+            },
+            { label: "Posições", value: `${assets.length} ativos`, color: "var(--text-primary)" },
+          ].map((card) => (
+            <div key={card.label} style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "12px", padding: "16px" }}>
+              <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>{card.label}</div>
+              <div style={{ fontSize: "1.4rem", fontWeight: 800, color: card.color }}>{card.value}</div>
+              {card.sub && <div style={{ fontSize: "0.8rem", fontWeight: 700, color: card.color }}>{card.sub}</div>}
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Table Card */}
+      {activeTab === "portfolio" ? (
       <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}>
         {/* Controls */}
         <div style={{ padding: "20px", borderBottom: "1px solid var(--border-subtle)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
@@ -541,6 +559,49 @@ export default function PortfolioClient({ initialAssets, subscriptionStatus }: {
           </table>
         </div>
       </div>
+      ) : (
+      <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}>
+        <div style={{ padding: "20px", borderBottom: "1px solid var(--border-subtle)", display: "flex", gap: "12px", overflowX: "auto" }}>
+          <button onClick={() => setHistoryFilter("ALL")} style={{ background: historyFilter === "ALL" ? "rgba(255,193,7,0.15)" : "transparent", color: historyFilter === "ALL" ? "#FFC107" : "var(--text-secondary)", border: `1px solid ${historyFilter === "ALL" ? "#FFC107" : "var(--border-default)"}`, padding: "6px 16px", borderRadius: "20px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap" }}>Todas</button>
+          <button onClick={() => setHistoryFilter("buy")} style={{ background: historyFilter === "buy" ? "rgba(255,193,7,0.15)" : "transparent", color: historyFilter === "buy" ? "#FFC107" : "var(--text-secondary)", border: `1px solid ${historyFilter === "buy" ? "#FFC107" : "var(--border-default)"}`, padding: "6px 16px", borderRadius: "20px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap" }}>Compras</button>
+          <button onClick={() => setHistoryFilter("sell")} style={{ background: historyFilter === "sell" ? "rgba(255,193,7,0.15)" : "transparent", color: historyFilter === "sell" ? "#FFC107" : "var(--text-secondary)", border: `1px solid ${historyFilter === "sell" ? "#FFC107" : "var(--border-default)"}`, padding: "6px 16px", borderRadius: "20px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap" }}>Vendas</button>
+          <button onClick={() => setHistoryFilter("dividend")} style={{ background: historyFilter === "dividend" ? "rgba(255,193,7,0.15)" : "transparent", color: historyFilter === "dividend" ? "#FFC107" : "var(--text-secondary)", border: `1px solid ${historyFilter === "dividend" ? "#FFC107" : "var(--border-default)"}`, padding: "6px 16px", borderRadius: "20px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap" }}>Dividendos</button>
+        </div>
+        <div style={{ padding: "0 20px" }}>
+          {transactions.filter(t => historyFilter === "ALL" || t.operation === historyFilter).map((tx, idx) => {
+            const dateObj = new Date(tx.operation_date);
+            const dateStr = dateObj.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' });
+            const timeStr = dateObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            const opLabel = tx.operation === 'buy' ? 'Aplicou em' : tx.operation === 'sell' ? 'Vendeu' : 'Recebeu dividendos';
+            const valueColor = tx.operation === 'dividend' ? 'var(--green-primary)' : 'var(--text-primary)';
+            const sign = tx.operation === 'dividend' ? '+ ' : '';
+
+            return (
+              <div key={tx.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 0", borderBottom: "1px solid var(--border-subtle)" }}>
+                <div>
+                  <div style={{ fontSize: "0.85rem", color: "var(--text-tertiary)", marginBottom: "8px" }}>{dateStr} às {timeStr}</div>
+                  <div style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--text-primary)", marginBottom: "4px" }}>{opLabel} {tx.ticker}</div>
+                  <div style={{ fontSize: "0.85rem", color: "var(--text-tertiary)" }}>Concluído</div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: "1.1rem", fontWeight: 600, color: valueColor }}>
+                    {sign}{formatCurrency(tx.quantity * tx.price, tx.currency)}
+                  </div>
+                  <div style={{ fontSize: "0.85rem", color: "var(--text-tertiary)", marginTop: "4px" }}>
+                    Qtd: {tx.quantity} a {formatCurrency(tx.price, tx.currency)}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+          {transactions.length === 0 && (
+            <div style={{ textAlign: "center", padding: "60px 20px", color: "var(--text-tertiary)" }}>
+              Nenhuma movimentação registrada.
+            </div>
+          )}
+        </div>
+      </div>
+      )}
 
       {/* Add Asset Modal */}
       <AnimatePresence>

@@ -154,6 +154,20 @@ export async function addAsset(formData: FormData) {
     if (error) return { error: error.message }
   }
 
+  // INSERT INTO TRANSACTION HISTORY
+  if (operation !== 'sell' || existingAsset) {
+    await supabase.from('asset_transactions').insert({
+      user_id: userData.user.id,
+      ticker: ticker,
+      asset_type: type,
+      operation: operation,
+      quantity: Math.abs(Number(quantityRaw)), // Keep positive for history
+      price: price,
+      currency: currency,
+      operation_date: date
+    });
+  }
+
   const { syncRetroactiveXp } = await import('./gamification')
   await syncRetroactiveXp()
 
