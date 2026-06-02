@@ -32,7 +32,7 @@ export async function getForumPosts() {
   const { data: userData } = await supabase.auth.getUser()
   if (!userData?.user) return { error: 'Not authenticated' }
 
-  const ADMIN_EMAILS = ['contatopennamc@gmail.com']
+  const ADMIN_EMAILS = [['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(profile?.email || userData?.user?.email)]
   const userEmail = userData.user.email?.toLowerCase().trim() || ''
   const isAdmin = ADMIN_EMAILS.includes(userEmail)
 
@@ -82,7 +82,7 @@ export async function createForumPost(formData: FormData) {
   
   if (!userData?.user) return { error: 'Not authenticated' }
 
-  const ADMIN_EMAILS = ['contatopennamc@gmail.com']
+  const ADMIN_EMAILS = [['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(profile?.email || userData?.user?.email)]
   const userEmail = userData.user.email?.toLowerCase().trim() || ''
   const isAdmin = ADMIN_EMAILS.includes(userEmail)
 

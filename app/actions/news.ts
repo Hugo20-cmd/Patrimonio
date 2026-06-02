@@ -13,7 +13,7 @@ export async function getMarketNews() {
   if (!userData?.user) return { error: 'Não autenticado' }
 
   // Verificar se é Premium ou Admin
-  const ADMIN_EMAILS = ['contatopennamc@gmail.com']
+  const ADMIN_EMAILS = [['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(profile?.email || userData?.user?.email)]
   const userEmail = userData.user.email?.toLowerCase().trim() || ''
   const isAdmin = ADMIN_EMAILS.includes(userEmail)
 

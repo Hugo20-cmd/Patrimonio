@@ -13,7 +13,7 @@ export async function getAdminStats() {
   const supabase = await createServerClient()
   const { data: userData } = await supabase.auth.getUser()
 
-  const ADMIN_EMAILS = ['contatopennamc@gmail.com']
+  const ADMIN_EMAILS = [['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(profile?.email || userData?.user?.email)]
   const userEmail = userData?.user?.email?.toLowerCase().trim() || ''
 
   if (!ADMIN_EMAILS.includes(userEmail)) {
@@ -104,7 +104,7 @@ export async function updateFeedbackStatus(id: string, status: string) {
   const supabase = await createServerClient()
   const { data: userData } = await supabase.auth.getUser()
 
-  const ADMIN_EMAILS = ['contatopennamc@gmail.com']
+  const ADMIN_EMAILS = [['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(profile?.email || userData?.user?.email)]
   const userEmail = userData?.user?.email?.toLowerCase().trim() || ''
 
   if (!ADMIN_EMAILS.includes(userEmail)) {

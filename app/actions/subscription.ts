@@ -8,7 +8,7 @@ export async function getSubscriptionStatus() {
   if (!userData?.user) return { status: 'free' }
 
   // 👑 ADMIN BYPASS (Acesso Vitalício)
-  const ADMIN_EMAILS = ['contatopennamc@gmail.com']
+  const ADMIN_EMAILS = [['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(profile?.email || userData?.user?.email)]
   const userEmail = userData.user.email?.toLowerCase().trim() || ''
   if (ADMIN_EMAILS.includes(userEmail)) {
     return { status: 'premium', current_period_end: '2099-12-31' }
