@@ -42,58 +42,58 @@ function EduTooltip({ title, text, value }: { title: string, text: string, value
 }
 
 const MACRO_DATA = [
-  { label: "Dólar Comercial", value: "R$ 5,06", desc: "Moeda forte mundial. Protege seu patrimônio contra a inflação local e crises." },
+  { label: "Dí³lar Comercial", value: "R$ 5,06", desc: "Moeda forte mundial. Protege seu patrimônio contra a inflação local e crises." },
   { label: "Taxa Selic", value: "10,50%", desc: "A taxa básica de juros do Brasil. Se a Selic sobe, a Renda Fixa paga mais." },
   { label: "IPCA (Inflação)", value: "4,50%", desc: "Mede o custo de vida. Seu dinheiro precisa render sempre MAIS que o IPCA." },
-  { label: "Euro", value: "R$ 5,45", desc: "A moeda oficial de 20 países da Europa. Forte reserva de valor." }
+  { label: "Euro", value: "R$ 5,45", desc: "A moeda oficial de 20 paí­ses da Europa. Forte reserva de valor." }
 ];
 
 const EDUCATIONAL_COLLECTIONS = [
   {
     id: "iniciantes",
     title: "O \"Feijão com Arroz\" (Para Iniciantes)",
-    description: "ETFs que compram dezenas de empresas de uma vez só. O jeito mais fácil, barato e seguro de começar a investir sem ter que escolher.",
+    description: "ETFs que compram dezenas de empresas de uma vez sí³. O jeito mais fácil, barato e seguro de começar a investir sem ter que escolher.",
     icon: <ShieldCheck size={24} color="var(--green-primary)" />,
     assets: [
-      { ticker: "BOVA11", name: "iShares Ibovespa", reason: "Compra as 80 maiores empresas do Brasil de uma só vez.", tags: ["Brasil", "Diversificado"], fundamentals: { var12m: "+12,5%" } },
-      { ticker: "IVVB11", name: "iShares S&P 500", reason: "Investe nas 500 maiores empresas dos Estados Unidos. Proteção em dólar.", tags: ["EUA", "Dólar"], fundamentals: { var12m: "+24,1%" } },
+      { ticker: "BOVA11", name: "iShares Ibovespa", reason: "Compra as 80 maiores empresas do Brasil de uma sí³ vez.", tags: ["Brasil", "Diversificado"], fundamentals: { var12m: "+12,5%" } },
+      { ticker: "IVVB11", name: "iShares S&P 500", reason: "Investe nas 500 maiores empresas dos Estados Unidos. Proteção em dí³lar.", tags: ["EUA", "Dí³lar"], fundamentals: { var12m: "+24,1%" } },
     ]
   },
   {
     id: "renda",
-    title: "Construindo Renda (Imóveis e Dividendos)",
-    description: "Ativos focados em te pagar dinheiro limpo na conta todo mês (como se fossem aluguéis).",
+    title: "Construindo Renda (Imí³veis e Dividendos)",
+    description: "Ativos focados em te pagar dinheiro limpo na conta todo míªs (como se fossem aluguéis).",
     icon: <Building size={24} color="var(--blue-primary)" />,
     assets: [
       { ticker: "MXRF11", name: "Maxi Renda FII", reason: "Fundo imobiliário muito popular que paga dividendos todos os meses.", tags: ["FII", "Renda Mensal"], fundamentals: { dy: "12,4%", pvp: "1,03", var12m: "+5,2%" } },
-      { ticker: "HGLG11", name: "CSHG Logística", reason: "Dono de galpões logísticos alugados para grandes empresas no Brasil.", tags: ["FII", "Imóveis"], fundamentals: { dy: "9,1%", pvp: "0,95", var12m: "+8,7%" } },
-      { ticker: "BBAS3", name: "Banco do Brasil", reason: "Banco sólido famoso por distribuir ótimos lucros aos sócios.", tags: ["Ação", "Dividendos"], fundamentals: { dy: "11,2%", pvp: "0,88", var12m: "+18,5%" } }
+      { ticker: "HGLG11", name: "CSHG Logí­stica", reason: "Dono de galpíµes logí­sticos alugados para grandes empresas no Brasil.", tags: ["FII", "Imí³veis"], fundamentals: { dy: "9,1%", pvp: "0,95", var12m: "+8,7%" } },
+      { ticker: "BBAS3", name: "Banco do Brasil", reason: "Banco sí³lido famoso por distribuir í³timos lucros aos sí³cios.", tags: ["Ação", "Dividendos"], fundamentals: { dy: "11,2%", pvp: "0,88", var12m: "+18,5%" } }
     ]
   },
   {
     id: "reits",
-    title: "REITs (Imóveis em Dólar)",
-    description: "Receba 'aluguéis' em dólar investindo nos maiores galpões, shoppings e hospitais dos Estados Unidos.",
+    title: "REITs (Imí³veis em Dí³lar)",
+    description: "Receba 'aluguéis' em dí³lar investindo nos maiores galpíµes, shoppings e hospitais dos Estados Unidos.",
     icon: <MapPin size={24} color="#ff8c00" />,
     assets: [
-      { ticker: "O", name: "Realty Income", reason: "Conhecido como 'The Monthly Dividend Company', paga dividendos todo mês nos EUA.", tags: ["REIT", "Mensal"], fundamentals: { dy: "5,8%", pvp: "1,41", var12m: "+13,8%" } },
-      { ticker: "PLD", name: "Prologis", reason: "Líder global em galpões logísticos, alugando espaço para gigantes como Amazon.", tags: ["REIT", "Logística"], fundamentals: { dy: "2,8%", pvp: "2,29", var12m: "+36,6%" } }
+      { ticker: "O", name: "Realty Income", reason: "Conhecido como 'The Monthly Dividend Company', paga dividendos todo míªs nos EUA.", tags: ["REIT", "Mensal"], fundamentals: { dy: "5,8%", pvp: "1,41", var12m: "+13,8%" } },
+      { ticker: "PLD", name: "Prologis", reason: "Lí­der global em galpíµes logí­sticos, alugando espaço para gigantes como Amazon.", tags: ["REIT", "Logí­stica"], fundamentals: { dy: "2,8%", pvp: "2,29", var12m: "+36,6%" } }
     ]
   },
   {
     id: "tecnologia",
     title: "Gigantes Globais (Crescimento)",
-    description: "Seja sócio das empresas que estão dominando a inteligência artificial e a internet.",
+    description: "Seja sí³cio das empresas que estão dominando a inteligíªncia artificial e a internet.",
     icon: <Rocket size={24} color="var(--purple-primary)" />,
     assets: [
       { ticker: "AAPL", name: "Apple Inc.", reason: "A fabricante do iPhone e uma das empresas mais valiosas do planeta.", tags: ["Ação EUA", "Tecnologia"], fundamentals: { mcap: "US$ 3.1T", var12m: "+15,2%" } },
-      { ticker: "NVDA", name: "Nvidia Corp.", reason: "A rainha da inteligência artificial. Fabrica os chips mais procurados do mundo.", tags: ["Ação EUA", "IA"], fundamentals: { mcap: "US$ 2.8T", var12m: "+210%" } },
+      { ticker: "NVDA", name: "Nvidia Corp.", reason: "A rainha da inteligíªncia artificial. Fabrica os chips mais procurados do mundo.", tags: ["Ação EUA", "IA"], fundamentals: { mcap: "US$ 2.8T", var12m: "+210%" } },
     ]
   },
   {
     id: "cripto",
     title: "Criptomoedas (A Nova Economia)",
-    description: "Ativos digitais descentralizados. Altíssimo potencial de crescimento, mas com altíssima volatilidade.",
+    description: "Ativos digitais descentralizados. Altí­ssimo potencial de crescimento, mas com altí­ssima volatilidade.",
     icon: <Bitcoin size={24} color="#f7931a" />,
     assets: [
       { ticker: "BTC", name: "Bitcoin", reason: "O ouro digital. A primeira, mais segura e maior criptomoeda do mundo.", tags: ["Cripto", "Reserva"], fundamentals: { mcap: "US$ 1.3T", var12m: "+120%" } },
@@ -128,7 +128,7 @@ export default function AtivosIndexPage() {
       const res = await addAsset(formData);
       if (res.error) alert(res.error);
       else {
-        alert(`${assetTicker} adicionado à sua carteira com sucesso!`);
+        alert(`${assetTicker} adicionado í  sua carteira com sucesso!`);
       }
     } catch (err) {
       alert("Erro ao adicionar ativo.");
@@ -161,7 +161,7 @@ export default function AtivosIndexPage() {
             <Search size={18} style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", color: "var(--text-tertiary)" }} />
             <input
               type="text"
-              placeholder="Buscar um ticker específico (ex: PETR4, NVDA)..."
+              placeholder="Buscar um ticker especí­fico (ex: PETR4, NVDA)..."
               value={ticker}
               onChange={(e) => setTicker(e.target.value)}
               style={{ width: "100%", padding: "14px 16px 14px 48px", borderRadius: "12px", border: "1px solid var(--border-accent)", background: "rgba(0,0,0,0.2)", color: "var(--text-primary)", fontSize: "1rem", outline: "none", transition: "border-color 0.2s" }}
@@ -233,7 +233,7 @@ export default function AtivosIndexPage() {
                   {/* Fundamentals Strip */}
                   <div style={{ display: "flex", gap: "16px", marginBottom: "16px", background: "var(--bg-elevated)", padding: "12px", borderRadius: "12px", border: "1px solid var(--border-subtle)" }}>
                     {asset.fundamentals.dy && (
-                      <EduTooltip title="DY" text="Dividend Yield: A porcentagem que este ativo te devolveu em formato de lucro/aluguel nos últimos 12 meses. Dinheiro no seu bolso." value={asset.fundamentals.dy} />
+                      <EduTooltip title="DY" text="Dividend Yield: A porcentagem que este ativo te devolveu em formato de lucro/aluguel nos íºltimos 12 meses. Dinheiro no seu bolso." value={asset.fundamentals.dy} />
                     )}
                     {asset.fundamentals.pvp && (
                       <EduTooltip title="P/VP" text="Preço / Valor Patrimonial: Mostra se está caro ou barato. P/VP = 1 é preço justo. Abaixo de 1 significa que está com desconto!" value={asset.fundamentals.pvp} />
@@ -242,7 +242,7 @@ export default function AtivosIndexPage() {
                       <EduTooltip title="Valor de Mercado" text="Market Cap: Qual o tamanho total e valor dessa empresa hoje no mercado mundial." value={asset.fundamentals.mcap} />
                     )}
                     {asset.fundamentals.var12m && (
-                      <EduTooltip title="Variação (1A)" text="O quanto a cotação (preço do ativo) subiu ou caiu no período de 1 ano." value={asset.fundamentals.var12m} />
+                      <EduTooltip title="Variação (1A)" text="O quanto a cotação (preço do ativo) subiu ou caiu no perí­odo de 1 ano." value={asset.fundamentals.var12m} />
                     )}
                   </div>
 

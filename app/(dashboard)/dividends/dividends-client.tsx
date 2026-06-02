@@ -36,7 +36,7 @@ export default function DividendsClient({ initialDividends }: { initialDividends
   const totalYear = filteredDividends.reduce((sum, item) => sum + item.amount, 0);
   const avgMonth = totalYear / 12;
 
-  // Agrupar por mês para o gráfico
+  // Agrupar por míªs para o gráfico
   const monthlyData = Array(12).fill(0).map((_, i) => {
     const date = new Date(activeYear, i, 1);
     return {
@@ -80,7 +80,7 @@ export default function DividendsClient({ initialDividends }: { initialDividends
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <h1 style={{ fontSize: "1.8rem", marginBottom: "4px" }}>Dividendos e Proventos</h1>
-          <p style={{ color: "var(--text-tertiary)", fontSize: "0.9rem" }}>Acompanhe sua renda passiva mensal e histórica.</p>
+          <p style={{ color: "var(--text-tertiary)", fontSize: "0.9rem" }}>Acompanhe sua renda passiva mensal e histí³rica.</p>
         </div>
         <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
           <button className="btn btn-secondary btn-sm" style={{ gap: "8px" }}>
@@ -130,7 +130,7 @@ export default function DividendsClient({ initialDividends }: { initialDividends
           padding: "24px",
           display: "flex", flexDirection: "column",
         }}>
-          <h3 style={{ fontSize: "1.1rem", marginBottom: "24px" }}>Histórico {activeYear}</h3>
+          <h3 style={{ fontSize: "1.1rem", marginBottom: "24px" }}>Histí³rico {activeYear}</h3>
           <div style={{ flex: 1, minHeight: "280px" }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={monthlyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>

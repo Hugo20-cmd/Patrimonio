@@ -10,11 +10,11 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Patrimônio+ | Organize • Invista • Evolua",
+  title: "Patrimônio+ | Organize â¢ Invista â¢ Evolua",
   description:
-    "Plataforma premium para acompanhamento de ETFs, ações, FIIs, Tesouro Direto, dividendos e evolução patrimonial. Invista com inteligência.",
+    "Plataforma premium para acompanhamento de ETFs, açíµes, FIIs, Tesouro Direto, dividendos e evolução patrimonial. Invista com inteligíªncia.",
   keywords: [
-    "ETF", "ações", "FII", "dividendos", "patrimônio", "investimentos",
+    "ETF", "açíµes", "FII", "dividendos", "patrimônio", "investimentos",
     "Tesouro Direto", "carteira de investimentos", "renda passiva", "liberdade financeira"
   ],
   appleWebApp: {
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Patrimônio+",
-    description: "Acompanhe ETFs, ações, FIIs e patrimônio automaticamente com gráficos inteligentes.",
+    description: "Acompanhe ETFs, açíµes, FIIs e patrimônio automaticamente com gráficos inteligentes.",
     type: "website",
     locale: "pt_BR",
   },

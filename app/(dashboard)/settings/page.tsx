@@ -46,7 +46,7 @@ export default function SettingsPage() {
     if (result.error) {
       setErrorMsg(result.error);
     } else {
-      setSuccessMsg("Perfil e preferências atualizados com sucesso!");
+      setSuccessMsg("Perfil e preferíªncias atualizados com sucesso!");
       setAvatarUrl(result.avatarUrl);
     }
     // Refresh profile data from server to sync UI
@@ -56,7 +56,7 @@ export default function SettingsPage() {
       setName(refreshed.name);
       setAvatarUrl(refreshed.avatarUrl || "");
     }
-    // Limpa a pré‑visualização, pois já temos a URL definitiva
+    // Limpa a préâvisualização, pois já temos a URL definitiva
     setPreviewUrl("");
     setLoading(false);
   };
@@ -79,7 +79,7 @@ export default function SettingsPage() {
       style={{ display: "flex", flexDirection: "column", gap: "24px", maxWidth: "600px" }}
     >
       <div>
-        <h1 style={{ fontSize: "1.8rem", marginBottom: "4px" }}>Configurações do Perfil</h1>
+        <h1 style={{ fontSize: "1.8rem", marginBottom: "4px" }}>Configuraçíµes do Perfil</h1>
         <p style={{ color: "var(--text-tertiary)", fontSize: "0.9rem" }}>Personalize a sua conta e foto de avatar.</p>
       </div>
 
@@ -195,8 +195,8 @@ export default function SettingsPage() {
                 <Bell size={20} />
               </div>
               <div>
-                <h3 style={{ fontSize: "0.95rem", fontWeight: 600, margin: 0 }}>Notícias e Alertas de Mercado</h3>
-                <p style={{ fontSize: "0.85rem", color: "var(--text-tertiary)", margin: "4px 0 0 0" }}>Receba informações sobre investimentos, ações e ETFs.</p>
+                <h3 style={{ fontSize: "0.95rem", fontWeight: 600, margin: 0 }}>Notí­cias e Alertas de Mercado</h3>
+                <p style={{ fontSize: "0.85rem", color: "var(--text-tertiary)", margin: "4px 0 0 0" }}>Receba informaçíµes sobre investimentos, açíµes e ETFs.</p>
               </div>
             </div>
             
@@ -235,7 +235,7 @@ export default function SettingsPage() {
               style={{ gap: "8px" }}
             >
               <Save size={16} />
-              {loading ? "Salvando..." : "Salvar Alterações"}
+              {loading ? "Salvando..." : "Salvar Alteraçíµes"}
             </button>
           </div>
         </form>
@@ -252,7 +252,7 @@ export default function SettingsPage() {
       }}>
         <h2 style={{ fontSize: "1.2rem", marginBottom: "8px", color: "var(--text-primary)" }}>Sincronização de Conquistas</h2>
         <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", marginBottom: "16px" }}>
-          Se você realizou compras antes do sistema de níveis ser implementado e não recebeu seu XP, clique no botão abaixo para o sistema recalcular todo o seu histórico.
+          Se vocíª realizou compras antes do sistema de ní­veis ser implementado e não recebeu seu XP, clique no botão abaixo para o sistema recalcular todo o seu histí³rico.
         </p>
         <button
           onClick={async () => {
@@ -274,7 +274,7 @@ export default function SettingsPage() {
           className="btn"
           style={{ background: "rgba(0,212,170,0.1)", color: "var(--green-primary)", border: "1px solid var(--green-primary)", padding: "10px 16px", fontWeight: 600 }}
         >
-          Sincronizar Histórico e XP
+          Sincronizar Histí³rico e XP
         </button>
       </div>
 

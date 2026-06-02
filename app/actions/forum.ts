@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache'
 // REGEX Anti-Spam (Bot)
 // Bloqueia links suspeitos, palavras ofensivas ou tentativas de golpe (phishing)
 const SPAM_REGEX = /(http|https):\/\/(?!([a-zA-Z0-9-]+\.)?(patrimonioplus\.com|youtube\.com|b3\.com\.br|infomoney\.com\.br|valoreconomico\.globo\.com))[^\s]+/i;
-const OFFENSIVE_WORDS = ['golpe', 'aposta', 'casino', 'cassino', 'bet', 'tigrinho', 'urubu do pix', 'robô do pix', 'pirâmide'];
+const OFFENSIVE_WORDS = ['golpe', 'aposta', 'casino', 'cassino', 'bet', 'tigrinho', 'urubu do pix', 'robô do pix', 'pirí¢mide'];
 
 function isSpam(content: string): { isSpam: boolean, reason?: string } {
   // Verifica links maliciosos ou não permitidos
@@ -18,7 +18,7 @@ function isSpam(content: string): { isSpam: boolean, reason?: string } {
   const contentLower = content.toLowerCase();
   for (const word of OFFENSIVE_WORDS) {
     if (contentLower.includes(word)) {
-      return { isSpam: true, reason: 'Conteúdo viola as diretrizes da comunidade (Palavra bloqueada).' }
+      return { isSpam: true, reason: 'Conteíºdo viola as diretrizes da comunidade (Palavra bloqueada).' }
     }
   }
 
@@ -46,7 +46,7 @@ export async function getForumPosts() {
     return { error: 'premium_required' }
   }
 
-  // Busca os posts com informações do usuário (fazendo join manual ou usando view)
+  // Busca os posts com informaçíµes do usuário (fazendo join manual ou usando view)
   const { data: posts, error } = await supabase
     .from('forum_posts')
     .select(`
@@ -57,7 +57,7 @@ export async function getForumPosts() {
 
   if (error) return { error: error.message }
 
-  // Como o supabase não tem as informações do usuário em uma tabela pública por padrão,
+  // Como o supabase não tem as informaçíµes do usuário em uma tabela píºblica por padrão,
   // pegamos do profiles de forma simplificada. Numa app real fariamos um view ou RPC.
   const { data: profiles } = await supabase.from('profiles').select('id, name, avatar_url, level')
   

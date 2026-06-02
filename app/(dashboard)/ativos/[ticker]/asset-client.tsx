@@ -71,7 +71,7 @@ export default function AssetDetailsClient() {
       const res = await addAsset(formData);
       if (res.error) alert(res.error);
       else {
-        alert(`${ticker} adicionado à sua carteira com sucesso!`);
+        alert(`${ticker} adicionado í  sua carteira com sucesso!`);
         router.push("/portfolio");
       }
     } catch (e) {
@@ -97,7 +97,7 @@ export default function AssetDetailsClient() {
           onClick={handleAddAsset}
           disabled={adding}
         >
-          <Plus size={16} /> {adding ? "Adicionando..." : "Adicionar à Carteira"}
+          <Plus size={16} /> {adding ? "Adicionando..." : "Adicionar í  Carteira"}
         </button>
       </div>
 

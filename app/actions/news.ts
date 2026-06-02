@@ -56,7 +56,7 @@ export async function getMarketNews() {
               title: article.title,
               summary: article.description || 'Leia a matéria completa na fonte original.',
               source: article.source?.name || 'NewsAPI',
-              category: 'Economia e Negócios',
+              category: 'Economia e Negí³cios',
               url: article.url,
               imageUrl: article.urlToImage || getFallbackImage(idCounter),
               publishedAt: article.publishedAt || new Date().toISOString()
@@ -80,7 +80,7 @@ export async function getMarketNews() {
           unifiedNews.push({
             id: idCounter++,
             title: article.headline,
-            summary: article.summary || 'Acompanhe as atualizações do mercado financeiro global.',
+            summary: article.summary || 'Acompanhe as atualizaçíµes do mercado financeiro global.',
             source: article.source || 'Finnhub',
             category: article.category === 'general' ? 'Mercado Global' : article.category,
             url: article.url,
@@ -100,8 +100,8 @@ export async function getMarketNews() {
     unifiedNews = [
       {
         id: idCounter++,
-        title: "Atualizações de Mercado Pausadas",
-        summary: "Nossos provedores de dados estão passando por manutenção momentânea. Tente atualizar a página em alguns instantes.",
+        title: "Atualizaçíµes de Mercado Pausadas",
+        summary: "Nossos provedores de dados estão passando por manutenção momentí¢nea. Tente atualizar a página em alguns instantes.",
         source: "Patrimônio+ System",
         category: "Aviso",
         url: "#",

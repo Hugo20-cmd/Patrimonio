@@ -22,11 +22,11 @@ const menuItems = [
   { icon: DollarSign, label: "Dividendos", href: "/dividends" },
   { icon: Target, label: "Metas", href: "/goals" },
   { icon: Award, label: "Conquistas", href: "/achievements" },
-  { icon: Newspaper, label: "Notícias", href: "/news" },
+  { icon: Newspaper, label: "Notí­cias", href: "/news" },
   { icon: MessageSquare, label: "Comunidade", href: "/community" },
   { icon: MessagesSquare, label: "Feedbacks", href: "/feedback" },
   { icon: Headphones, label: "Central de Ajuda", href: "/support" },
-  { icon: LinkIcon, label: "Conexões", href: "/connections" },
+  { icon: LinkIcon, label: "Conexíµes", href: "/connections" },
 ];
 
 export default function Sidebar({ 
@@ -64,7 +64,7 @@ export default function Sidebar({
         setDeferredPrompt(null);
       }
     } else {
-      alert("Para instalar o app:\n\n📱 No Android: Toque nos 3 pontinhos do Chrome e depois em 'Adicionar à tela inicial'.\n\n🍎 No iPhone: Toque no ícone de Compartilhar do Safari e depois em 'Adicionar à Tela de Início'.");
+      alert("Para instalar o app:\n\nð± No Android: Toque nos 3 pontinhos do Chrome e depois em 'Adicionar í  tela inicial'.\n\nð No iPhone: Toque no í­cone de Compartilhar do Safari e depois em 'Adicionar í  Tela de Iní­cio'.");
     }
   };
 
@@ -110,7 +110,7 @@ export default function Sidebar({
             <TrendingUp size={18} color="#000" strokeWidth={2.5} />
           </div>
           <span style={{ fontWeight: 800, fontSize: "1.1rem", color: "var(--text-primary)" }}>
-            PATRIMÔNIO<span style={{ color: "var(--green-primary)" }}>+</span>
+            PATRIMíNIO<span style={{ color: "var(--green-primary)" }}>+</span>
           </span>
         </Link>
       </div>
@@ -175,7 +175,7 @@ export default function Sidebar({
       <div style={{ padding: "16px", borderTop: "1px solid var(--border-subtle)", display: "flex", flexDirection: "column", gap: "6px" }}>
         <Link href="/settings" className={`sidebar-link ${pathname === "/settings" ? "active" : ""}`}>
           <Settings size={18} />
-          Configurações
+          Configuraçíµes
         </Link>
         <form action={logout} style={{ width: "100%" }}>
           <button type="submit" className="sidebar-link" style={{ width: "100%", background: "transparent", border: "none", textAlign: "left", cursor: "pointer" }}>

@@ -8,7 +8,7 @@ import { getNotifications, getUnreadCount, markAsRead, markAllAsRead } from "@/a
 import { supabase } from "@/lib/supabase";
 import PaywallModal from "@/components/PaywallModal";
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// ââ Helpers âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime();
   const m = Math.floor(diff / 60000);
@@ -30,7 +30,7 @@ function NotifIcon({ type }: { type: string }) {
 const POPULAR_ASSETS = [
   { ticker: "PETR4", name: "Petrobras PN" },
   { ticker: "VALE3", name: "Vale ON" },
-  { ticker: "ITUB4", name: "Itaú Unibanco PN" },
+  { ticker: "ITUB4", name: "Itaíº Unibanco PN" },
   { ticker: "BBDC4", name: "Bradesco PN" },
   { ticker: "BBAS3", name: "Banco do Brasil ON" },
   { ticker: "WEGE3", name: "WEG ON" },
@@ -46,7 +46,7 @@ const POPULAR_ASSETS = [
   { ticker: "XINA11", name: "Trend MSCI China (ETF BR)" },
   { ticker: "URPR11", name: "Urca Prime Renda (FII)" },
   { ticker: "MXRF11", name: "Maxi Renda (FII)" },
-  { ticker: "HGLG11", name: "CSHG Logística (FII)" },
+  { ticker: "HGLG11", name: "CSHG Logí­stica (FII)" },
   { ticker: "SPY", name: "SPDR S&P 500 (ETF EUA)" },
   { ticker: "QQQ", name: "Invesco QQQ Trust (ETF EUA)" },
   { ticker: "VOO", name: "Vanguard S&P 500 (ETF EUA)" },
@@ -55,7 +55,7 @@ const POPULAR_ASSETS = [
   { ticker: "VTI", name: "Vanguard Total Stock (ETF EUA)" }
 ];
 
-// ── Component ─────────────────────────────────────────────────────────────────
+// ââ Component âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   const [profile, setProfile]         = useState<any>(null);
   const [notifs, setNotifs]           = useState<any[]>([]);
@@ -141,7 +141,7 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
       top: 0,
       zIndex: 40,
     }}>
-      {/* Left – Search */}
+      {/* Left â Search */}
       <div style={{ display: "flex", alignItems: "center", gap: "16px", flex: 1 }}>
         <button 
           className="mobile-menu-btn" 
@@ -212,12 +212,12 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
           )}
 
           <div style={{ position: "absolute", right: "8px", top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.05)", border: "1px solid var(--border-default)", borderRadius: "6px", padding: "2px 6px", fontSize: "0.65rem", color: "var(--text-tertiary)", fontWeight: 600, pointerEvents: "none" }}>
-            Enter ↵
+            Enter âµ
           </div>
         </form>
       </div>
 
-      {/* Right – Level + Bell */}
+      {/* Right â Level + Bell */}
       <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
 
         {/* Avatar + Level pill */}
@@ -235,7 +235,7 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
             </div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-            <span style={{ fontSize: "0.65rem", fontWeight: 700, color: "var(--text-secondary)", lineHeight: 1 }}>Nível {profile?.level || 1}</span>
+            <span style={{ fontSize: "0.65rem", fontWeight: 700, color: "var(--text-secondary)", lineHeight: 1 }}>Ní­vel {profile?.level || 1}</span>
             <div style={{ width: "50px", height: "3px", background: "var(--bg-elevated)", borderRadius: "2px", overflow: "hidden" }}>
               <div style={{ width: `${((profile?.xp || 0) / (profile?.xpToNextLevel || 1000)) * 100}%`, height: "100%", background: "linear-gradient(90deg, #4f6ef7, #00d4aa)" }} />
             </div>
@@ -279,7 +279,7 @@ export default function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
               {/* Header */}
               <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border-subtle)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
-                  <div style={{ fontSize: "0.95rem", fontWeight: 700 }}>Notificações</div>
+                  <div style={{ fontSize: "0.95rem", fontWeight: 700 }}>Notificaçíµes</div>
                   {unread > 0 && <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)" }}>{unread} não lida{unread !== 1 ? "s" : ""}</div>}
                 </div>
                 {unread > 0 && (

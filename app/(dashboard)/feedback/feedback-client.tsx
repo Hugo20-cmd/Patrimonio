@@ -70,7 +70,7 @@ export default function FeedbackClient({ profile, initialFeedbacks }: { profile:
                 required 
                 rows={5} 
                 style={{ width: "100%", marginTop: "8px", padding: "12px", background: "var(--bg-elevated)", border: "1px solid var(--border-default)", borderRadius: "8px", color: "var(--text-primary)", resize: "vertical" }} 
-                placeholder="Como podemos melhorar a plataforma para você?"
+                placeholder="Como podemos melhorar a plataforma para vocíª?"
               />
             </div>
             <button type="submit" className="btn btn-primary" style={{ width: "100%" }} disabled={loading}>
@@ -116,7 +116,7 @@ export default function FeedbackClient({ profile, initialFeedbacks }: { profile:
                   </div>
                   <div style={{ marginTop: "12px", paddingTop: "12px", borderTop: "1px solid var(--border-subtle)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <span style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                      {fb.type === 'bug' ? '🐛 Bug' : fb.type === 'feature' ? '✨ Nova Ideia' : '📝 Outro'}
+                      {fb.type === 'bug' ? 'ð Bug' : fb.type === 'feature' ? 'â¨ Nova Ideia' : 'ð Outro'}
                     </span>
                     <button style={{ background: "none", border: "none", color: "var(--text-tertiary)", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", fontSize: "0.8rem", transition: "color 0.2s" }} className="hover:text-green-brand">
                       <ThumbsUp size={14} /> Apoiar

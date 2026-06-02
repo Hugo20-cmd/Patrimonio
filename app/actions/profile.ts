@@ -69,7 +69,7 @@ export async function updateProfile(formData: FormData) {
     return { error: `Erro ao criar bucket avatars: ${createError.message}` };
   }
 
-  // Lógica de Upload de Imagem
+  // Lí³gica de Upload de Imagem
   if (avatarFile && avatarFile.size > 0) {
     // Se o bucket já existia ou foi criado, prossegue com o upload
     const fileExt = avatarFile.name.split('.').pop();
@@ -84,7 +84,7 @@ export async function updateProfile(formData: FormData) {
       return { error: `Erro ao fazer upload da imagem: ${uploadError.message}` };
     }
 
-    // Obter URL pública
+    // Obter URL píºblica
     const { data: publicUrlData } = supabase.storage
       .from('avatars')
       .getPublicUrl(filePath);

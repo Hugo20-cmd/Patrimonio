@@ -32,19 +32,19 @@ export default function AchievementsClient({ profile, unlockedKeys, userAchievem
     };
   });
 
-  // Também precisamos mostrar conquistas dinâmicas que não estão no mockAchievements (ex: metas)
+  // Também precisamos mostrar conquistas diní¢micas que não estão no mockAchievements (ex: metas)
   const dynamicAchievements = userAchievements
     .filter((ua: any) => !mockAchievements.find(m => m.key === ua.achievement_key))
     .map((ua: any) => {
       let title = "Conquista Secreta";
-      let desc = "Você desbloqueou algo especial.";
-      let icon = "🎯";
+      let desc = "Vocíª desbloqueou algo especial.";
+      let icon = "ð¯";
       if (ua.achievement_key.startsWith('meta_50pct')) {
-        title = "Metade do Caminho"; desc = "Você atingiu 50% de uma meta!";
+        title = "Metade do Caminho"; desc = "Vocíª atingiu 50% de uma meta!";
       } else if (ua.achievement_key.startsWith('meta_100pct')) {
-        title = "Meta Concluída!"; desc = "Você completou 100% da sua meta financeira!"; icon = "🏆";
+        title = "Meta Concluí­da!"; desc = "Vocíª completou 100% da sua meta financeira!"; icon = "ð";
       } else if (ua.achievement_key === 'primeira_transacao') {
-        title = "Primeiros Passos"; desc = "Você registrou sua primeira transação!"; icon = "🚀";
+        title = "Primeiros Passos"; desc = "Vocíª registrou sua primeira transação!"; icon = "ð";
       }
 
       return {
@@ -116,7 +116,7 @@ export default function AchievementsClient({ profile, unlockedKeys, userAchievem
             </div>
             <div style={{ textAlign: "right" }}>
               <div style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--blue-primary)" }}>{profile?.xp || 0} XP</div>
-              <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)" }}>Faltam {(profile?.xpToNextLevel || 1000) - (profile?.xp || 0)} XP para Nível {(profile?.level || 1) + 1}</div>
+              <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)" }}>Faltam {(profile?.xpToNextLevel || 1000) - (profile?.xp || 0)} XP para Ní­vel {(profile?.level || 1) + 1}</div>
             </div>
           </div>
 

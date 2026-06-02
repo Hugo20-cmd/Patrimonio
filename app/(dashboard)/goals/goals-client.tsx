@@ -33,7 +33,7 @@ export default function GoalsClient({ initialGoals }: { initialGoals: any[] }) {
     
     await addGoal(fd);
     setIsAddModalOpen(false);
-    // Para simplificar, num projeto real faríamos refetch aqui ou usaríamos startTransition,
+    // Para simplificar, num projeto real farí­amos refetch aqui ou usarí­amos startTransition,
     // mas o Next cache revalidatePath cuidará do recarregamento de página.
     window.location.reload();
   };
@@ -63,7 +63,7 @@ export default function GoalsClient({ initialGoals }: { initialGoals: any[] }) {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <h1 style={{ fontSize: "1.8rem", marginBottom: "4px" }}>Metas Financeiras</h1>
-          <p style={{ color: "var(--text-tertiary)", fontSize: "0.9rem" }}>Defina e acompanhe seus objetivos de vida e independência.</p>
+          <p style={{ color: "var(--text-tertiary)", fontSize: "0.9rem" }}>Defina e acompanhe seus objetivos de vida e independíªncia.</p>
         </div>
         <button 
           className="btn btn-primary" 
@@ -162,7 +162,7 @@ export default function GoalsClient({ initialGoals }: { initialGoals: any[] }) {
                 
                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: "8px" }}>
                   <div style={{ fontSize: "0.8rem", fontWeight: 700, color: goal.color }}>
-                    {formatPercent(progressPercent)} concluído
+                    {formatPercent(progressPercent)} concluí­do
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "0.75rem", color: "var(--text-tertiary)" }}>
                     <Calendar size={12} /> Prazo: {new Date(goal.deadline).toLocaleDateString("pt-BR")}
@@ -236,7 +236,7 @@ export default function GoalsClient({ initialGoals }: { initialGoals: any[] }) {
 
               <div style={{ padding: "24px" }}>
                 <div style={{ marginBottom: "20px" }}>
-                  <label>Título da Meta</label>
+                  <label>Tí­tulo da Meta</label>
                   <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Ex: Liberdade Financeira, Carro Novo..." />
                 </div>
 
@@ -260,9 +260,9 @@ export default function GoalsClient({ initialGoals }: { initialGoals: any[] }) {
                   <label>Categoria</label>
                   <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ width: "100%" }}>
                     <option value="patrimonio">Patrimônio</option>
-                    <option value="reserva">Reserva de Emergência</option>
+                    <option value="reserva">Reserva de Emergíªncia</option>
                     <option value="aposentadoria">Aposentadoria</option>
-                    <option value="objetivo">Objetivo Específico (Carro, Casa, Viagem)</option>
+                    <option value="objetivo">Objetivo Especí­fico (Carro, Casa, Viagem)</option>
                   </select>
                 </div>
 

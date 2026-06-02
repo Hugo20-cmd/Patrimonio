@@ -72,7 +72,7 @@ export async function getChatMessages(channel: string = 'geral') {
       (adminId && msg.user_id === adminId) || 
       profile?.email === ['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(profile?.email || userData?.user?.email) || 
       profile?.name === 'Patrimônio+' || 
-      profile?.name === 'Patrimônio+ 👑'
+      profile?.name === 'Patrimônio+ ð'
     
     return {
       ...msg,

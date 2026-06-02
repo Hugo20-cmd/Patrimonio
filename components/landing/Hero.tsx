@@ -37,7 +37,7 @@ function MiniMetric({ label, value, change, positive }: { label: string; value: 
       <div style={{ fontSize: "0.7rem", color: "var(--text-tertiary)", fontWeight: 500, marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.05em" }}>{label}</div>
       <div style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-primary)" }}>{value}</div>
       <div style={{ fontSize: "0.75rem", color: positive ? "var(--green-primary)" : "var(--red-primary)", fontWeight: 600, marginTop: "2px" }}>
-        {positive ? "▲" : "▼"} {change}
+        {positive ? "â²" : "â¼"} {change}
       </div>
     </div>
   );
@@ -81,7 +81,7 @@ export default function Hero() {
           alignItems: "center",
         }} className="hero-grid">
 
-          {/* LEFT — Copy */}
+          {/* LEFT â Copy */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -91,7 +91,7 @@ export default function Hero() {
             <motion.div variants={itemVariants}>
               <div className="badge badge-green" style={{ marginBottom: "28px", display: "inline-flex" }}>
                 <span className="dot-green animate-blink" />
-                Plataforma nº1 em evolução patrimonial
+                Plataforma nÂº1 em evolução patrimonial
               </div>
             </motion.div>
 
@@ -99,7 +99,7 @@ export default function Hero() {
             <motion.h1 variants={itemVariants} style={{ marginBottom: "24px", lineHeight: 1.1 }}>
               Organize seus{" "}
               <span className="gradient-text">investimentos</span>{" "}
-              em um único lugar.
+              em um íºnico lugar.
             </motion.h1>
 
             {/* Subheadline */}
@@ -110,9 +110,9 @@ export default function Hero() {
               lineHeight: 1.7,
               maxWidth: "520px",
             }}>
-              Acompanhe ETFs, ações, FIIs e patrimônio automaticamente com{" "}
+              Acompanhe ETFs, açíµes, FIIs e patrimônio automaticamente com{" "}
               <strong style={{ color: "var(--text-primary)" }}>gráficos inteligentes</strong> e{" "}
-              <strong style={{ color: "var(--text-primary)" }}>relatórios em tempo real</strong>.
+              <strong style={{ color: "var(--text-primary)" }}>relatí³rios em tempo real</strong>.
             </motion.p>
 
             {/* CTA Buttons */}
@@ -167,7 +167,7 @@ export default function Hero() {
             </motion.div>
           </motion.div>
 
-          {/* RIGHT — Dashboard Mockup */}
+          {/* RIGHT â Dashboard Mockup */}
           <motion.div
             initial={{ opacity: 0, x: 60, scale: 0.95 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -213,7 +213,7 @@ export default function Hero() {
               {/* Header */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
                 <div>
-                  <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", fontWeight: 500, marginBottom: "6px" }}>PATRIMÔNIO TOTAL</div>
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", fontWeight: 500, marginBottom: "6px" }}>PATRIMíNIO TOTAL</div>
                   <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--text-primary)", letterSpacing: "-0.03em" }}>
                     R$ 68.450<span style={{ color: "var(--green-primary)" }}>,00</span>
                   </div>
@@ -315,11 +315,11 @@ export default function Hero() {
               }}
             >
               <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "var(--green-glow)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                💰
+                ð°
               </div>
               <div>
                 <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-primary)" }}>Dividendo recebido!</div>
-                <div style={{ fontSize: "0.72rem", color: "var(--green-primary)", fontWeight: 600 }}>PETR4 → +R$ 1.080,00</div>
+                <div style={{ fontSize: "0.72rem", color: "var(--green-primary)", fontWeight: 600 }}>PETR4 â +R$ 1.080,00</div>
               </div>
             </motion.div>
           </motion.div>

@@ -66,7 +66,7 @@ export default function PortfolioClient({ initialAssets, subscriptionStatus }: {
   const [assetType, setAssetType] = useState<string>("ETF");
   const [editingAssetId, setEditingAssetId] = useState<string | null>(null);
 
-  // ── Ticker autocomplete ──
+  // ââ Ticker autocomplete ââ
   const [tickerInput, setTickerInput] = useState("");
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
@@ -183,7 +183,7 @@ export default function PortfolioClient({ initialAssets, subscriptionStatus }: {
     setIsAddModalOpen(true);
   }
 
-  // ── Fetch live quotes ──
+  // ââ Fetch live quotes ââ
   const fetchQuotes = useCallback(async (currentAssets: any[]) => {
     if (!currentAssets.length) {
       setQuotesLoading(false);
@@ -222,7 +222,7 @@ export default function PortfolioClient({ initialAssets, subscriptionStatus }: {
     return () => clearInterval(interval);
   }, [assets, fetchQuotes]);
 
-  // ── Filters ──
+  // ââ Filters ââ
   const metrics = calcMetrics(assets, quotes, globalCurrency, exchangeRate);
 
   const filtered = assets
@@ -254,10 +254,10 @@ export default function PortfolioClient({ initialAssets, subscriptionStatus }: {
         <div>
           <h1 style={{ fontSize: "1.8rem", marginBottom: "4px" }}>Minha Carteira</h1>
           <p style={{ color: "var(--text-tertiary)", fontSize: "0.9rem" }}>
-            Cotações ao vivo da B3 via Brapi.
+            Cotaçíµes ao vivo da B3 via Brapi.
             {lastUpdated && (
               <span style={{ marginLeft: "8px", color: "var(--green-primary)", fontWeight: 600 }}>
-                Atualizado às {lastUpdated.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+                Atualizado í s {lastUpdated.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
               </span>
             )}
           </p>
@@ -318,7 +318,7 @@ export default function PortfolioClient({ initialAssets, subscriptionStatus }: {
             sub: formatPercent(metrics.totalProfitPercent),
             color: metrics.totalProfit >= 0 ? "var(--green-primary)" : "var(--red-primary)",
           },
-          { label: "Posições", value: `${assets.length} ativos`, color: "var(--text-primary)" },
+          { label: "Posiçíµes", value: `${assets.length} ativos`, color: "var(--text-primary)" },
         ].map((card) => (
           <div key={card.label} style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "12px", padding: "16px" }}>
             <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>{card.label}</div>
@@ -350,7 +350,7 @@ export default function PortfolioClient({ initialAssets, subscriptionStatus }: {
             >
               <option value="ALL">Todas as Classes</option>
               <option value="ETF">ETFs</option>
-              <option value="stock">Ações</option>
+              <option value="stock">Açíµes</option>
               <option value="FII">FIIs</option>
               <option value="treasury">Tesouro Direto</option>
             </select>
@@ -474,7 +474,7 @@ export default function PortfolioClient({ initialAssets, subscriptionStatus }: {
                             {isDayPositive ? "+" : ""}{dayChange.toFixed(2)}%
                           </div>
                         ) : (
-                          <span style={{ color: "var(--text-tertiary)", fontSize: "0.8rem" }}>—</span>
+                          <span style={{ color: "var(--text-tertiary)", fontSize: "0.8rem" }}>â</span>
                         )}
                       </td>
 
@@ -624,10 +624,10 @@ export default function PortfolioClient({ initialAssets, subscriptionStatus }: {
                     </div>
                   </div>
 
-                  {/* Ticker — Tesouro Direto ou Autocomplete */}
+                  {/* Ticker â Tesouro Direto ou Autocomplete */}
                   {assetType === "treasury" ? (
                     <div style={{ marginBottom: "20px" }}>
-                      <label>Título do Tesouro Direto</label>
+                      <label>Tí­tulo do Tesouro Direto</label>
                       <select
                         name="ticker"
                         value={tickerInput}
@@ -635,7 +635,7 @@ export default function PortfolioClient({ initialAssets, subscriptionStatus }: {
                         required
                         style={{ width: "100%" }}
                       >
-                        <option value="">Selecione o título...</option>
+                        <option value="">Selecione o tí­tulo...</option>
                         <optgroup label="Tesouro Selic">
                           <option value="TESOURO SELIC 2027">Tesouro Selic 2027</option>
                           <option value="TESOURO SELIC 2029">Tesouro Selic 2029</option>
@@ -672,7 +672,7 @@ export default function PortfolioClient({ initialAssets, subscriptionStatus }: {
                     </div>
                   ) : (
                   <div style={{ marginBottom: "20px" }} ref={tickerRef}>
-                    <label>Ticker (Código do Ativo)</label>
+                    <label>Ticker (Cí³digo do Ativo)</label>
                     <div style={{ position: "relative" }}>
                       <div style={{ position: "relative" }}>
                         <input
@@ -806,7 +806,7 @@ export default function PortfolioClient({ initialAssets, subscriptionStatus }: {
                   <div style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)", borderRadius: "8px", padding: "12px", display: "flex", gap: "10px", alignItems: "flex-start", marginBottom: "24px" }}>
                     <AlertCircle size={16} color="var(--green-primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
                     <p style={{ fontSize: "0.8rem", color: "var(--text-secondary)", margin: 0, lineHeight: 1.5 }}>
-                      O preço atual será buscado automaticamente via Brapi (B3 ao vivo) após salvar.
+                      O preço atual será buscado automaticamente via Brapi (B3 ao vivo) apí³s salvar.
                     </p>
                   </div>
                   )}

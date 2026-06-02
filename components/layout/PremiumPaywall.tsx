@@ -49,12 +49,12 @@ export default function PremiumPaywall({ title, description, featureName }: Prem
         </p>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "32px", textAlign: "left", background: "var(--bg-elevated)", padding: "20px", borderRadius: "16px" }}>
-          <h4 style={{ fontSize: "0.9rem", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 700 }}>Benefícios do Premium</h4>
+          <h4 style={{ fontSize: "0.9rem", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 700 }}>Benefí­cios do Premium</h4>
           <div style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "0.95rem" }}>
-            <Newspaper size={18} color="var(--blue-primary)" /> Informações em tempo real do mercado
+            <Newspaper size={18} color="var(--blue-primary)" /> Informaçíµes em tempo real do mercado
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "0.95rem" }}>
-            <MessageSquare size={18} color="var(--purple-primary)" /> Acesso exclusivo ao Fórum da Comunidade
+            <MessageSquare size={18} color="var(--purple-primary)" /> Acesso exclusivo ao Fí³rum da Comunidade
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "0.95rem" }}>
             <ShieldCheck size={18} color="var(--green-primary)" /> Filtros Anti-Spam de Alta Segurança

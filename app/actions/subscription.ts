@@ -7,7 +7,7 @@ export async function getSubscriptionStatus() {
   const { data: userData } = await supabase.auth.getUser()
   if (!userData?.user) return { status: 'free' }
 
-  // 👑 ADMIN BYPASS (Acesso Vitalício)
+  // ð ADMIN BYPASS (Acesso Vitalí­cio)
   const ADMIN_EMAILS = [['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(profile?.email || userData?.user?.email)]
   const userEmail = userData.user.email?.toLowerCase().trim() || ''
   if (ADMIN_EMAILS.includes(userEmail)) {

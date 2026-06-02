@@ -41,7 +41,7 @@ export async function getAdminStats() {
 
   const MRR = (premiumUsers || 0) * 19.99 // Exemplo de preço
 
-  // Pegar últimos usuários
+  // Pegar íºltimos usuários
   const { data: latestUsers } = await supabaseAdmin
     .from('profiles')
     .select('id, name, email, plan, created_at')

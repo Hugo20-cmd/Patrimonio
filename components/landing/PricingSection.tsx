@@ -29,7 +29,7 @@ const plans = [
     id: "premium",
     name: "Premium",
     price: "R$ 19,99",
-    period: "por mês",
+    period: "por míªs",
     description: "Para investidores sérios sobre o futuro",
     color: "var(--green-primary)",
     borderColor: "var(--green-primary)",
@@ -38,9 +38,9 @@ const plans = [
       "Gráficos avançados e animados",
       "Dividendos automáticos",
       "Metas financeiras ilimitadas",
-      "Múltiplas carteiras",
+      "Míºltiplas carteiras",
       "IA financeira (em breve)",
-      "Relatórios PDF exportáveis",
+      "Relatí³rios PDF exportáveis",
       "Projeção de liberdade financeira",
       "Badges e gamificação completa",
       "Suporte prioritário",
@@ -96,11 +96,11 @@ export default function PricingSection() {
             </h2>
 
             <p style={{ fontSize: "1.1rem", maxWidth: "640px", margin: "0 auto 48px", lineHeight: 1.8 }}>
-              Patrimônio não se constrói com sorte — se constrói com{" "}
-              <strong style={{ color: "var(--text-primary)" }}>constância</strong>,{" "}
-              <strong style={{ color: "var(--text-primary)" }}>inteligência</strong> e as{" "}
+              Patrimônio não se constrí³i com sorte â se constrí³i com{" "}
+              <strong style={{ color: "var(--text-primary)" }}>constí¢ncia</strong>,{" "}
+              <strong style={{ color: "var(--text-primary)" }}>inteligíªncia</strong> e as{" "}
               <strong style={{ color: "var(--green-primary)" }}>ferramentas certas</strong>.
-              Cada real investido hoje é um passo em direção à sua independência financeira.
+              Cada real investido hoje é um passo em direção í  sua independíªncia financeira.
             </p>
 
             {/* Stats */}
@@ -220,7 +220,7 @@ export default function PricingSection() {
                     borderRadius: "999px",
                     whiteSpace: "nowrap",
                   }}>
-                    ⭐ MAIS POPULAR
+                    â­ MAIS POPULAR
                   </div>
                 )}
 
@@ -284,7 +284,7 @@ export default function PricingSection() {
             transition={{ delay: 0.4 }}
             style={{ textAlign: "center", marginTop: "32px", fontSize: "0.82rem", color: "var(--text-tertiary)" }}
           >
-            ✓ Sem cartão de crédito para começar &nbsp;·&nbsp; ✓ Cancele a qualquer momento &nbsp;·&nbsp; ✓ Integração Stripe segura
+            â Sem cartão de crédito para começar &nbsp;Â·&nbsp; â Cancele a qualquer momento &nbsp;Â·&nbsp; â Integração Stripe segura
           </motion.p>
         </div>
       </section>

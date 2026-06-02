@@ -8,7 +8,7 @@ const footerLinks = {
     { label: "Funcionalidades", href: "#" },
     { label: "Preços", href: "#" },
     { label: "Ativos Suportados", href: "#" },
-    { label: "Integrações", href: "#" },
+    { label: "Integraçíµes", href: "#" },
   ],
   empresa: [
     { label: "Sobre", href: "#" },
@@ -55,7 +55,7 @@ export default function Footer() {
                 <TrendingUp size={20} color="#000" strokeWidth={2.5} />
               </div>
               <span style={{ fontWeight: 800, fontSize: "1.2rem", color: "var(--text-primary)" }}>
-                PATRIMÔNIO<span style={{ color: "var(--green-primary)" }}>+</span>
+                PATRIMíNIO<span style={{ color: "var(--green-primary)" }}>+</span>
               </span>
             </Link>
             <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: 1.6, marginBottom: "32px" }}>
@@ -129,7 +129,7 @@ export default function Footer() {
           paddingTop: "32px", borderTop: "1px solid var(--border-subtle)",
         }}>
           <p style={{ color: "var(--text-tertiary)", fontSize: "0.85rem" }}>
-            © {new Date().getFullYear()} Patrimônio+ SA. Todos os direitos reservados.
+            Â© {new Date().getFullYear()} Patrimônio+ SA. Todos os direitos reservados.
           </p>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--text-tertiary)", fontSize: "0.85rem" }}>
             <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
