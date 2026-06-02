@@ -62,6 +62,36 @@ export async function POST(req: Request) {
               const { sendPremiumConfirmationEmail } = await import('@/app/actions/emails');
               await sendPremiumConfirmationEmail(user.user.email, user.user.user_metadata?.name || 'Investidor');
             }
+
+            // Referral Program: Give 1000 XP to the referrer
+            const { data: profile } = await supabaseAdmin.from('profiles').select('referred_by').eq('id', userId).single();
+            if (profile?.referred_by) {
+               const { data: referrerProfile } = await supabaseAdmin.from('profiles').select('xp, level, xp_to_next_level').eq('id', profile.referred_by).single();
+               if (referrerProfile) {
+                 let newXp = (referrerProfile.xp || 0) + 1000;
+                 let newLevel = referrerProfile.level || 1;
+                 let newXpToNext = referrerProfile.xp_to_next_level || 1000;
+
+                 while (newXp >= newXpToNext) {
+                   newLevel += 1;
+                   newXp -= newXpToNext;
+                   newXpToNext = Math.floor(newXpToNext * 1.5);
+                 }
+
+                 await supabaseAdmin.from('profiles').update({
+                   xp: newXp,
+                   level: newLevel,
+                   xp_to_next_level: newXpToNext
+                 }).eq('id', profile.referred_by);
+
+                 await supabaseAdmin.from('notifications').insert({
+                   user_id: profile.referred_by,
+                   title: 'Indicação Convertida! 🎉',
+                   message: 'Um amigo que você indicou acabou de assinar o Premium! Você ganhou 1000 XP.',
+                   type: 'achievement'
+                 });
+               }
+            }
           }
         }
         break;
