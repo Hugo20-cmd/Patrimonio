@@ -15,6 +15,8 @@ export default function OneSignalProvider({ user }: { user: any }) {
         await OneSignal.init({
           appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID || "",
           allowLocalhostAsSecureOrigin: true, // para testes locais
+          serviceWorkerPath: "sw.js",
+          serviceWorkerParam: { scope: "/" },
         });
 
         // Após inicializar, se tivermos um usuário logado, fazemos o login dele no OneSignal
