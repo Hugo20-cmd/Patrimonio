@@ -108,6 +108,47 @@ export default function AcademiaPage() {
         </div>
       </div>
 
+      {/* E-BOOK BANNER */}
+      <div style={{
+        background: "linear-gradient(90deg, rgba(0,212,170,0.1) 0%, rgba(0,176,142,0.05) 100%)",
+        border: "1px solid rgba(0,212,170,0.3)",
+        borderRadius: "24px",
+        padding: "32px",
+        marginBottom: "48px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "24px",
+        position: "relative",
+        overflow: "hidden"
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <div style={{ width: "56px", height: "56px", background: "rgba(0,212,170,0.2)", borderRadius: "16px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Building2 size={28} color="var(--green-primary)" />
+          </div>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <h2 style={{ fontSize: "1.6rem", fontWeight: 800, color: "var(--text-primary)" }}>Bônus: Livro Digital</h2>
+              <span style={{ background: "var(--green-primary)", color: "#000", fontSize: "0.7rem", fontWeight: 800, padding: "4px 8px", borderRadius: "8px", textTransform: "uppercase" }}>Exclusivo PRO</span>
+            </div>
+            <p style={{ color: "var(--text-secondary)", marginTop: "4px" }}>A Trilha do Investidor: Do Início dos Tempos à Era Digital.</p>
+          </div>
+        </div>
+        
+        <p style={{ color: "var(--text-secondary)", lineHeight: 1.6, maxWidth: "700px" }}>
+          Um guia completo e profundo detalhando a história dos investimentos desde a primeira bolsa em Amsterdã em 1602, até o poder dos ETFs e FIIs nos dias de hoje. Entenda de uma vez por todas a regra de ouro dos Juros Compostos.
+        </p>
+
+        <a 
+          href="/A_Trilha_do_Investidor_Patrimonio_Pro.pdf" 
+          download 
+          target="_blank"
+          className="btn btn-primary"
+          style={{ alignSelf: "flex-start", display: "flex", alignItems: "center", gap: "8px", padding: "12px 24px", borderRadius: "12px", background: "var(--green-primary)", color: "#000", fontWeight: 800, textDecoration: "none" }}
+        >
+          Baixar E-Book Completo (PDF)
+        </a>
+      </div>
+
       {/* ROADMAP TIMELINE */}
       <div style={{ position: "relative", paddingLeft: "32px" }}>
         
