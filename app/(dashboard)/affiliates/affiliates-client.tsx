@@ -51,15 +51,23 @@ export default function AffiliatesClient({ initialData, error }: { initialData?:
         background: "linear-gradient(135deg, rgba(0,212,170,0.1) 0%, rgba(79,110,247,0.05) 100%)",
         border: "1px solid var(--green-primary)",
         borderRadius: "16px",
-        padding: "24px 32px",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        flexWrap: "wrap", gap: "20px"
+        padding: "24px",
+        marginBottom: "32px",
+        position: "relative",
+        overflow: "hidden"
       }}>
-        <div>
-          <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--green-primary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "8px" }}>Seu Link Exclusivo</div>
-          <div style={{ fontSize: "1.1rem", color: "var(--text-primary)", fontWeight: 500, fontFamily: "monospace" }}>
-            {referralUrl}
-          </div>
+        <div style={{ fontSize: "0.8rem", color: "var(--green-primary)", fontWeight: 700, letterSpacing: "0.05em", marginBottom: "12px", textTransform: "uppercase" }}>
+          Seu Link Exclusivo
+        </div>
+        <div style={{ 
+          fontSize: "1.2rem", 
+          color: "var(--text-primary)", 
+          fontFamily: "monospace", 
+          marginBottom: "20px",
+          wordBreak: "break-all",
+          overflowWrap: "anywhere"
+        }}>
+          {referralUrl}
         </div>
         <button onClick={copyToClipboard} className={copied ? "btn btn-primary" : "btn btn-secondary"} style={{ minWidth: "140px", justifyContent: "center", gap: "8px" }}>
           {copied ? <><Check size={16} /> Copiado!</> : <><Copy size={16} /> Copiar Link</>}
