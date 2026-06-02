@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
+import { getSubscriptionStatus } from '@/app/actions/subscription'
 import { revalidatePath } from 'next/cache'
 
 export async function getAssets() {
@@ -10,7 +11,7 @@ export async function getAssets() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('plan')
+    .select('id')
     .eq('id', userData.user.id)
     .single()
 
@@ -62,7 +63,7 @@ export async function addAsset(formData: FormData) {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('plan')
+    .select('id')
     .eq('id', userData.user.id)
     .single()
 

@@ -38,7 +38,7 @@ export async function getForumPosts() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('plan')
+    .select('id')
     .eq('id', userData.user.id)
     .single()
 
@@ -86,8 +86,10 @@ export async function createForumPost(formData: FormData) {
   const userEmail = userData.user.email?.toLowerCase().trim() || ''
   const isAdmin = ADMIN_EMAILS.includes(userEmail)
 
-  const { data: profile } = await supabase.from('profiles').select('plan').eq('id', userData.user.id).single()
-  if (profile?.plan !== 'premium' && !isAdmin) return { error: 'Apenas usuários Premium podem postar.' }
+  const { getSubscriptionStatus } = await import('@/app/actions/subscription')
+  const sub = await getSubscriptionStatus()
+  
+  if (sub.status !== 'premium' && !isAdmin) return { error: 'Apenas usuários Premium podem postar.' }
 
   const title = formData.get('title') as string
   const content = formData.get('content') as string

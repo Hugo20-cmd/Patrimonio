@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
+import { getSubscriptionStatus } from '@/app/actions/subscription'
 
 // Hardcoded keys as requested
 const NEWSAPI_KEY = '64b63cb06fd99cc5e897e2324097eb2b';
@@ -19,7 +20,7 @@ export async function getMarketNews() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('plan')
+    .select('id')
     .eq('id', userData.user.id)
     .single()
 

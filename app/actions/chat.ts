@@ -12,17 +12,17 @@ export async function getChatMessages(channel: string = 'geral') {
   // Check premium status (same as forum)
   const { data: profile } = await supabase
     .from('profiles')
-    .select('plan, email')
+    .select('email')
     .eq('id', userData.user.id)
-    .single()
-
   const ADMIN_EMAILS = ['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br']
   const userEmail = userData.user.email?.toLowerCase().trim() || ''
   const isAdmin = ADMIN_EMAILS.includes(userEmail)
 
-  const { data: profileCheck } = await supabase.from('profiles').select('plan').eq('id', userData.user.id).single()
+  const { getSubscriptionStatus } = await import('@/app/actions/subscription')
+  const sub = await getSubscriptionStatus()
+  const isPremium = sub.status === 'premium'
 
-  if (profileCheck?.plan !== 'premium' && !isAdmin) {
+  if (!isPremium && !isAdmin) {
     return { error: 'premium_required' }
   }
 
