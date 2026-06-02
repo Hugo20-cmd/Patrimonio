@@ -17,6 +17,7 @@ function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [plan, setPlan] = useState<"free" | "premium">(planParam === "premium" ? "premium" : "free");
+  const [referralCode, setReferralCode] = useState(searchParams.get("ref") || "");
 
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -212,6 +213,26 @@ function RegisterForm() {
             >
               {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
+          </div>
+        </div>
+
+        {/* Referral Code (Optional) */}
+        <div>
+          <label htmlFor="referralCode">Código de Indicação (Opcional)</label>
+          <div style={{ position: "relative" }}>
+            <Zap size={16} style={{
+              position: "absolute", left: "14px", top: "50%",
+              transform: "translateY(-50%)", color: "var(--text-tertiary)",
+            }} />
+            <input
+              name="referralCode"
+              id="referralCode"
+              type="text"
+              placeholder="Ex: MARCOS123"
+              value={referralCode}
+              onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+              style={{ paddingLeft: "40px" }}
+            />
           </div>
         </div>
 

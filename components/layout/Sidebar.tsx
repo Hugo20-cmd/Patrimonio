@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { 
   TrendingUp, LayoutDashboard, PieChart, Target, 
   Award, Settings, LogOut, ArrowRightLeft, DollarSign, Link as LinkIcon, ArrowLeft,
-  Newspaper, MessageSquare, MessagesSquare, Headphones, Search, Crown, Download
+  Newspaper, MessageSquare, MessagesSquare, Headphones, Search, Crown, Download, Users
 } from "lucide-react";
 import { getProfile } from "@/app/actions/profile";
 import { logout } from "@/app/actions/auth";
@@ -27,6 +27,7 @@ const menuItems = [
   { icon: MessagesSquare, label: "Feedbacks", href: "/feedback" },
   { icon: Headphones, label: "Central de Ajuda", href: "/support" },
   { icon: LinkIcon, label: "Conexões", href: "/connections" },
+  { icon: Users, label: "Programa de Afiliados", href: "/affiliates" },
 ];
 
 export default function Sidebar({ 

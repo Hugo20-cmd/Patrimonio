@@ -68,12 +68,25 @@ export async function signup(formData: FormData) {
     return { error: error.message }
   }
 
-  // Generate initial session token
+  // Generate initial session token and handle referrals
   if (data.user) {
     const sessionToken = crypto.randomUUID()
+    const myReferralCode = crypto.randomUUID().split('-')[0].toUpperCase()
+    
+    let referredById = null
+    const referralCode = formData.get('referralCode') as string
+    if (referralCode) {
+      const { data: referrer } = await supabase.from('profiles').select('id').eq('referral_code', referralCode).single()
+      if (referrer) {
+        referredById = referrer.id
+      }
+    }
+
     await supabase.from('profiles').update({
       last_ip: ip,
-      current_session_token: sessionToken
+      current_session_token: sessionToken,
+      referral_code: myReferralCode,
+      referred_by: referredById
     }).eq('id', data.user.id)
     
     const cookieStore = await cookies()
