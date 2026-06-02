@@ -6,9 +6,9 @@ import { Send, Hash, CornerDownRight, Smile, ShieldCheck, Menu, X, Pin } from "l
 import { sendChatMessage, getChatMessages, togglePinMessage } from "@/app/actions/chat";
 
 const CHANNELS = [
-  { id: 'geral', name: 'Geral', desc: 'Discussíµes gerais sobre finanças' },
-  { id: 'acoes', name: 'Açíµes', desc: 'B3, mercado de capitais e análises' },
-  { id: 'etfs', name: 'ETFs', desc: 'Fundos de índice e exterior' },
+  { id: 'geral', name: 'Geral', desc: 'Discussí­Âµes gerais sobre finanças' },
+  { id: 'acoes', name: 'Açí­Âµes', desc: 'B3, mercado de capitais e análises' },
+  { id: 'etfs', name: 'ETFs', desc: 'Fundos de í­Ândice e exterior' },
   { id: 'fiis', name: 'FIIs', desc: 'Fundos Imobiliários e dividendos' },
   { id: 'cripto', name: 'Cripto', desc: 'Bitcoin, Ethereum e altcoins' },
 ];
@@ -168,7 +168,7 @@ export default function ChatClient({ initialMessages, isAdmin = false }: { initi
         </div>
       </div>
 
-      {/* írea Principal do Chat */}
+      {/* í­Ârea Principal do Chat */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "var(--bg-primary)" }}>
         
         {/* Chat Header */}
@@ -264,7 +264,7 @@ export default function ChatClient({ initialMessages, isAdmin = false }: { initi
           <style dangerouslySetInnerHTML={{__html: `
             @media (max-width: 768px) {
               .chat-input-container {
-                padding-bottom: 90px !important; /* Espaço para os botíµes flutuantes globais */
+                padding-bottom: 90px !important; /* Espaço para os botí­Âµes flutuantes globais */
               }
             }
           `}} />

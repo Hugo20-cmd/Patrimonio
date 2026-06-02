@@ -98,7 +98,7 @@ export default function ConnectionsClient({ initialConnections, subscriptionStat
       
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '32px' }}>
         <div>
-          <h1 style={{ fontSize: '1.8rem', marginBottom: '8px' }}>Integraçíµes</h1>
+          <h1 style={{ fontSize: '1.8rem', marginBottom: '8px' }}>Integraçí­Âµes</h1>
           <p style={{ color: 'var(--text-tertiary)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <ShieldCheck size={16} color="var(--green-primary)" />
             Sincronização automática com corretoras via Open Finance. Conexão criptografada e somente leitura.
@@ -122,7 +122,7 @@ export default function ConnectionsClient({ initialConnections, subscriptionStat
               onClick={() => { setIsConnecting(false); setConnectToken(null) }}
               style={{ position: 'absolute', top: '16px', right: '16px', zIndex: 10, background: '#f0f0f0', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
             >
-              â
+              í¢ÂÂ
             </button>
             <PluggyConnect
               connectToken={connectToken}
@@ -166,7 +166,7 @@ export default function ConnectionsClient({ initialConnections, subscriptionStat
                       {conn.status === 'UPDATED' ? 'Sincronizado' : 'Erro de sincronização'}
                     </span>
                     <span style={{ fontSize: '0.8rem', color: 'var(--text-subtle)' }}>
-                      â¢ íltima att: {new Date(conn.updated_at).toLocaleDateString('pt-BR')}
+                      í¢ÂÂ¢ í­Âltima att: {new Date(conn.updated_at).toLocaleDateString('pt-BR')}
                     </span>
                   </div>
                 </div>

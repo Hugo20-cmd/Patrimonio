@@ -1,6 +1,6 @@
 'use server'
 
-// âââ Cache ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// í¢ÂÂí¢ÂÂí¢ÂÂ Cache í¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂ
 const quoteCache = new Map<string, { data: any; timestamp: number }>()
 const CACHE_DURATION = 5 * 60 * 1000 // 5 min
 
@@ -10,14 +10,14 @@ const FINNHUB_BASE = 'https://finnhub.io/api/v1'
 function brapiToken()   { return process.env.BRAPI_TOKEN   || '' }
 function finnhubToken() { return process.env.FINNHUB_TOKEN || '' }
 
-// âââ Detector de mercado ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// Tickers BR terminam com dí­gitos: PETR4, BOVA11, JEPI39, MXRF11, etc.
+// í¢ÂÂí¢ÂÂí¢ÂÂ Detector de mercado í¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂ
+// Tickers BR terminam com dí­Â­gitos: PETR4, BOVA11, JEPI39, MXRF11, etc.
 // Tickers US são apenas letras: JEPI, SPY, QQQ, SCHW, etc.
 function isUSATicker(ticker: string): boolean {
   return /^[A-Z]+$/.test(ticker.trim().toUpperCase())
 }
 
-// âââ BRAPI â busca um ativo brasileiro âââââââââââââââââââââââââââââââââââââââ
+// í¢ÂÂí¢ÂÂí¢ÂÂ BRAPI í¢ÂÂ busca um ativo brasileiro í¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂ
 async function fetchBrapi(ticker: string) {
   const res = await fetch(
     `${BRAPI_BASE}/quote/${ticker}?token=${brapiToken()}`,
@@ -49,7 +49,7 @@ async function fetchBrapi(ticker: string) {
   }
 }
 
-// âââ FINNHUB â busca um ativo americano ââââââââââââââââââââââââââââââââââââââ
+// í¢ÂÂí¢ÂÂí¢ÂÂ FINNHUB í¢ÂÂ busca um ativo americano í¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂ
 async function fetchFinnhub(ticker: string) {
   const [quoteRes, profileRes] = await Promise.all([
     fetch(`${FINNHUB_BASE}/quote?symbol=${ticker}&token=${finnhubToken()}`, { next: { revalidate: 300 } }),
@@ -87,7 +87,7 @@ async function fetchFinnhub(ticker: string) {
   }
 }
 
-// âââ Finnhub search ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// í¢ÂÂí¢ÂÂí¢ÂÂ Finnhub search í¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂ
 async function searchFinnhub(query: string) {
   const res = await fetch(
     `${FINNHUB_BASE}/search?q=${encodeURIComponent(query)}&token=${finnhubToken()}`,
@@ -97,7 +97,7 @@ async function searchFinnhub(query: string) {
   if (!json.result) return []
 
   return json.result
-    .filter((r: any) => r.type === 'ETP' || r.type === 'Common Stock') // ETFs e açíµes
+    .filter((r: any) => r.type === 'ETP' || r.type === 'Common Stock') // ETFs e açí­Âµes
     .slice(0, 8)
     .map((r: any) => ({
       symbol:  r.symbol,
@@ -109,7 +109,7 @@ async function searchFinnhub(query: string) {
     }))
 }
 
-// âââ PUBLIC API âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// í¢ÂÂí¢ÂÂí¢ÂÂ PUBLIC API í¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂí¢ÂÂ
 
 export async function getQuote(ticker: string) {
   const key = ticker.toUpperCase().trim()
@@ -150,7 +150,7 @@ export async function getMultipleQuotes(tickers: string[]) {
 
   const fetchTasks: Promise<any>[] = []
 
-  // Brapi â busca em lote
+  // Brapi í¢ÂÂ busca em lote
   if (brTickers.length) {
     fetchTasks.push(
       fetch(`${BRAPI_BASE}/quote/${brTickers.join(',')}?token=${brapiToken()}`, { next: { revalidate: 300 } })
@@ -177,7 +177,7 @@ export async function getMultipleQuotes(tickers: string[]) {
     )
   }
 
-  // Finnhub â busca individual (não tem endpoint em lote)
+  // Finnhub í¢ÂÂ busca individual (não tem endpoint em lote)
   for (const t of usTickers) {
     fetchTasks.push(
       fetchFinnhub(t)

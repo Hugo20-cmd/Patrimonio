@@ -22,11 +22,11 @@ const menuItems = [
   { icon: DollarSign, label: "Dividendos", href: "/dividends" },
   { icon: Target, label: "Metas", href: "/goals" },
   { icon: Award, label: "Conquistas", href: "/achievements" },
-  { icon: Newspaper, label: "Notí­cias", href: "/news" },
+  { icon: Newspaper, label: "Notí­Â­cias", href: "/news" },
   { icon: MessageSquare, label: "Comunidade", href: "/community" },
   { icon: MessagesSquare, label: "Feedbacks", href: "/feedback" },
   { icon: Headphones, label: "Central de Ajuda", href: "/support" },
-  { icon: LinkIcon, label: "Conexíµes", href: "/connections" },
+  { icon: LinkIcon, label: "Conexí­Âµes", href: "/connections" },
 ];
 
 export default function Sidebar({ 
@@ -64,7 +64,7 @@ export default function Sidebar({
         setDeferredPrompt(null);
       }
     } else {
-      alert("Para instalar o app:\n\nð± No Android: Toque nos 3 pontinhos do Chrome e depois em 'Adicionar í  tela inicial'.\n\nð No iPhone: Toque no í­cone de Compartilhar do Safari e depois em 'Adicionar í  Tela de Iní­cio'.");
+      alert("Para instalar o app:\n\ní°ÂÂÂ± No Android: Toque nos 3 pontinhos do Chrome e depois em 'Adicionar í­Â  tela inicial'.\n\ní°ÂÂÂ No iPhone: Toque no í­Â­cone de Compartilhar do Safari e depois em 'Adicionar í­Â  Tela de Iní­Â­cio'.");
     }
   };
 
@@ -110,7 +110,7 @@ export default function Sidebar({
             <TrendingUp size={18} color="#000" strokeWidth={2.5} />
           </div>
           <span style={{ fontWeight: 800, fontSize: "1.1rem", color: "var(--text-primary)" }}>
-            PATRIMíNIO<span style={{ color: "var(--green-primary)" }}>+</span>
+            PATRIMí­ÂNIO<span style={{ color: "var(--green-primary)" }}>+</span>
           </span>
         </Link>
       </div>
@@ -157,7 +157,7 @@ export default function Sidebar({
         })}
 
         {/* ADMIN LINK (Apenas para o Dono) */}
-        {profile?.email === ['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(profile?.email || userData?.user?.email) && (
+        {['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(profile?.email || '') && (
           <Link 
             href="/admin"
             className={`sidebar-link ${pathname.startsWith("/admin") ? "active" : ""}`}
@@ -175,7 +175,7 @@ export default function Sidebar({
       <div style={{ padding: "16px", borderTop: "1px solid var(--border-subtle)", display: "flex", flexDirection: "column", gap: "6px" }}>
         <Link href="/settings" className={`sidebar-link ${pathname === "/settings" ? "active" : ""}`}>
           <Settings size={18} />
-          Configuraçíµes
+          Configuraçí­Âµes
         </Link>
         <form action={logout} style={{ width: "100%" }}>
           <button type="submit" className="sidebar-link" style={{ width: "100%", background: "transparent", border: "none", textAlign: "left", cursor: "pointer" }}>

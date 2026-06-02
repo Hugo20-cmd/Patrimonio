@@ -9,14 +9,14 @@ export async function sendWelcomeEmail(email: string, name: string) {
     const data = await resend.emails.send({
       from: 'Patrimônio+ <contato@patrimonioplus.com>',
       to: [email],
-      subject: 'Bem-vindo ao Patrimônio+ ð',
+      subject: 'Bem-vindo ao Patrimônio+ í°ÂÂÂ',
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
           <h2>Olá, ${name}!</h2>
           <p>Obrigado por se juntar ao Patrimônio+.</p>
-          <p>Estamos muito felizes em ter vocíª conosco na jornada para a independíªncia financeira.</p>
+          <p>Estamos muito felizes em ter vocí­Âª conosco na jornada para a independí­Âªncia financeira.</p>
           <br/>
-          <p>Se tiver qualquer díºvida, é sí³ responder este e-mail.</p>
+          <p>Se tiver qualquer dí­Âºvida, é sí­Â³ responder este e-mail.</p>
           <p>Abraços,<br/>Equipe Patrimônio+</p>
         </div>
       `,
@@ -34,15 +34,15 @@ export async function sendPremiumConfirmationEmail(email: string, name: string) 
     const data = await resend.emails.send({
       from: 'Patrimônio+ <contato@patrimonioplus.com>',
       to: [email],
-      subject: 'Assinatura Premium Confirmada ð',
+      subject: 'Assinatura Premium Confirmada í°ÂÂÂ',
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
           <h2>Sua assinatura Premium está ativa, ${name}!</h2>
-          <p>A partir de agora vocíª tem acesso a:</p>
+          <p>A partir de agora vocí­Âª tem acesso a:</p>
           <ul>
             <li>Ativos e metas ilimitadas</li>
             <li>Dashboard completo de dividendos</li>
-            <li>Relatí³rios e projeçíµes avançadas</li>
+            <li>Relatí­Â³rios e projeçí­Âµes avançadas</li>
           </ul>
           <p>Acesse a plataforma agora mesmo para explorar todas as novidades.</p>
           <br/>

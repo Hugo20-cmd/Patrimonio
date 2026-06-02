@@ -44,7 +44,7 @@ export default function AdminClient({ stats, latestUsers, feedbacks }: { stats: 
             </div>
             <div>
               <h1 style={{ fontSize: "1.5rem", color: "var(--text-primary)" }}>Painel Administrativo</h1>
-              <p style={{ color: "var(--red-primary)", fontSize: "0.85rem", fontWeight: 600 }}>Acesso Restrito - PATRIMíNIO+ Admin</p>
+              <p style={{ color: "var(--red-primary)", fontSize: "0.85rem", fontWeight: 600 }}>Acesso Restrito - PATRIMí­ÂNIO+ Admin</p>
             </div>
           </div>
           <Link href="/dashboard" className="btn btn-secondary btn-sm" style={{ gap: "8px" }}>
@@ -59,7 +59,7 @@ export default function AdminClient({ stats, latestUsers, feedbacks }: { stats: 
             { label: "Usuários Online", value: onlineUsers, icon: Activity, color: "var(--green-primary)", bg: "var(--green-glow)", trend: "Tempo real (Dashboard)" },
             { label: "Novos (Hoje)", value: stats.newUsersToday, icon: TrendingUp, color: "var(--blue-primary)", bg: "var(--blue-glow)", trend: "Registros diários" },
             { label: "Assinantes Premium", value: stats.premiumUsers, icon: Activity, color: "var(--purple-primary)", bg: "rgba(139,92,246,0.15)", trend: "Usuários ativos pagos" },
-            { label: "MRR", value: `R$ ${stats.MRR.toFixed(2)}`, icon: DollarSign, color: "var(--green-primary)", bg: "var(--green-glow)", trend: "Recorríªncia Mensal" },
+            { label: "MRR", value: `R$ ${stats.MRR.toFixed(2)}`, icon: DollarSign, color: "var(--green-primary)", bg: "var(--green-glow)", trend: "Recorrí­Âªncia Mensal" },
             { label: "Feedbacks", value: localFeedbacks.filter(f => f.status === 'pendente').length, icon: TrendingUp, color: "var(--orange-primary)", bg: "rgba(251,146,60,0.15)", trend: "Pendentes" },
           ].map((m, i) => (
             <motion.div
@@ -95,7 +95,7 @@ export default function AdminClient({ stats, latestUsers, feedbacks }: { stats: 
           {/* Latest Users Table */}
           <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", overflow: "hidden" }}>
             <div style={{ padding: "20px 24px", borderBottom: "1px solid var(--border-subtle)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h3 style={{ fontSize: "1.1rem" }}>íltimos Usuários Cadastrados</h3>
+              <h3 style={{ fontSize: "1.1rem" }}>í­Âltimos Usuários Cadastrados</h3>
             </div>
             <div style={{ overflowX: "auto" }}>
               <table className="table-premium">

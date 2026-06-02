@@ -55,9 +55,9 @@ export async function addTransaction(formData: FormData) {
   // Disparar gatilho de gamificação (milestones)
   const { results: unlockedAchievements } = await checkTransactionAchievements(userData.user.id) || { results: [] }
 
-  // XP diní¢mico por Aporte / Compra de Ativos
+  // XP diní­Â¢mico por Aporte / Compra de Ativos
   let xpEarned = 0;
-  const investmentCategories = ['ação', 'açíµes', 'etf', 'fii', 'cripto', 'investimento', 'renda fixa', 'tesouro']
+  const investmentCategories = ['ação', 'açí­Âµes', 'etf', 'fii', 'cripto', 'investimento', 'renda fixa', 'tesouro']
   if (investmentCategories.some(c => category.toLowerCase().includes(c))) {
     const xpBase = Math.floor(amount / 5) // 1 XP a cada 5 reais investidos
     xpEarned = xpBase > 0 ? xpBase : 2 // Pelo menos 2 XP por qualquer compra

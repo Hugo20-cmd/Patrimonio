@@ -84,7 +84,7 @@ function LoginPageContent() {
                 <TrendingUp size={22} color="#000" strokeWidth={2.5} />
               </div>
               <span style={{ fontWeight: 800, fontSize: "1.2rem", color: "var(--text-primary)" }}>
-                PATRIMíNIO<span style={{ color: "var(--green-primary)" }}>+</span>
+                PATRIMí­ÂNIO<span style={{ color: "var(--green-primary)" }}>+</span>
               </span>
             </Link>
           </div>
@@ -94,14 +94,14 @@ function LoginPageContent() {
             <span className="gradient-text">crescendo.</span>
           </h2>
           <p style={{ fontSize: "1rem", lineHeight: 1.7, marginBottom: "40px" }}>
-            Acompanhe ETFs, açíµes, FIIs e dividendos em tempo real com gráficos inteligentes.
+            Acompanhe ETFs, açí­Âµes, FIIs e dividendos em tempo real com gráficos inteligentes.
           </p>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {[
-              { emoji: "ð", text: "Patrimônio médio: R$ 68.450 por usuário" },
-              { emoji: "ð°", text: "Renda passiva média: R$ 2.969/míªs" },
-              { emoji: "ð", text: "+12.400 investidores ativos" },
+              { emoji: "í°ÂÂÂ", text: "Patrimônio médio: R$ 68.450 por usuário" },
+              { emoji: "í°ÂÂÂ°", text: "Renda passiva média: R$ 2.969/mí­Âªs" },
+              { emoji: "í°ÂÂÂ", text: "+12.400 investidores ativos" },
             ].map((item, i) => (
               <div key={i} style={{
                 display: "flex", alignItems: "center", gap: "12px",
@@ -186,7 +186,7 @@ function LoginPageContent() {
                   name="password"
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="â¢â¢â¢â¢â¢â¢â¢â¢"
+                  placeholder="í¢ÂÂ¢í¢ÂÂ¢í¢ÂÂ¢í¢ÂÂ¢í¢ÂÂ¢í¢ÂÂ¢í¢ÂÂ¢í¢ÂÂ¢"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -232,10 +232,10 @@ function LoginPageContent() {
           </form>
 
           <p style={{ textAlign: "center", marginTop: "24px", fontSize: "0.78rem", color: "var(--text-tertiary)" }}>
-            Ao continuar, vocíª concorda com os{" "}
+            Ao continuar, vocí­Âª concorda com os{" "}
             <a href="#" style={{ color: "var(--text-secondary)" }}>Termos de Uso</a>{" "}
             e a{" "}
-            <a href="#" style={{ color: "var(--text-secondary)" }}>Polí­tica de Privacidade</a>.
+            <a href="#" style={{ color: "var(--text-secondary)" }}>Polí­Â­tica de Privacidade</a>.
           </p>
         </motion.div>
       </div>

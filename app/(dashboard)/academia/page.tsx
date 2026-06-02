@@ -63,7 +63,7 @@ export default function AcademiaPage() {
 
   const completeModule = () => {
     setProgress(18); // Simulation of gaining progress
-    alert("ð Mí³dulo Concluí­do com Sucesso! O Mí³dulo 2 foi desbloqueado (simulação).");
+    alert("í°ÂÂÂ Mí­Â³dulo Concluí­Â­do com Sucesso! O Mí­Â³dulo 2 foi desbloqueado (simulação).");
     closeSlides();
   };
 
@@ -88,7 +88,7 @@ export default function AcademiaPage() {
         </div>
         
         <p style={{ color: "var(--text-secondary)", fontSize: "1.1rem", maxWidth: "600px", lineHeight: 1.6, marginBottom: "32px" }}>
-          Sua jornada definitiva do zero ao investidor avançado. O plano de estudos perfeito para vocíª dominar as regras do jogo, proteger seu dinheiro e construir um patrimônio inabalável a longo prazo.
+          Sua jornada definitiva do zero ao investidor avançado. O plano de estudos perfeito para vocí­Âª dominar as regras do jogo, proteger seu dinheiro e construir um patrimônio inabalável a longo prazo.
         </p>
 
         {/* Global Progress Bar */}
@@ -160,7 +160,7 @@ export default function AcademiaPage() {
                 }}>
                   {isInProgress && (
                     <div style={{ position: "absolute", top: "-12px", right: "32px", background: "var(--blue-primary)", color: "#fff", fontSize: "0.7rem", fontWeight: 800, padding: "4px 12px", borderRadius: "99px", letterSpacing: "1px" }}>
-                      COMEíAR
+                      COMEí­ÂAR
                     </div>
                   )}
 
@@ -175,7 +175,7 @@ export default function AcademiaPage() {
 
                   {/* Lessons List */}
                   <div style={{ display: "flex", flexDirection: "column", gap: "10px", background: "rgba(0,0,0,0.2)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-subtle)" }}>
-                    <span style={{ fontSize: "0.75rem", fontWeight: 800, color: "var(--text-tertiary)", textTransform: "uppercase" }}>Aulas do Mí³dulo</span>
+                    <span style={{ fontSize: "0.75rem", fontWeight: 800, color: "var(--text-tertiary)", textTransform: "uppercase" }}>Aulas do Mí­Â³dulo</span>
                     {mod.lessons.map((lesson, idx) => (
                       <div key={idx} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                         <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: isCompleted ? "rgba(0,212,170,0.1)" : "rgba(255,255,255,0.05)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -260,7 +260,7 @@ export default function AcademiaPage() {
                   className="btn btn-primary"
                   style={{ display: "flex", alignItems: "center", gap: "8px", padding: "12px 24px", borderRadius: "12px" }}
                 >
-                  Prí³ximo <ChevronRight size={20} />
+                  Prí­Â³ximo <ChevronRight size={20} />
                 </button>
               ) : (
                 <button 
@@ -270,7 +270,7 @@ export default function AcademiaPage() {
                     background: "var(--green-primary)", color: "#000", border: "none", cursor: "pointer", fontWeight: 800
                   }}
                 >
-                  <CheckCircle2 size={20} /> Concluir Mí³dulo
+                  <CheckCircle2 size={20} /> Concluir Mí­Â³dulo
                 </button>
               )}
             </div>
@@ -308,7 +308,7 @@ export default function AcademiaPage() {
                 Desbloqueie o PRO
               </h2>
               <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: 1.5 }}>
-                Vocíª está a um passo de dominar a construção de riqueza e proteger o seu futuro.
+                Vocí­Âª está a um passo de dominar a construção de riqueza e proteger o seu futuro.
               </p>
             </div>
 
@@ -318,11 +318,11 @@ export default function AcademiaPage() {
                 <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
                   <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
                     <CheckCircle2 size={18} color="var(--green-primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
-                    <span style={{ fontSize: "0.9rem", color: "var(--text-primary)" }}>Acesso **Vitalí­cio** a todos os Mí³dulos.</span>
+                    <span style={{ fontSize: "0.9rem", color: "var(--text-primary)" }}>Acesso **Vitalí­Â­cio** a todos os Mí­Â³dulos.</span>
                   </li>
                   <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
                     <CheckCircle2 size={18} color="var(--green-primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
-                    <span style={{ fontSize: "0.9rem", color: "var(--text-primary)" }}>Todas as atualizaçíµes futuras inclusas gratuitas.</span>
+                    <span style={{ fontSize: "0.9rem", color: "var(--text-primary)" }}>Todas as atualizaçí­Âµes futuras inclusas gratuitas.</span>
                   </li>
                   <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
                     <CheckCircle2 size={18} color="var(--green-primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
@@ -342,7 +342,7 @@ export default function AcademiaPage() {
                   <span style={{ fontSize: "1.5rem", color: "#FFD700", fontWeight: 700 }}>,90</span>
                 </div>
                 <span style={{ display: "inline-block", background: "rgba(255,255,255,0.1)", padding: "4px 12px", borderRadius: "99px", fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: 700, marginTop: "8px", textTransform: "uppercase", letterSpacing: "1px" }}>
-                  Pagamento ínico
+                  Pagamento í­Ânico
                 </span>
               </div>
               

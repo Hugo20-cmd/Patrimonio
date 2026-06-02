@@ -143,7 +143,7 @@ export default function DashboardClient({ initialAssets }: { initialAssets: any[
           <p style={{ color: "var(--text-tertiary)", fontSize: "0.9rem" }}>Acompanhe o crescimento do seu patrimônio e investimentos.</p>
         </div>
         <button className="btn btn-secondary btn-sm" style={{ gap: "8px" }} onClick={() => window.print()}>
-          Gerar Relatí³rio PDF
+          Gerar Relatí­Â³rio PDF
         </button>
       </div>
 
@@ -167,9 +167,9 @@ export default function DashboardClient({ initialAssets }: { initialAssets: any[
             <div style={{ padding: "8px", borderRadius: "8px", background: "var(--blue-glow)", color: "var(--blue-primary)" }}>
               <TrendingUp size={18} />
             </div>
-            <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--text-tertiary)" }}>Histí³rico</span>
+            <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--text-tertiary)" }}>Histí­Â³rico</span>
           </div>
-          <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Lucro / Prejuí­zo</div>
+          <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Lucro / Prejuí­Â­zo</div>
           <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
             <div style={{ fontSize: "1.8rem", fontWeight: 800, color: metrics.totalProfit >= 0 ? "var(--green-primary)" : "var(--red-primary)" }}>
               {formatCurrency(metrics.totalProfit)}
@@ -187,7 +187,7 @@ export default function DashboardClient({ initialAssets }: { initialAssets: any[
             </div>
             <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--text-tertiary)" }}>Sem dados</span>
           </div>
-          <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Dividendos (Míªs)</div>
+          <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Dividendos (Mí­Âªs)</div>
           <div style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--text-primary)" }}>
             R$ 0,00
           </div>
@@ -346,7 +346,7 @@ export default function DashboardClient({ initialAssets }: { initialAssets: any[
         overflow: "hidden",
       }}>
         <div style={{ padding: "20px 24px", borderBottom: "1px solid var(--border-subtle)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h3 style={{ fontSize: "1.1rem" }}>Top Posiçíµes</h3>
+          <h3 style={{ fontSize: "1.1rem" }}>Top Posiçí­Âµes</h3>
           <a href="/portfolio" style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--blue-primary)", textDecoration: "none", display: "flex", alignItems: "center", gap: "4px" }}>
             Ver carteira completa <ChevronRight size={14} />
           </a>
@@ -361,7 +361,7 @@ export default function DashboardClient({ initialAssets }: { initialAssets: any[
                 <th style={{ textAlign: "right" }}>Preço Médio</th>
                 <th style={{ textAlign: "right" }}>Preço Atual</th>
                 <th style={{ textAlign: "right" }}>Total</th>
-                <th style={{ textAlign: "right" }}>Lucro / Prejuí­zo</th>
+                <th style={{ textAlign: "right" }}>Lucro / Prejuí­Â­zo</th>
               </tr>
             </thead>
             <tbody>

@@ -62,7 +62,7 @@ export default function Navbar() {
               letterSpacing: "-0.03em",
               color: "var(--text-primary)",
             }}>
-              PATRIMíNIO<span style={{ color: "var(--green-primary)" }}>+</span>
+              PATRIMí­ÂNIO<span style={{ color: "var(--green-primary)" }}>+</span>
             </span>
           </Link>
 

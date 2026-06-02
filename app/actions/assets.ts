@@ -103,7 +103,7 @@ export async function addAsset(formData: FormData) {
   }
 
   if (existingAsset) {
-    // Update existing â round to 8 decimals to avoid float precision errors
+    // Update existing í¢ÂÂ round to 8 decimals to avoid float precision errors
     const newQuantity = parseFloat((Number(existingAsset.quantity) + quantity).toFixed(8))
     
     // Calculate new average price (only if buying)
