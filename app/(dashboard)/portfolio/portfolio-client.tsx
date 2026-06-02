@@ -3,8 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Plus, Search, Filter, ArrowUpDown, X,
-  Save, AlertCircle, TrendingUp, TrendingDown, RefreshCw, Loader2, Edit2
+  Plus, Search, Filter, ArrowUpDown, X, CheckCircle2,
+  Save, AlertCircle, TrendingUp, TrendingDown, RefreshCw, Loader2, Edit2, BrainCircuit, UploadCloud, FileText
 } from "lucide-react";
 import { 
   formatCurrency, formatPercent, assetTypeColor, assetTypeLabel, AssetType
@@ -65,6 +65,11 @@ export default function PortfolioClient({ initialAssets, subscriptionStatus }: {
   const [errorMsg, setErrorMsg] = useState("");
   const [assetType, setAssetType] = useState<string>("ETF");
   const [editingAssetId, setEditingAssetId] = useState<string | null>(null);
+
+  // IA Import State
+  const [isAiImportOpen, setIsAiImportOpen] = useState(false);
+  const [aiImportStatus, setAiImportStatus] = useState<"idle" | "uploading" | "analyzing" | "success" | "error">("idle");
+  const [aiImportMsg, setAiImportMsg] = useState("");
 
   // ── Ticker autocomplete ──
   const [tickerInput, setTickerInput] = useState("");
@@ -294,7 +299,13 @@ export default function PortfolioClient({ initialAssets, subscriptionStatus }: {
             <RefreshCw size={14} style={{ animation: quotesLoading ? "spin 1s linear infinite" : "none" }} />
             {quotesLoading ? "Atualizando..." : "Atualizar"}
           </button>
-          <button className="btn btn-primary" style={{ gap: "8px" }} onClick={() => {
+          
+          <button className="btn btn-secondary" style={{ gap: "8px", background: "var(--bg-elevated)", border: "1px solid var(--blue-primary)", color: "var(--blue-primary)", whiteSpace: "nowrap" }} onClick={() => setIsAiImportOpen(true)}>
+            <BrainCircuit size={16} />
+            Leitor IA (PDF/CSV)
+          </button>
+
+          <button className="btn btn-primary" style={{ gap: "8px", whiteSpace: "nowrap" }} onClick={() => {
             if (subscriptionStatus === 'free' && assets.length >= 5) {
               setShowPaywall(true);
             } else {
@@ -302,7 +313,7 @@ export default function PortfolioClient({ initialAssets, subscriptionStatus }: {
             }
           }}>
             <Plus size={16} />
-            Adicionar Ativo
+            Adicionar Manual
           </button>
         </div>
       </div>
@@ -818,6 +829,108 @@ export default function PortfolioClient({ initialAssets, subscriptionStatus }: {
                     </button>
                   </div>
                 </form>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal Importação IA */}
+      <AnimatePresence>
+        {isAiImportOpen && (
+          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)", zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              style={{ background: "var(--bg-card)", border: "1px solid var(--blue-primary)", borderRadius: "20px", width: "100%", maxWidth: "500px", boxShadow: "0 0 40px rgba(79,110,247,0.2)", overflow: "hidden" }}
+            >
+              <div style={{ padding: "20px 24px", borderBottom: "1px solid var(--border-subtle)", display: "flex", justifyContent: "space-between", alignItems: "center", background: "linear-gradient(90deg, rgba(79,110,247,0.1), transparent)" }}>
+                <h3 style={{ fontSize: "1.2rem", fontWeight: 700, display: "flex", alignItems: "center", gap: "8px" }}>
+                  <BrainCircuit size={20} color="var(--blue-primary)" /> Leitor Mágico (IA)
+                </h3>
+                <button onClick={() => { setIsAiImportOpen(false); setAiImportStatus("idle"); setAiImportMsg(""); }} style={{ background: "none", border: "none", color: "var(--text-tertiary)", cursor: "pointer" }}>
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div style={{ padding: "32px", textAlign: "center" }}>
+                {aiImportStatus === "idle" && (
+                  <>
+                    <div style={{ width: "80px", height: "80px", borderRadius: "50%", background: "rgba(79,110,247,0.1)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
+                      <UploadCloud size={40} color="var(--blue-primary)" />
+                    </div>
+                    <h4 style={{ fontSize: "1.3rem", marginBottom: "12px" }}>Arraste seu extrato para cá</h4>
+                    <p style={{ color: "var(--text-tertiary)", fontSize: "0.95rem", lineHeight: 1.5, marginBottom: "24px" }}>
+                      Faça upload do seu arquivo de notas de corretagem ou extrato da B3 em formato <strong>.PDF, .CSV ou .OFX</strong>. A Inteligência Artificial da Patrimônio+ vai ler o arquivo, entender as operações e cadastrar tudo para você automaticamente.
+                    </p>
+                    
+                    <label style={{ display: "inline-block", background: "var(--blue-primary)", color: "#fff", padding: "14px 24px", borderRadius: "12px", fontWeight: 600, cursor: "pointer", transition: "transform 0.1s" }} className="hover-scale">
+                      Selecionar Arquivo
+                      <input type="file" style={{ display: "none" }} accept=".csv,.pdf,.ofx" onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        
+                        setAiImportStatus("uploading");
+                        setAiImportMsg("Enviando arquivo seguro...");
+                        
+                        await new Promise(r => setTimeout(r, 1500));
+                        
+                        setAiImportStatus("analyzing");
+                        setAiImportMsg("A Inteligência Artificial está lendo e interpretando as suas operações. Isso pode levar alguns segundos...");
+                        
+                        try {
+                          const formData = new FormData();
+                          formData.append("file", file);
+                          const res = await fetch("/api/import-ai", { method: "POST", body: formData });
+                          const data = await res.json();
+                          
+                          if (!res.ok) throw new Error(data.error || "Erro ao processar");
+                          
+                          setAiImportStatus("success");
+                          setAiImportMsg(`Sucesso! Foram encontrados e adicionados ${data.count || 0} ativos na sua carteira.`);
+                          setTimeout(() => window.location.reload(), 3000);
+                        } catch(err: any) {
+                          setAiImportStatus("error");
+                          setAiImportMsg(err.message || "Não foi possível ler este arquivo.");
+                        }
+                      }} />
+                    </label>
+                  </>
+                )}
+                
+                {(aiImportStatus === "uploading" || aiImportStatus === "analyzing") && (
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "24px", padding: "20px 0" }}>
+                    <div style={{ position: "relative", width: "80px", height: "80px" }}>
+                      <svg width="80" height="80" viewBox="0 0 100 100" style={{ animation: "spin 2s linear infinite" }}>
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(79,110,247,0.2)" strokeWidth="8" />
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="var(--blue-primary)" strokeWidth="8" strokeDasharray="283" strokeDashoffset="200" strokeLinecap="round" />
+                      </svg>
+                      <BrainCircuit size={32} color="var(--blue-primary)" style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", animation: "pulse 1.5s infinite" }} />
+                    </div>
+                    <div style={{ color: "var(--text-secondary)", fontSize: "1.1rem", fontWeight: 500, maxWidth: "350px", lineHeight: 1.5 }}>
+                      {aiImportMsg}
+                    </div>
+                  </div>
+                )}
+                
+                {aiImportStatus === "success" && (
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", padding: "20px 0" }}>
+                    <CheckCircle2 size={64} color="var(--green-primary)" />
+                    <h4 style={{ fontSize: "1.5rem" }}>Mágica Concluída!</h4>
+                    <p style={{ color: "var(--text-secondary)" }}>{aiImportMsg}</p>
+                  </div>
+                )}
+                
+                {aiImportStatus === "error" && (
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", padding: "20px 0" }}>
+                    <AlertCircle size={64} color="var(--red-primary)" />
+                    <h4 style={{ fontSize: "1.5rem" }}>Ops! Ocorreu um erro</h4>
+                    <p style={{ color: "var(--text-secondary)" }}>{aiImportMsg}</p>
+                    <button className="btn btn-secondary" onClick={() => setAiImportStatus("idle")}>Tentar Novamente</button>
+                  </div>
+                )}
               </div>
             </motion.div>
           </div>

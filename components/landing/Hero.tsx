@@ -71,6 +71,15 @@ function MiniTicker({ ticker, value, change, positive }: { ticker: string; value
 }
 
 export default function Hero() {
+  const [stats, setStats] = useState({ investors: "+600", patrimony: "R$ 200K+" })
+
+  useEffect(() => {
+    fetch('/api/stats')
+      .then(res => res.json())
+      .then(data => setStats(data))
+      .catch(console.error)
+  }, [])
+
   return (
     <section className="hero-bg" style={{ minHeight: "100vh", display: "flex", alignItems: "center", paddingTop: "72px" }}>
       <div className="container" style={{ padding: "80px 24px", position: "relative", zIndex: 1 }}>
@@ -150,7 +159,7 @@ export default function Hero() {
               </div>
               <div>
                 <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--text-primary)" }}>
-                  +12.400 investidores
+                  {stats.investors} investidores
                 </div>
                 <div style={{ fontSize: "0.78rem", color: "var(--text-tertiary)" }}>
                   controlando o patrimônio
@@ -158,7 +167,7 @@ export default function Hero() {
               </div>
               <div style={{ marginLeft: "16px" }}>
                 <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--green-primary)" }}>
-                  R$ 890M+
+                  {stats.patrimony}
                 </div>
                 <div style={{ fontSize: "0.78rem", color: "var(--text-tertiary)" }}>
                   em patrimônio gerenciado
