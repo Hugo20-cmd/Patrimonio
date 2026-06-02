@@ -177,6 +177,7 @@ export async function addAsset(formData: FormData) {
     });
     if (txError) {
       console.error("Erro ao registrar no histórico:", txError);
+      return { error: "Erro interno no histórico: " + txError.message };
     }
   }
 
