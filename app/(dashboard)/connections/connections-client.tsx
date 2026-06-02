@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { Plus, RefreshCw, Trash2, ShieldCheck, AlertCircle, Building, Wallet, Globe, Lock, ArrowRight, BrainCircuit, Sparkles, CheckCircle2, ChevronRight, Landmark } from 'lucide-react'
 import { savePluggyItem, syncPluggyItem, deletePluggyItem } from '@/app/actions/pluggy'
@@ -12,12 +13,15 @@ const PluggyConnect = dynamic(
   { ssr: false }
 )
 
-export default function ConnectionsClient({ initialConnections, subscriptionStatus }: { initialConnections: any[], subscriptionStatus: string }) {
-  const [connections, setConnections] = useState(initialConnections)
+export default function ConnectionsClient({ initialConnections: connections, globalTotal, subscriptionStatus }: { initialConnections: any[], globalTotal: number, subscriptionStatus: string }) {
+  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
   const [isConnecting, setIsConnecting] = useState(false)
   const [connectToken, setConnectToken] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [showPaywall, setShowPaywall] = useState(false)
+
+  const isMutating = loading || isPending
 
   const handleConnect = async () => {
     if (subscriptionStatus === 'free' && connections.length >= 1) {
@@ -53,7 +57,10 @@ export default function ConnectionsClient({ initialConnections, subscriptionStat
       if (res.error) {
         alert(res.error)
       } else {
-        window.location.reload()
+        // Real-time server refresh without hard reload
+        startTransition(() => {
+          router.refresh()
+        })
       }
     } catch (err) {
       console.error(err)
@@ -67,8 +74,11 @@ export default function ConnectionsClient({ initialConnections, subscriptionStat
     try {
       const res = await syncPluggyItem(itemId)
       if (res.error) alert(res.error)
-      else alert('Sincronizado com sucesso!')
-      window.location.reload()
+      else {
+        startTransition(() => {
+          router.refresh()
+        })
+      }
     } catch (err) {
       console.error(err)
     } finally {
@@ -83,7 +93,11 @@ export default function ConnectionsClient({ initialConnections, subscriptionStat
     try {
       const res = await deletePluggyItem(itemId)
       if (res.error) alert(res.error)
-      else window.location.reload()
+      else {
+        startTransition(() => {
+          router.refresh()
+        })
+      }
     } catch (err) {
       console.error(err)
     } finally {
@@ -91,8 +105,12 @@ export default function ConnectionsClient({ initialConnections, subscriptionStat
     }
   }
 
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0)
+  }
+
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '40px', paddingBottom: '80px' }}>
+    <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '40px', paddingBottom: '80px', opacity: isPending ? 0.7 : 1, transition: 'opacity 0.2s' }}>
       <PaywallModal isOpen={showPaywall} onClose={() => setShowPaywall(false)} />
       
       {/* 1. HEADER */}
@@ -117,7 +135,7 @@ export default function ConnectionsClient({ initialConnections, subscriptionStat
         </div>
         <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-default)', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <span style={{ color: 'var(--text-tertiary)', fontSize: '0.9rem' }}>Patrimônio sincronizado</span>
-          <span style={{ fontSize: '1.8rem', fontWeight: 700 }}>R$ 0,00</span>
+          <span style={{ fontSize: '1.8rem', fontWeight: 700, color: globalTotal > 0 ? 'var(--green-primary)' : 'var(--text-primary)' }}>{formatCurrency(globalTotal)}</span>
         </div>
         <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-default)', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <span style={{ color: 'var(--text-tertiary)', fontSize: '0.9rem' }}>Última atualização</span>
@@ -146,7 +164,7 @@ export default function ConnectionsClient({ initialConnections, subscriptionStat
           </div>
         ) : (
           <div style={{ display: 'grid', gap: '16px' }}>
-            {connections.map((conn) => (
+            {connections.map((conn: any) => (
               <div key={conn.id} style={{ background: 'var(--bg-card)', border: '1px solid var(--border-default)', borderRadius: '16px', padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '24px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                   <div style={{ width: '56px', height: '56px', borderRadius: '12px', background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 800 }}>
@@ -165,22 +183,22 @@ export default function ConnectionsClient({ initialConnections, subscriptionStat
                 
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                    <span style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)' }}>Patrimônio sincronizado</span>
-                   <span style={{ fontSize: '1.1rem', fontWeight: 700 }}>R$ 0,00</span>
+                   <span style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>{formatCurrency(conn.totalBalance)}</span>
                 </div>
 
                 <div style={{ display: 'flex', gap: '12px' }}>
                   <button 
                     className="btn btn-secondary" 
                     onClick={() => handleSync(conn.pluggy_item_id)}
-                    disabled={loading}
+                    disabled={isMutating}
                   >
-                    <RefreshCw size={16} /> Atualizar Agora
+                    <RefreshCw size={16} style={{ animation: isMutating ? 'spin 1s linear infinite' : 'none' }} /> Atualizar Agora
                   </button>
                   <button 
                     className="btn btn-ghost" 
                     style={{ color: 'var(--red-primary)' }}
                     onClick={() => handleDelete(conn.pluggy_item_id)}
-                    disabled={loading}
+                    disabled={isMutating}
                   >
                     Desconectar
                   </button>
