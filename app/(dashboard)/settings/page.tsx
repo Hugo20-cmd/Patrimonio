@@ -259,6 +259,26 @@ export default function SettingsPage() {
             </button>
           </div>
 
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              style={{ padding: "8px 16px", fontSize: "0.85rem" }}
+              onClick={async () => {
+                try {
+                  const { createNotification } = await import('@/app/actions/notifications');
+                  await createNotification("🚀 Teste de Notificação", "As suas notificações estão funcionando perfeitamente no Patrimônio+", "info");
+                  alert("Notificação enviada! Olhe a tela do seu aparelho.");
+                } catch (e) {
+                  console.error(e);
+                  alert("Erro ao enviar notificação.");
+                }
+              }}
+            >
+              Disparar Notificação de Teste
+            </button>
+          </div>
+
           {/* Submit */}
           <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "16px" }}>
             <button
