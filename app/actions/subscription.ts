@@ -47,3 +47,13 @@ export async function getUserLimits() {
 
   return { assetCount: assetCount || 0, connectionCount: connectionCount || 0 }
 }
+
+export async function getActiveSubscribersCount() {
+  const supabase = await createClient()
+  const { count } = await supabase
+    .from('subscriptions')
+    .select('*', { count: 'exact', head: true })
+    .in('status', ['active', 'trialing'])
+    
+  return count || 0
+}

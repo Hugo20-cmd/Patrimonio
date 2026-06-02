@@ -11,7 +11,7 @@ import {
 import PaywallModal from '@/components/PaywallModal'
 import { submitFeedback } from '@/app/actions/feedback'
 
-export default function ConnectionsClient({ subscriptionStatus, userEmail }: { subscriptionStatus: string, userEmail?: string }) {
+export default function ConnectionsClient({ subscriptionStatus, userEmail, activeSubscribers = 0 }: { subscriptionStatus: string, userEmail?: string, activeSubscribers?: number }) {
   const router = useRouter()
   const [showPaywall, setShowPaywall] = useState(false)
   const [showWaitlist, setShowWaitlist] = useState(false)
@@ -19,7 +19,7 @@ export default function ConnectionsClient({ subscriptionStatus, userEmail }: { s
 
   // Gamification Data
   const FOUNDERS_GOAL = 2000
-  const CURRENT_FOUNDERS = 412 // Número psicológico inicial aprovado
+  const CURRENT_FOUNDERS = 412 + activeSubscribers // Número psicológico inicial + assinantes reais
   const PROGRESS_PERCENT = Math.min((CURRENT_FOUNDERS / FOUNDERS_GOAL) * 100, 100)
 
   const handleJoinWaitlist = async () => {
@@ -208,21 +208,33 @@ export default function ConnectionsClient({ subscriptionStatus, userEmail }: { s
 
           {/* DESBLOQUEIO POR MARCOS (MILESTONES) */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '40px' }}>
-            <div style={{ background: CURRENT_FOUNDERS >= 500 ? 'rgba(0,212,170,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${CURRENT_FOUNDERS >= 500 ? 'var(--green-primary)' : '#333'}`, borderRadius: '12px', padding: '16px', textAlign: 'center', position: 'relative' }}>
-              {CURRENT_FOUNDERS >= 500 && <CheckCircle2 size={24} color="var(--green-primary)" style={{ position: 'absolute', top: '-12px', right: '-12px', background: '#111', borderRadius: '50%' }} />}
-              <div style={{ fontSize: '1.2rem', fontWeight: 800, color: CURRENT_FOUNDERS >= 500 ? 'var(--green-primary)' : '#fff', marginBottom: '8px' }}>500 Assinantes</div>
+            <div style={{ background: CURRENT_FOUNDERS >= 500 ? 'rgba(0,212,170,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${CURRENT_FOUNDERS >= 500 ? 'var(--green-primary)' : '#333'}`, borderRadius: '12px', padding: '16px', textAlign: 'center', position: 'relative', boxShadow: CURRENT_FOUNDERS >= 500 ? '0 0 15px rgba(0,212,170,0.2)' : 'none' }}>
+              {CURRENT_FOUNDERS >= 500 && (
+                <div style={{ position: 'absolute', top: '-10px', left: '50%', transform: 'translateX(-50%)', background: 'var(--green-primary)', color: '#000', padding: '2px 12px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '4px', boxShadow: '0 0 10px rgba(0,212,170,0.5)' }}>
+                  <CheckCircle2 size={12} /> LIBERADO (USANDO IA)
+                </div>
+              )}
+              <div style={{ fontSize: '1.2rem', fontWeight: 800, color: CURRENT_FOUNDERS >= 500 ? 'var(--green-primary)' : '#fff', marginBottom: '8px', marginTop: CURRENT_FOUNDERS >= 500 ? '8px' : '0' }}>500 Assinantes</div>
               <div style={{ color: '#888', fontSize: '0.9rem' }}>Relatórios Avançados e Comparativos de Mercado</div>
             </div>
             
-            <div style={{ background: CURRENT_FOUNDERS >= 1000 ? 'rgba(0,212,170,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${CURRENT_FOUNDERS >= 1000 ? 'var(--green-primary)' : '#333'}`, borderRadius: '12px', padding: '16px', textAlign: 'center', position: 'relative' }}>
-              {CURRENT_FOUNDERS >= 1000 && <CheckCircle2 size={24} color="var(--green-primary)" style={{ position: 'absolute', top: '-12px', right: '-12px', background: '#111', borderRadius: '50%' }} />}
-              <div style={{ fontSize: '1.2rem', fontWeight: 800, color: CURRENT_FOUNDERS >= 1000 ? 'var(--green-primary)' : '#fff', marginBottom: '8px' }}>1.000 Assinantes</div>
+            <div style={{ background: CURRENT_FOUNDERS >= 1000 ? 'rgba(0,212,170,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${CURRENT_FOUNDERS >= 1000 ? 'var(--green-primary)' : '#333'}`, borderRadius: '12px', padding: '16px', textAlign: 'center', position: 'relative', boxShadow: CURRENT_FOUNDERS >= 1000 ? '0 0 15px rgba(0,212,170,0.2)' : 'none' }}>
+              {CURRENT_FOUNDERS >= 1000 && (
+                <div style={{ position: 'absolute', top: '-10px', left: '50%', transform: 'translateX(-50%)', background: 'var(--green-primary)', color: '#000', padding: '2px 12px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '4px', boxShadow: '0 0 10px rgba(0,212,170,0.5)' }}>
+                  <CheckCircle2 size={12} /> LIBERADO (USANDO IA)
+                </div>
+              )}
+              <div style={{ fontSize: '1.2rem', fontWeight: 800, color: CURRENT_FOUNDERS >= 1000 ? 'var(--green-primary)' : '#fff', marginBottom: '8px', marginTop: CURRENT_FOUNDERS >= 1000 ? '8px' : '0' }}>1.000 Assinantes</div>
               <div style={{ color: '#888', fontSize: '0.9rem' }}>Novos Dashboards de Renda e Projeção IA</div>
             </div>
 
-            <div style={{ background: CURRENT_FOUNDERS >= 2000 ? 'rgba(0,212,170,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${CURRENT_FOUNDERS >= 2000 ? 'var(--green-primary)' : '#333'}`, borderRadius: '12px', padding: '16px', textAlign: 'center', position: 'relative' }}>
-              {CURRENT_FOUNDERS >= 2000 && <CheckCircle2 size={24} color="var(--green-primary)" style={{ position: 'absolute', top: '-12px', right: '-12px', background: '#111', borderRadius: '50%' }} />}
-              <div style={{ fontSize: '1.2rem', fontWeight: 800, color: CURRENT_FOUNDERS >= 2000 ? 'var(--green-primary)' : '#fff', marginBottom: '8px' }}>2.000 Assinantes</div>
+            <div style={{ background: CURRENT_FOUNDERS >= 2000 ? 'rgba(0,212,170,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${CURRENT_FOUNDERS >= 2000 ? 'var(--green-primary)' : '#333'}`, borderRadius: '12px', padding: '16px', textAlign: 'center', position: 'relative', boxShadow: CURRENT_FOUNDERS >= 2000 ? '0 0 15px rgba(0,212,170,0.2)' : 'none' }}>
+              {CURRENT_FOUNDERS >= 2000 && (
+                <div style={{ position: 'absolute', top: '-10px', left: '50%', transform: 'translateX(-50%)', background: 'var(--green-primary)', color: '#000', padding: '2px 12px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '4px', boxShadow: '0 0 10px rgba(0,212,170,0.5)' }}>
+                  <CheckCircle2 size={12} /> LIBERADO (USANDO IA)
+                </div>
+              )}
+              <div style={{ fontSize: '1.2rem', fontWeight: 800, color: CURRENT_FOUNDERS >= 2000 ? 'var(--green-primary)' : '#fff', marginBottom: '8px', marginTop: CURRENT_FOUNDERS >= 2000 ? '8px' : '0' }}>2.000 Assinantes</div>
               <div style={{ color: '#888', fontSize: '0.9rem' }}>Open Finance 100% Liberado Automático</div>
             </div>
           </div>

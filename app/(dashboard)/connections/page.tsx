@@ -1,6 +1,6 @@
 import { createClient } from '@/utils/supabase/server'
 import ConnectionsClient from './connections-client'
-import { getSubscriptionStatus } from '@/app/actions/subscription'
+import { getSubscriptionStatus, getActiveSubscribersCount } from '@/app/actions/subscription'
 
 export default async function ConnectionsPage() {
   const supabase = await createClient()
@@ -34,6 +34,7 @@ export default async function ConnectionsPage() {
   })
 
   const { status } = await getSubscriptionStatus()
+  const activeSubscribers = await getActiveSubscribersCount()
 
-  return <ConnectionsClient initialConnections={connectionsWithBalances} globalTotal={globalTotal} subscriptionStatus={status} userEmail={user.email} />
+  return <ConnectionsClient initialConnections={connectionsWithBalances} globalTotal={globalTotal} subscriptionStatus={status} userEmail={user.email} activeSubscribers={activeSubscribers} />
 }
