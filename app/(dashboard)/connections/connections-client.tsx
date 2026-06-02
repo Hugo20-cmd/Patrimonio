@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { 
   Rocket, Sparkles, ShieldCheck, Target, ArrowRight, 
@@ -11,6 +12,7 @@ import PaywallModal from '@/components/PaywallModal'
 import { submitFeedback } from '@/app/actions/feedback'
 
 export default function ConnectionsClient({ subscriptionStatus, userEmail }: { subscriptionStatus: string, userEmail?: string }) {
+  const router = useRouter()
   const [showPaywall, setShowPaywall] = useState(false)
   const [showWaitlist, setShowWaitlist] = useState(false)
   const [waitlistStatus, setWaitlistStatus] = useState<'idle' | 'loading' | 'success'>('idle')
@@ -75,7 +77,13 @@ export default function ConnectionsClient({ subscriptionStatus, userEmail }: { s
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
           
           {/* 1. Cadastro Manual */}
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-default)', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column' }}>
+          <div 
+            className="hover-scale"
+            onClick={() => router.push('/portfolio')}
+            style={{ background: 'var(--bg-card)', border: '1px solid var(--border-default)', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s' }}
+            onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.2)'}
+            onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
+          >
             <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(0,112,243,0.1)', color: 'var(--blue-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
               <Activity size={24} />
             </div>
@@ -86,7 +94,13 @@ export default function ConnectionsClient({ subscriptionStatus, userEmail }: { s
           </div>
 
           {/* 2. Importação CSV/OFX */}
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--blue-primary)', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+          <div 
+            className="hover-scale"
+            onClick={() => router.push('/portfolio')}
+            style={{ background: 'var(--bg-card)', border: '1px solid var(--blue-primary)', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', position: 'relative', cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s' }}
+            onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 8px 30px rgba(79,110,247,0.15)'}
+            onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
+          >
             <div style={{ position: 'absolute', top: '-10px', right: '20px', background: 'var(--blue-primary)', color: '#fff', padding: '2px 10px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase' }}>Recomendado</div>
             <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(138,43,226,0.1)', color: '#8a2be2', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
               <BrainCircuit size={24} />
@@ -102,7 +116,13 @@ export default function ConnectionsClient({ subscriptionStatus, userEmail }: { s
           </div>
 
           {/* 3. Integração API Corretoras */}
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-default)', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column' }}>
+          <div 
+            className="hover-scale"
+            onClick={() => setShowWaitlist(true)}
+            style={{ background: 'var(--bg-card)', border: '1px solid var(--border-default)', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s' }}
+            onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.2)'}
+            onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
+          >
             <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255,140,0,0.1)', color: '#ff8c00', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
               <LineChart size={24} />
             </div>
