@@ -35,5 +35,5 @@ export default async function ConnectionsPage() {
 
   const { status } = await getSubscriptionStatus()
 
-  return <ConnectionsClient initialConnections={connectionsWithBalances} globalTotal={globalTotal} subscriptionStatus={status} />
+  return <ConnectionsClient initialConnections={connectionsWithBalances} globalTotal={globalTotal} subscriptionStatus={status} userEmail={user.email} />
 }

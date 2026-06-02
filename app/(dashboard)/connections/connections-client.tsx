@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { Plus, RefreshCw, Trash2, ShieldCheck, AlertCircle, Building, Wallet, Globe, Lock, ArrowRight, BrainCircuit, Sparkles, CheckCircle2, ChevronRight, Landmark } from 'lucide-react'
 import { savePluggyItem, syncPluggyItem, deletePluggyItem } from '@/app/actions/pluggy'
+import { submitFeedback } from '@/app/actions/feedback'
 import PaywallModal from '@/components/PaywallModal'
 
 // Pluggy Connect requires window to be defined, so we dynamically import it
@@ -13,17 +14,31 @@ const PluggyConnect = dynamic(
   { ssr: false }
 )
 
-export default function ConnectionsClient({ initialConnections: connections, globalTotal, subscriptionStatus }: { initialConnections: any[], globalTotal: number, subscriptionStatus: string }) {
+export default function ConnectionsClient({ initialConnections: connections, globalTotal, subscriptionStatus, userEmail }: { initialConnections: any[], globalTotal: number, subscriptionStatus: string, userEmail?: string }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [isConnecting, setIsConnecting] = useState(false)
   const [connectToken, setConnectToken] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [showPaywall, setShowPaywall] = useState(false)
+  
+  // Waitlist State
+  const [showWaitlist, setShowWaitlist] = useState(false)
+  const [selectedInstitution, setSelectedInstitution] = useState('')
+  const [waitlistStatus, setWaitlistStatus] = useState<'idle' | 'loading' | 'success'>('idle')
 
-  const isMutating = loading || isPending
+  const isMutating = loading || isPending || waitlistStatus === 'loading'
 
-  const handleConnect = async () => {
+  const handleConnectClick = async (institutionName: string = 'Outra Instituição') => {
+    // Se não for o admin, vai para lista de espera
+    if (userEmail !== 'contatopennamc@gmail.com') {
+      setSelectedInstitution(institutionName)
+      setShowWaitlist(true)
+      setWaitlistStatus('idle')
+      return
+    }
+
+    // Fluxo original (apenas para Admin)
     if (subscriptionStatus === 'free' && connections.length >= 1) {
       setShowPaywall(true)
       return
@@ -47,6 +62,29 @@ export default function ConnectionsClient({ initialConnections: connections, glo
     }
   }
 
+  const handleJoinWaitlist = async () => {
+    setWaitlistStatus('loading')
+    try {
+      const formData = new FormData()
+      formData.append('category', 'OPEN_FINANCE_WAITLIST')
+      formData.append('message', `Interesse prioritário em conectar a instituição: ${selectedInstitution}`)
+      
+      const res = await submitFeedback(formData)
+      if (res.error) {
+        alert(res.error)
+        setWaitlistStatus('idle')
+      } else {
+        setWaitlistStatus('success')
+        setTimeout(() => {
+          setShowWaitlist(false)
+        }, 3000)
+      }
+    } catch (err) {
+      console.error(err)
+      setWaitlistStatus('idle')
+    }
+  }
+
   const onSuccess = async (itemData: { item: { id: string } }) => {
     setIsConnecting(false)
     setConnectToken(null)
@@ -57,7 +95,6 @@ export default function ConnectionsClient({ initialConnections: connections, glo
       if (res.error) {
         alert(res.error)
       } else {
-        // Real-time server refresh without hard reload
         startTransition(() => {
           router.refresh()
         })
@@ -225,7 +262,7 @@ export default function ConnectionsClient({ initialConnections: connections, glo
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '24px' }}>
               {['Nubank', 'Banco Inter', 'Itaú Unibanco', 'Bradesco', 'Santander', 'Caixa'].map(bank => (
-                <button key={bank} onClick={handleConnect} style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', padding: '8px 16px', borderRadius: '20px', fontSize: '0.9rem', cursor: 'pointer', transition: 'border-color 0.2s' }} className="hover-border-primary">{bank}</button>
+                <button key={bank} onClick={() => handleConnectClick(bank)} style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', padding: '8px 16px', borderRadius: '20px', fontSize: '0.9rem', cursor: 'pointer', transition: 'border-color 0.2s' }} className="hover-border-primary">{bank}</button>
               ))}
             </div>
             <div style={{ background: 'var(--bg-elevated)', padding: '16px', borderRadius: '12px' }}>
@@ -248,7 +285,7 @@ export default function ConnectionsClient({ initialConnections: connections, glo
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '24px' }}>
               {['XP Investimentos', 'BTG Pactual', 'Rico', 'Clear', 'Genial'].map(broker => (
-                <button key={broker} onClick={handleConnect} style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', padding: '8px 16px', borderRadius: '20px', fontSize: '0.9rem', cursor: 'pointer', transition: 'border-color 0.2s' }} className="hover-border-primary">{broker}</button>
+                <button key={broker} onClick={() => handleConnectClick(broker)} style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', padding: '8px 16px', borderRadius: '20px', fontSize: '0.9rem', cursor: 'pointer', transition: 'border-color 0.2s' }} className="hover-border-primary">{broker}</button>
               ))}
             </div>
             <div style={{ background: 'var(--bg-elevated)', padding: '16px', borderRadius: '12px' }}>
@@ -271,7 +308,7 @@ export default function ConnectionsClient({ initialConnections: connections, glo
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '24px' }}>
               {['Nomad', 'Interactive Brokers', 'Charles Schwab', 'Avenue Securities'].map(broker => (
-                <button key={broker} onClick={handleConnect} style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', padding: '8px 16px', borderRadius: '20px', fontSize: '0.9rem', cursor: 'pointer', transition: 'border-color 0.2s' }} className="hover-border-primary">{broker}</button>
+                <button key={broker} onClick={() => handleConnectClick(broker)} style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', padding: '8px 16px', borderRadius: '20px', fontSize: '0.9rem', cursor: 'pointer', transition: 'border-color 0.2s' }} className="hover-border-primary">{broker}</button>
               ))}
             </div>
             <div style={{ background: 'var(--bg-elevated)', padding: '16px', borderRadius: '12px' }}>
@@ -390,6 +427,58 @@ export default function ConnectionsClient({ initialConnections: connections, glo
                 setConnectToken(null)
               }}
             />
+          </div>
+        </div>
+      )}
+
+      {/* MODAL LISTA DE ESPERA (BETA FECHADO) */}
+      {showWaitlist && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
+          <div style={{ width: '100%', maxWidth: '450px', background: 'var(--bg-card)', border: '1px solid var(--border-default)', borderRadius: '24px', overflow: 'hidden', position: 'relative' }}>
+            <button 
+              onClick={() => setShowWaitlist(false)}
+              style={{ position: 'absolute', top: '16px', right: '16px', zIndex: 10, background: 'var(--bg-elevated)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-primary)' }}
+            >
+              ✕
+            </button>
+            <div style={{ padding: '32px', textAlign: 'center' }}>
+              <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'linear-gradient(135deg, rgba(138,43,226,0.2) 0%, rgba(0,112,243,0.2) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+                <Sparkles size={32} color="#8a2be2" />
+              </div>
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '12px' }}>Open Finance (Beta)</h2>
+              
+              {waitlistStatus === 'success' ? (
+                <div style={{ color: 'var(--green-primary)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', marginTop: '24px' }}>
+                  <CheckCircle2 size={48} />
+                  <p style={{ margin: 0, fontWeight: 600 }}>Inscrição confirmada!</p>
+                  <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: '8px' }}>Você será avisado assim que liberarmos novas vagas para o {selectedInstitution}.</p>
+                </div>
+              ) : (
+                <>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '24px' }}>
+                    Para garantirmos a máxima segurança de criptografia e performance na sincronização em tempo real, estamos liberando as vagas do Open Finance de forma gradual.
+                  </p>
+                  <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', borderRadius: '12px', padding: '16px', marginBottom: '24px', textAlign: 'left' }}>
+                    <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-tertiary)', marginBottom: '8px', fontWeight: 600 }}>Instituição escolhida:</label>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <Landmark size={20} color="var(--text-primary)" />
+                      <span style={{ fontWeight: 600, fontSize: '1.1rem' }}>{selectedInstitution}</span>
+                    </div>
+                  </div>
+                  <button 
+                    className="btn btn-primary" 
+                    style={{ width: '100%', padding: '16px', fontSize: '1rem' }}
+                    onClick={handleJoinWaitlist}
+                    disabled={waitlistStatus === 'loading'}
+                  >
+                    {waitlistStatus === 'loading' ? 'Registrando...' : 'Entrar na Fila de Prioridade'}
+                  </button>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', marginTop: '16px' }}>
+                    *Sem custos, você não será cobrado.
+                  </p>
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}
