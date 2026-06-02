@@ -1,12 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Users, Link as LinkIcon, DollarSign, ArrowRight, CheckCircle2, AlertCircle, Copy, Check, Award } from "lucide-react";
 import { formatCurrency } from "@/lib/mock-data";
+import { useRouter } from "next/navigation";
 
 export default function AffiliatesClient({ initialData, error }: { initialData?: any, error?: string }) {
   const [copied, setCopied] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    // Atualiza a página a cada 30 segundos silenciosamente em background 
+    // para puxar novos afiliados e XP automaticamente sem que o usuário precise dar F5
+    const interval = setInterval(() => {
+      router.refresh();
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [router]);
 
   if (error) {
     return (
