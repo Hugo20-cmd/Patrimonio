@@ -539,8 +539,9 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                         <button
                           onClick={async () => {
                             if (confirm("Deseja excluir este ativo?")) {
-                              await deleteAsset(asset.id);
+                              // Optimistic UI update para evitar delay visual
                               setAssets((prev) => prev.filter((a) => a.id !== asset.id));
+                              await deleteAsset(asset.id);
                             }
                           }}
                           style={{ background: "none", border: "none", color: "var(--text-tertiary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", width: "32px", height: "32px", borderRadius: "8px", transition: "background 0.2s" }}
