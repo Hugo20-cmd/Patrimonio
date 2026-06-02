@@ -21,7 +21,7 @@ export async function getAffiliateData() {
   // Get users who were referred by me
   const { data: referrals, error: refErr } = await supabase
     .from('profiles')
-    .select('id, full_name, created_at')
+    .select('id, name, created_at')
     .eq('referred_by', userData.user.id)
 
   if (refErr) {
@@ -50,7 +50,7 @@ export async function getAffiliateData() {
   // Format referral list for UI
   const formattedReferrals = (referrals || []).map(r => {
     // Mask name for privacy (e.g., Marcos Ribeiro -> Ma*** Ri***)
-    const parts = (r.full_name || 'Usuário').split(' ');
+    const parts = (r.name || 'Usuário').split(' ');
     const maskedName = parts.map(p => p.length > 2 ? p.substring(0, 2) + '***' : p).join(' ');
     
     const isPremium = activePremiumIds.has(r.id);
