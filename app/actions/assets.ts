@@ -156,7 +156,16 @@ export async function addAsset(formData: FormData) {
 
   // INSERT INTO TRANSACTION HISTORY
   if (operation !== 'sell' || existingAsset) {
-    await supabase.from('asset_transactions').insert({
+    let operationDate = new Date().toISOString();
+    if (date) {
+      try {
+        operationDate = new Date(date).toISOString();
+      } catch (e) {
+        operationDate = new Date().toISOString();
+      }
+    }
+
+    const { error: txError } = await supabase.from('asset_transactions').insert({
       user_id: userData.user.id,
       ticker: ticker,
       asset_type: type,
@@ -164,8 +173,11 @@ export async function addAsset(formData: FormData) {
       quantity: Math.abs(Number(quantityRaw)), // Keep positive for history
       price: price,
       currency: currency,
-      operation_date: date
+      operation_date: operationDate
     });
+    if (txError) {
+      console.error("Erro ao registrar no histórico:", txError);
+    }
   }
 
   const { syncRetroactiveXp } = await import('./gamification')
