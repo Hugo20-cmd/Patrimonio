@@ -667,3 +667,10 @@ label {
     display: block !important;
   }
 }
+
+
+@media all and (display-mode: standalone) {
+  .install-app-btn {
+    display: none !important;
+  }
+}

@@ -186,8 +186,8 @@ export default function Sidebar({
 
         {/* APP INSTALL BUTTON */}
         <button 
-          onClick={handleInstallClick} 
-          className="btn btn-secondary" 
+          onClick={handleInstallClick}
+          className="btn btn-secondary install-app-btn" 
           style={{ width: "100%", justifyContent: "center", padding: "8px", fontSize: "0.85rem", gap: "6px", marginTop: "12px", background: "var(--bg-elevated)", border: "1px solid var(--border-default)" }}
         >
           <Download size={16} /> Instalar o App
