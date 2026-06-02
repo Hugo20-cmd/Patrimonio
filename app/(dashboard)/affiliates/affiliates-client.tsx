@@ -50,7 +50,7 @@ export default function AffiliatesClient({ initialData, error }: { initialData?:
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <h1 style={{ fontSize: "1.8rem", marginBottom: "4px" }}>Programa de Afiliados</h1>
-          <p style={{ color: "var(--text-tertiary)", fontSize: "0.9rem" }}>Indique amigos, ganhe comissões e ajude nossa comunidade a crescer.</p>
+          <p style={{ color: "var(--text-tertiary)", fontSize: "0.9rem" }}>Indique amigos, ganhe pontos de XP e ajude nossa comunidade a crescer.</p>
         </div>
         <button className="btn btn-primary btn-sm" onClick={() => window.open('https://wa.me/?text=' + encodeURIComponent(`Estou usando o Patrimônio+ para organizar meus investimentos. Cadastre-se com meu link e ganhe benefícios: ${referralUrl}`), '_blank')} style={{ gap: "8px" }}>
           Compartilhar no WhatsApp
