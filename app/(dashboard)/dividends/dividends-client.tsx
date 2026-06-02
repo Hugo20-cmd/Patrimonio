@@ -70,6 +70,27 @@ export default function DividendsClient({ initialDividends }: { initialDividends
     setIsModalOpen(true);
   }
 
+  function exportCSV() {
+    const headers = ["Ticker", "Tipo", "Data", "Moeda", "Valor"];
+    const rows = filteredDividends.map(d => [
+      d.ticker,
+      d.type,
+      new Date(d.paymentDate).toLocaleDateString("pt-BR"),
+      d.currency || "BRL",
+      d.amount.toString().replace('.', ',')
+    ]);
+    const csvContent = "data:text/csv;charset=utf-8,\uFEFF" 
+      + headers.join(";") + "\n" 
+      + rows.map(e => e.join(";")).join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `dividendos_${activeYear}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -83,7 +104,7 @@ export default function DividendsClient({ initialDividends }: { initialDividends
           <p style={{ color: "var(--text-tertiary)", fontSize: "0.9rem" }}>Acompanhe sua renda passiva mensal e histórica.</p>
         </div>
         <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-          <button className="btn btn-secondary btn-sm" style={{ gap: "8px" }}>
+          <button className="btn btn-secondary btn-sm" style={{ gap: "8px" }} onClick={exportCSV}>
             <DownloadCloud size={16} /> Exportar
           </button>
           <button className="btn btn-primary btn-sm" style={{ gap: "8px" }} onClick={() => { resetForm(); setIsModalOpen(true); }}>
