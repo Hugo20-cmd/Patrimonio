@@ -18,7 +18,7 @@ export default function ConnectionsClient({ subscriptionStatus, userEmail }: { s
   const [waitlistStatus, setWaitlistStatus] = useState<'idle' | 'loading' | 'success'>('idle')
 
   // Gamification Data
-  const FOUNDERS_GOAL = 5000
+  const FOUNDERS_GOAL = 2000
   const CURRENT_FOUNDERS = 412 // Número psicológico inicial aprovado
   const PROGRESS_PERCENT = Math.min((CURRENT_FOUNDERS / FOUNDERS_GOAL) * 100, 100)
 
@@ -208,21 +208,21 @@ export default function ConnectionsClient({ subscriptionStatus, userEmail }: { s
 
           {/* DESBLOQUEIO POR MARCOS (MILESTONES) */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '40px' }}>
-            <div style={{ background: CURRENT_FOUNDERS >= 1000 ? 'rgba(0,212,170,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${CURRENT_FOUNDERS >= 1000 ? 'var(--green-primary)' : '#333'}`, borderRadius: '12px', padding: '16px', textAlign: 'center', position: 'relative' }}>
-              {CURRENT_FOUNDERS >= 1000 && <CheckCircle2 size={24} color="var(--green-primary)" style={{ position: 'absolute', top: '-12px', right: '-12px', background: '#111', borderRadius: '50%' }} />}
-              <div style={{ fontSize: '1.2rem', fontWeight: 800, color: CURRENT_FOUNDERS >= 1000 ? 'var(--green-primary)' : '#fff', marginBottom: '8px' }}>1.000 Assinantes</div>
+            <div style={{ background: CURRENT_FOUNDERS >= 500 ? 'rgba(0,212,170,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${CURRENT_FOUNDERS >= 500 ? 'var(--green-primary)' : '#333'}`, borderRadius: '12px', padding: '16px', textAlign: 'center', position: 'relative' }}>
+              {CURRENT_FOUNDERS >= 500 && <CheckCircle2 size={24} color="var(--green-primary)" style={{ position: 'absolute', top: '-12px', right: '-12px', background: '#111', borderRadius: '50%' }} />}
+              <div style={{ fontSize: '1.2rem', fontWeight: 800, color: CURRENT_FOUNDERS >= 500 ? 'var(--green-primary)' : '#fff', marginBottom: '8px' }}>500 Assinantes</div>
               <div style={{ color: '#888', fontSize: '0.9rem' }}>Relatórios Avançados e Comparativos de Mercado</div>
             </div>
             
-            <div style={{ background: CURRENT_FOUNDERS >= 2500 ? 'rgba(0,212,170,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${CURRENT_FOUNDERS >= 2500 ? 'var(--green-primary)' : '#333'}`, borderRadius: '12px', padding: '16px', textAlign: 'center', position: 'relative' }}>
-              {CURRENT_FOUNDERS >= 2500 && <CheckCircle2 size={24} color="var(--green-primary)" style={{ position: 'absolute', top: '-12px', right: '-12px', background: '#111', borderRadius: '50%' }} />}
-              <div style={{ fontSize: '1.2rem', fontWeight: 800, color: CURRENT_FOUNDERS >= 2500 ? 'var(--green-primary)' : '#fff', marginBottom: '8px' }}>2.500 Assinantes</div>
+            <div style={{ background: CURRENT_FOUNDERS >= 1000 ? 'rgba(0,212,170,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${CURRENT_FOUNDERS >= 1000 ? 'var(--green-primary)' : '#333'}`, borderRadius: '12px', padding: '16px', textAlign: 'center', position: 'relative' }}>
+              {CURRENT_FOUNDERS >= 1000 && <CheckCircle2 size={24} color="var(--green-primary)" style={{ position: 'absolute', top: '-12px', right: '-12px', background: '#111', borderRadius: '50%' }} />}
+              <div style={{ fontSize: '1.2rem', fontWeight: 800, color: CURRENT_FOUNDERS >= 1000 ? 'var(--green-primary)' : '#fff', marginBottom: '8px' }}>1.000 Assinantes</div>
               <div style={{ color: '#888', fontSize: '0.9rem' }}>Novos Dashboards de Renda e Projeção IA</div>
             </div>
 
-            <div style={{ background: CURRENT_FOUNDERS >= 5000 ? 'rgba(0,212,170,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${CURRENT_FOUNDERS >= 5000 ? 'var(--green-primary)' : '#333'}`, borderRadius: '12px', padding: '16px', textAlign: 'center', position: 'relative' }}>
-              {CURRENT_FOUNDERS >= 5000 && <CheckCircle2 size={24} color="var(--green-primary)" style={{ position: 'absolute', top: '-12px', right: '-12px', background: '#111', borderRadius: '50%' }} />}
-              <div style={{ fontSize: '1.2rem', fontWeight: 800, color: CURRENT_FOUNDERS >= 5000 ? 'var(--green-primary)' : '#fff', marginBottom: '8px' }}>5.000 Assinantes</div>
+            <div style={{ background: CURRENT_FOUNDERS >= 2000 ? 'rgba(0,212,170,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${CURRENT_FOUNDERS >= 2000 ? 'var(--green-primary)' : '#333'}`, borderRadius: '12px', padding: '16px', textAlign: 'center', position: 'relative' }}>
+              {CURRENT_FOUNDERS >= 2000 && <CheckCircle2 size={24} color="var(--green-primary)" style={{ position: 'absolute', top: '-12px', right: '-12px', background: '#111', borderRadius: '50%' }} />}
+              <div style={{ fontSize: '1.2rem', fontWeight: 800, color: CURRENT_FOUNDERS >= 2000 ? 'var(--green-primary)' : '#fff', marginBottom: '8px' }}>2.000 Assinantes</div>
               <div style={{ color: '#888', fontSize: '0.9rem' }}>Open Finance 100% Liberado Automático</div>
             </div>
           </div>
@@ -282,7 +282,7 @@ export default function ConnectionsClient({ subscriptionStatus, userEmail }: { s
               ) : (
                 <>
                   <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '24px' }}>
-                    Ao entrar na lista de espera, você garante prioridade de acesso assim que a meta de 5.000 assinantes for atingida.
+                    Ao entrar na lista de espera, você garante prioridade de acesso assim que a meta de 2.000 assinantes for atingida.
                   </p>
                   <button 
                     className="btn btn-primary" 
