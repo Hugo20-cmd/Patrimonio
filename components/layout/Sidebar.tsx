@@ -27,7 +27,7 @@ const menuItems = [
   { icon: MessagesSquare, label: "Feedbacks", href: "/feedback" },
   { icon: Headphones, label: "Central de Ajuda", href: "/support" },
   { icon: LinkIcon, label: "Conexões", href: "/connections" },
-  { icon: Users, label: "Programa de Afiliados", href: "/affiliates" },
+  { icon: Users, label: "Programa de Afiliados", href: "/affiliates", isPremium: true },
 ];
 
 export default function Sidebar({ 
