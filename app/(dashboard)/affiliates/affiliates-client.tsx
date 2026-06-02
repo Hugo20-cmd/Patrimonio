@@ -104,7 +104,11 @@ export default function AffiliatesClient({ initialData, error }: { initialData?:
       <div style={{ display: "flex", gap: "12px", background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "12px", padding: "16px 20px" }}>
         <AlertCircle size={20} color="var(--text-tertiary)" style={{ flexShrink: 0, marginTop: "2px" }} />
         <div style={{ fontSize: "0.9rem", color: "var(--text-secondary)", lineHeight: 1.5 }}>
-          <strong>Como funciona:</strong> Compartilhe seu link. Quando um amigo se cadastrar e assinar o plano Premium, ele ganha benefícios e você recebe <strong>30% de comissão recorrente</strong> de todas as mensalidades dele enquanto a assinatura estiver ativa. Ganhos acima de R$ 50 já podem ser sacados.
+          <strong>Como funciona:</strong> Compartilhe o seu link exclusivo (acima). Quando um amigo se cadastrar e efetuar a assinatura do plano Premium, duas coisas acontecem assim que o pagamento for confirmado: 
+          <br /><br />
+          1. Você ganha <strong>1.000 XP</strong> por amigo! (Os pontos de XP subirão seu nível no app e poderão ser trocados por prêmios, benefícios e acessos exclusivos no futuro).
+          <br />
+          2. Você recebe <strong>30% de comissão recorrente</strong> de todas as mensalidades dele enquanto a assinatura estiver ativa. Ganhos acima de R$ 50 já podem ser sacados.
         </div>
       </div>
 
