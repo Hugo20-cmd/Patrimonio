@@ -14,7 +14,7 @@ const plans = [
     color: "var(--text-secondary)",
     borderColor: "var(--border-default)",
     features: [
-      "Até 10 ativos na carteira",
+      "Até 5 ativos na carteira",
       "Gráficos básicos de patrimônio",
       "Registro de dividendos",
       "2 metas financeiras",
@@ -43,7 +43,7 @@ const plans = [
       "Relatórios PDF exportáveis",
       "Projeção de liberdade financeira",
       "Badges e gamificação completa",
-      "Suporte prioritário",
+      "Suporte via e-mail",
     ],
     cta: "Assinar Premium",
     ctaHref: "https://buy.stripe.com/14A6oH0FIantgEh0NQcwg00",
