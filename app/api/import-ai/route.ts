@@ -37,6 +37,14 @@ export async function POST(request: Request) {
       
       // Se for PDF, usa pdf-parse. Se for CSV/TXT, lê como texto plano.
       if (file.name.toLowerCase().endsWith('.pdf')) {
+        // Polyfills para evitar o erro "DOMMatrix is not defined" do pdf-parse no Next.js
+        if (typeof global.DOMMatrix === 'undefined') {
+          global.DOMMatrix = class DOMMatrix {} as any
+        }
+        if (typeof global.Path2D === 'undefined') {
+          global.Path2D = class Path2D {} as any
+        }
+        
         const pdfParse = require('pdf-parse')
         const buffer = Buffer.from(await file.arrayBuffer())
         const parsed = await pdfParse(buffer)
