@@ -35,29 +35,19 @@ export async function POST(request: Request) {
     for (const file of files) {
       let textContent = ""
       
-      // Se for PDF, usa pdf-parse. Se for CSV/TXT, lê como texto plano.
+      // Se for PDF, extrai texto com pdf2json (seguro para Next.js). Se for CSV/TXT, lê direto.
       if (file.name.toLowerCase().endsWith('.pdf')) {
-        // Polyfills para evitar o erro "DOMMatrix is not defined" do pdf-parse no Next.js
-        if (typeof global.DOMMatrix === 'undefined') {
-          global.DOMMatrix = class DOMMatrix {} as any
-        }
-        if (typeof global.Path2D === 'undefined') {
-          global.Path2D = class Path2D {} as any
-        }
-        
-        const pdfParseModule = require('pdf-parse')
         const buffer = Buffer.from(await file.arrayBuffer())
+        const PDFParser = require("pdf2json")
+        const pdfParser = new PDFParser(null, 1)
         
-        if (pdfParseModule.PDFParse) {
-          const parser = new pdfParseModule.PDFParse({ data: buffer })
-          await parser.load()
-          textContent = await parser.getText()
-        } else {
-          // Fallback for older versions
-          const pdfParse = pdfParseModule.default || pdfParseModule
-          const parsed = await pdfParse(buffer)
-          textContent = parsed.text
-        }
+        textContent = await new Promise<string>((resolve, reject) => {
+          pdfParser.on("pdfParser_dataError", (errData: any) => reject(errData.parserError))
+          pdfParser.on("pdfParser_dataReady", () => {
+            resolve(pdfParser.getRawTextContent())
+          })
+          pdfParser.parseBuffer(buffer)
+        })
       } else {
         textContent = await file.text()
       }
