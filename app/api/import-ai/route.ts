@@ -167,15 +167,17 @@ export async function POST(request: Request) {
           // 2. Atualiza ou insere o ativo consolidado
           if (existingAsset) {
             if (finalQuantity <= 0) {
-               await supabase.from('assets').delete().eq('id', existingAsset.id)
+               const { error } = await supabase.from('assets').delete().eq('id', existingAsset.id)
+               if (error) throw new Error(`Erro ao deletar ativo: ${error.message}`)
             } else {
-               await supabase.from('assets').update({
+               const { error } = await supabase.from('assets').update({
                  quantity: finalQuantity,
                  average_price: finalAveragePrice
                }).eq('id', existingAsset.id)
+               if (error) throw new Error(`Erro ao atualizar ativo: ${error.message}`)
             }
           } else if (tx.operation === 'buy') {
-            await supabase.from('assets').insert({
+            const { error } = await supabase.from('assets').insert({
               user_id: userData.user.id,
               type: safeType,
               ticker: safeTicker,
@@ -185,11 +187,12 @@ export async function POST(request: Request) {
               currency: tx.currency || 'USD',
               purchase_date: tx.date || new Date().toISOString()
             })
+            if (error) throw new Error(`Erro ao inserir ativo: ${error.message}`)
           }
         }
 
         // 3. Insere a movimentação no histórico SEMPRE (todas as operações)
-        await supabase.from('asset_transactions').insert({
+        const { error: txError } = await supabase.from('asset_transactions').insert({
           user_id: userData.user.id,
           ticker: safeTicker,
           asset_type: safeType,
@@ -199,6 +202,7 @@ export async function POST(request: Request) {
           currency: tx.currency || 'USD',
           operation_date: tx.date || new Date().toISOString()
         })
+        if (txError) throw new Error(`Erro ao inserir movimentação: ${txError.message}`)
         
         totalImported++;
       }
