@@ -37,17 +37,40 @@ export default function DividendsClient({ initialDividends }: { initialDividends
   // Autocomplete Effect
   useEffect(() => {
     const fetchSuggestions = async () => {
-      if (ticker.length < 2) {
+      if (ticker.length < 1) {
         setSuggestions([]);
         return;
       }
       setSuggestionsLoading(true);
+      
+      // Local fallback for USA ETFs
+      const usEtfs = [
+        { symbol: "VOO", name: "Vanguard S&P 500 ETF" },
+        { symbol: "QQQ", name: "Invesco QQQ Trust" },
+        { symbol: "SPY", name: "SPDR S&P 500 ETF Trust" },
+        { symbol: "VT", name: "Vanguard Total World Stock ETF" },
+        { symbol: "SCHD", name: "Schwab US Dividend Equity ETF" },
+        { symbol: "VNQ", name: "Vanguard Real Estate Index Fund ETF" },
+        { symbol: "IVV", name: "iShares Core S&P 500 ETF" },
+        { symbol: "VTI", name: "Vanguard Total Stock Market ETF" }
+      ];
+      
+      const localMatches = usEtfs.filter(e => e.symbol.startsWith(ticker.toUpperCase()));
+
       try {
         const res = await fetch(`https://brapi.dev/api/quote/list?search=${ticker}&limit=5&token=csbJ4wAomx1KStV72P9pQj`);
         const data = await res.json();
-        if (data.stocks) setSuggestions(data.stocks);
+        
+        let combined = [...localMatches];
+        if (data.stocks) {
+          combined = [...combined, ...data.stocks].slice(0, 7);
+        }
+        setSuggestions(combined);
+        if (combined.length > 0) setShowSuggestions(true);
       } catch (err) {
         console.error("Brapi Error:", err);
+        setSuggestions(localMatches);
+        if (localMatches.length > 0) setShowSuggestions(true);
       } finally {
         setSuggestionsLoading(false);
       }
