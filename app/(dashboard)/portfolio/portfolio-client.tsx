@@ -989,6 +989,13 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                     <p style={{ color: "var(--text-tertiary)", fontSize: "0.95rem", lineHeight: 1.5, marginBottom: "24px" }}>
                       Faça upload do seu arquivo de notas de corretagem ou extrato da B3 em formato <strong>.PDF, .CSV ou .OFX</strong>. A Inteligência Artificial da Patrimônio+ vai ler o arquivo, entender as operações e cadastrar tudo para você automaticamente.
                     </p>
+                    <div style={{ background: "rgba(79, 110, 247, 0.05)", border: "1px solid rgba(79, 110, 247, 0.2)", borderRadius: "12px", padding: "16px", marginBottom: "24px", textAlign: "left" }}>
+                      <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--blue-primary)", marginBottom: "4px" }}>💡 Dica de Ouro</div>
+                      <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: 1.5 }}>
+                        • Para importar <strong>Compras e Vendas</strong>: envie a <i>Nota de Corretagem (Trade Confirmation)</i>.<br/>
+                        • Para importar <strong>Dividendos e Taxas</strong>: envie o <i>Extrato de Conta Mensal (Account Statement)</i>.
+                      </div>
+                    </div>
                     
                     <label style={{ display: "inline-block", background: "var(--blue-primary)", color: "#fff", padding: "14px 24px", borderRadius: "12px", fontWeight: 600, cursor: "pointer", transition: "transform 0.1s" }} className="hover-scale">
                       Selecionar Arquivos
