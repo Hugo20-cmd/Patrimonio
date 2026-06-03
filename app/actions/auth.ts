@@ -90,8 +90,11 @@ export async function signup(formData: FormData) {
       email: dataToSubmit.email
     }).eq('id', data.user.id)
     
-    const cookieStore = await cookies()
-    cookieStore.set('session_token', sessionToken, { httpOnly: true, secure: true, path: '/' })
+    // Só grava o cookie de sessão se o Supabase já logou o usuário direto (Sem confirmação de e-mail)
+    if (data.session) {
+      const cookieStore = await cookies()
+      cookieStore.set('session_token', sessionToken, { httpOnly: true, secure: true, path: '/' })
+    }
   }
 
   // Send Welcome Email
