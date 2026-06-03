@@ -53,7 +53,7 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
   const [assets, setAssets] = useState<any[]>(initialAssets);
   const [transactions, setTransactions] = useState<any[]>(initialTransactions);
   const [activeTab, setActiveTab] = useState<"portfolio" | "history">("portfolio");
-  const [historyFilter, setHistoryFilter] = useState<"ALL" | "buy" | "sell" | "dividend">("ALL");
+  const [historyFilter, setHistoryFilter] = useState<"ALL" | "buy" | "sell" | "dividend" | "tax" | "deposit" | "withdrawal">("ALL");
   const [quotes, setQuotes] = useState<Record<string, any>>({});
   const [quotesLoading, setQuotesLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
@@ -571,33 +571,69 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
       <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}>
         <div style={{ padding: "20px", borderBottom: "1px solid var(--border-subtle)", display: "flex", gap: "12px", overflowX: "auto" }}>
           <button onClick={() => setHistoryFilter("ALL")} style={{ background: historyFilter === "ALL" ? "rgba(255,193,7,0.15)" : "transparent", color: historyFilter === "ALL" ? "#FFC107" : "var(--text-secondary)", border: `1px solid ${historyFilter === "ALL" ? "#FFC107" : "var(--border-default)"}`, padding: "6px 16px", borderRadius: "20px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap" }}>Todas</button>
-          <button onClick={() => setHistoryFilter("buy")} style={{ background: historyFilter === "buy" ? "rgba(255,193,7,0.15)" : "transparent", color: historyFilter === "buy" ? "#FFC107" : "var(--text-secondary)", border: `1px solid ${historyFilter === "buy" ? "#FFC107" : "var(--border-default)"}`, padding: "6px 16px", borderRadius: "20px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap" }}>Compras</button>
-          <button onClick={() => setHistoryFilter("sell")} style={{ background: historyFilter === "sell" ? "rgba(255,193,7,0.15)" : "transparent", color: historyFilter === "sell" ? "#FFC107" : "var(--text-secondary)", border: `1px solid ${historyFilter === "sell" ? "#FFC107" : "var(--border-default)"}`, padding: "6px 16px", borderRadius: "20px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap" }}>Vendas</button>
-          <button onClick={() => setHistoryFilter("dividend")} style={{ background: historyFilter === "dividend" ? "rgba(255,193,7,0.15)" : "transparent", color: historyFilter === "dividend" ? "#FFC107" : "var(--text-secondary)", border: `1px solid ${historyFilter === "dividend" ? "#FFC107" : "var(--border-default)"}`, padding: "6px 16px", borderRadius: "20px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap" }}>Dividendos</button>
+          <button onClick={() => setHistoryFilter("buy")} style={{ background: historyFilter === "buy" ? "rgba(79, 110, 247, 0.15)" : "transparent", color: historyFilter === "buy" ? "var(--blue-primary)" : "var(--text-secondary)", border: `1px solid ${historyFilter === "buy" ? "var(--blue-primary)" : "var(--border-default)"}`, padding: "6px 16px", borderRadius: "20px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap" }}>Compras</button>
+          <button onClick={() => setHistoryFilter("sell")} style={{ background: historyFilter === "sell" ? "rgba(255, 152, 0, 0.15)" : "transparent", color: historyFilter === "sell" ? "var(--orange-primary)" : "var(--text-secondary)", border: `1px solid ${historyFilter === "sell" ? "var(--orange-primary)" : "var(--border-default)"}`, padding: "6px 16px", borderRadius: "20px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap" }}>Vendas</button>
+          <button onClick={() => setHistoryFilter("dividend")} style={{ background: historyFilter === "dividend" ? "rgba(0, 212, 170, 0.15)" : "transparent", color: historyFilter === "dividend" ? "var(--green-primary)" : "var(--text-secondary)", border: `1px solid ${historyFilter === "dividend" ? "var(--green-primary)" : "var(--border-default)"}`, padding: "6px 16px", borderRadius: "20px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap" }}>Dividendos</button>
+          <button onClick={() => setHistoryFilter("deposit")} style={{ background: historyFilter === "deposit" ? "rgba(156, 39, 176, 0.15)" : "transparent", color: historyFilter === "deposit" ? "#9C27B0" : "var(--text-secondary)", border: `1px solid ${historyFilter === "deposit" ? "#9C27B0" : "var(--border-default)"}`, padding: "6px 16px", borderRadius: "20px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap" }}>Depósitos</button>
+          <button onClick={() => setHistoryFilter("withdrawal")} style={{ background: historyFilter === "withdrawal" ? "rgba(121, 85, 72, 0.15)" : "transparent", color: historyFilter === "withdrawal" ? "#795548" : "var(--text-secondary)", border: `1px solid ${historyFilter === "withdrawal" ? "#795548" : "var(--border-default)"}`, padding: "6px 16px", borderRadius: "20px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap" }}>Saques</button>
+          <button onClick={() => setHistoryFilter("tax")} style={{ background: historyFilter === "tax" ? "rgba(244, 67, 54, 0.15)" : "transparent", color: historyFilter === "tax" ? "var(--red-primary)" : "var(--text-secondary)", border: `1px solid ${historyFilter === "tax" ? "var(--red-primary)" : "var(--border-default)"}`, padding: "6px 16px", borderRadius: "20px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap" }}>Taxas/Impostos</button>
         </div>
         <div style={{ padding: "0 20px" }}>
           {transactions.filter(t => historyFilter === "ALL" || t.operation === historyFilter).map((tx, idx) => {
             const dateObj = new Date(tx.operation_date);
             const dateStr = dateObj.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' });
             const timeStr = dateObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            const opLabel = tx.operation === 'buy' ? 'Aplicou em' : tx.operation === 'sell' ? 'Vendeu' : 'Recebeu dividendos';
-            const valueColor = tx.operation === 'dividend' ? 'var(--green-primary)' : 'var(--text-primary)';
-            const sign = tx.operation === 'dividend' ? '+ ' : '';
+            
+            let opLabel = 'Operação em';
+            let valueColor = 'var(--text-primary)';
+            let sign = '';
+            let bgBadge = 'transparent';
+            let opName = 'OPERAÇÃO';
+            
+            if (tx.operation === 'buy') {
+               opLabel = 'Aplicou em'; valueColor = 'var(--blue-primary)'; bgBadge = 'rgba(79, 110, 247, 0.1)'; opName = 'COMPRA';
+            } else if (tx.operation === 'sell') {
+               opLabel = 'Vendeu'; valueColor = 'var(--orange-primary)'; bgBadge = 'rgba(255, 152, 0, 0.1)'; opName = 'VENDA';
+            } else if (tx.operation === 'dividend') {
+               opLabel = 'Recebeu dividendos de'; valueColor = 'var(--green-primary)'; bgBadge = 'rgba(0, 212, 170, 0.1)'; sign = '+ '; opName = 'DIVIDENDO';
+            } else if (tx.operation === 'deposit') {
+               opLabel = 'Depósito / Aporte'; valueColor = '#9C27B0'; bgBadge = 'rgba(156, 39, 176, 0.1)'; sign = '+ '; opName = 'DEPÓSITO';
+            } else if (tx.operation === 'withdrawal') {
+               opLabel = 'Saque / Resgate'; valueColor = '#795548'; bgBadge = 'rgba(121, 85, 72, 0.1)'; sign = '- '; opName = 'SAQUE';
+            } else if (tx.operation === 'tax') {
+               opLabel = 'Imposto / Taxa'; valueColor = 'var(--red-primary)'; bgBadge = 'rgba(244, 67, 54, 0.1)'; sign = '- '; opName = 'TAXA';
+            }
 
             return (
               <div key={tx.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 0", borderBottom: "1px solid var(--border-subtle)" }}>
                 <div>
-                  <div style={{ fontSize: "0.85rem", color: "var(--text-tertiary)", marginBottom: "8px" }}>{dateStr} às {timeStr}</div>
-                  <div style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--text-primary)", marginBottom: "4px" }}>{opLabel} {tx.ticker}</div>
+                  <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "8px" }}>
+                    <span style={{ 
+                        padding: "4px 8px", 
+                        borderRadius: "6px", 
+                        fontSize: "0.75rem", 
+                        fontWeight: 700, 
+                        background: bgBadge,
+                        color: valueColor
+                      }}>
+                        {opName}
+                    </span>
+                    <div style={{ fontSize: "0.85rem", color: "var(--text-tertiary)" }}>{dateStr} às {timeStr}</div>
+                  </div>
+                  <div style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--text-primary)", marginBottom: "4px" }}>
+                    {opLabel} {tx.ticker !== 'CASH' && tx.ticker !== 'TAX' ? tx.ticker : ''}
+                  </div>
                   <div style={{ fontSize: "0.85rem", color: "var(--text-tertiary)" }}>Concluído</div>
                 </div>
                 <div style={{ textAlign: "right", display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
                   <div style={{ fontSize: "1.1rem", fontWeight: 600, color: valueColor }}>
                     {sign}{formatCurrency(tx.quantity * tx.price, tx.currency)}
                   </div>
+                  {tx.operation === 'buy' || tx.operation === 'sell' ? (
                   <div style={{ fontSize: "0.85rem", color: "var(--text-tertiary)", marginTop: "4px" }}>
                     Qtd: {tx.quantity} a {formatCurrency(tx.price, tx.currency)}
                   </div>
+                  ) : null}
                   <button 
                     onClick={async () => {
                       if(confirm("Deseja excluir esta movimentação? Isso não afetará a Posição Consolidada, apenas o histórico.")){

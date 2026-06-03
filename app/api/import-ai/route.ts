@@ -83,20 +83,27 @@ export async function POST(request: Request) {
 
       // Chama a OpenAI com Structured Data/JSON Mode (via Prompt Engineering)
       const prompt = `
-        Você é um assistente financeiro especialista em ler notas de corretagem e extratos de investimentos.
-        Extraia as operações de compra e venda do texto abaixo e retorne APENAS um JSON válido contendo um array 'transactions'.
-        Se houver impostos ou taxas, ignore. Eu quero apenas as ações/ETFs/FIIs/Bonds operados.
+        Você é um Auditor Financeiro Expert. Leia o texto abaixo extraído de um PDF/extrato de corretagem e identifique TODAS as movimentações financeiras.
+        Retorne APENAS um JSON válido contendo um array 'transactions'.
+        Classifique rigorosamente nas seguintes categorias de "operation":
+        - "buy": Compra de ativos.
+        - "sell": Venda de ativos.
+        - "dividend": Rendimentos, Dividendos ou Juros recebidos.
+        - "tax": Impostos retidos (IRRF), Taxas de Corretagem, Taxas B3, etc.
+        - "deposit": Depósito, PIX ou Transferência de entrada.
+        - "withdrawal": Saque, Resgate ou Transferência de saída.
+
         O JSON deve ter este formato:
         {
           "transactions": [
             {
-              "ticker": "VOO",
-              "operation": "buy", // 'buy' ou 'sell'
-              "quantity": 0.07972,
-              "price": 698.32, // Preço unitário pago
+              "ticker": "VOO", // Se for taxa geral, depósito ou saque, use "CASH" ou "TAX"
+              "operation": "buy", // 'buy', 'sell', 'dividend', 'tax', 'deposit', 'withdrawal'
+              "quantity": 0.07972, // Se não houver quantidade (ex: dividendos/taxas), coloque 1
+              "price": 698.32, // O valor total exato da operação ou o preço unitário se aplicável
               "date": "2026-02-13T17:18:00Z",
               "currency": "USD", // 'USD' ou 'BRL'
-              "type": "stock" // 'stock', 'ETF', 'FII', 'treasury'
+              "type": "stock" // 'stock', 'ETF', 'FII', 'treasury' ou 'cash'
             }
           ]
         }
@@ -127,59 +134,67 @@ export async function POST(request: Request) {
       const transactions = Array.isArray(parsedJson) ? parsedJson : (parsedJson.transactions || parsedJson.assets || [])
 
       for (const tx of transactions) {
-        if (!tx.ticker || !tx.quantity || !tx.price) continue;
+        if (!tx.operation || !tx.price) continue;
         
-        // 1. Verifica se já existe o asset na carteira consolidada
-        const { data: existingAsset } = await supabase
-          .from('assets')
-          .select('*')
-          .eq('ticker', tx.ticker.toUpperCase())
-          .eq('user_id', userData.user.id)
-          .maybeSingle()
+        // Atribui valores padrão caso a IA não preencha para taxas ou depósitos
+        const safeTicker = (tx.ticker || 'CASH').toUpperCase();
+        const safeQuantity = tx.quantity || 1;
+        const safeType = tx.type || 'cash';
+        const isAssetOp = tx.operation === 'buy' || tx.operation === 'sell';
+
+        if (isAssetOp) {
+          // 1. Verifica se já existe o asset na carteira consolidada
+          const { data: existingAsset } = await supabase
+            .from('assets')
+            .select('*')
+            .eq('ticker', safeTicker)
+            .eq('user_id', userData.user.id)
+            .maybeSingle()
+            
+          let finalQuantity = safeQuantity;
+          let finalAveragePrice = tx.price;
           
-        let finalQuantity = tx.quantity;
-        let finalAveragePrice = tx.price;
-        
-        if (existingAsset) {
-          if (tx.operation === 'buy') {
-            finalQuantity = existingAsset.quantity + tx.quantity
-            finalAveragePrice = ((existingAsset.quantity * existingAsset.average_price) + (tx.quantity * tx.price)) / finalQuantity
-          } else if (tx.operation === 'sell') {
-            finalQuantity = existingAsset.quantity - tx.quantity
-            finalAveragePrice = existingAsset.average_price // Preço médio não muda na venda
+          if (existingAsset) {
+            if (tx.operation === 'buy') {
+              finalQuantity = existingAsset.quantity + safeQuantity
+              finalAveragePrice = ((existingAsset.quantity * existingAsset.average_price) + (safeQuantity * tx.price)) / finalQuantity
+            } else if (tx.operation === 'sell') {
+              finalQuantity = existingAsset.quantity - safeQuantity
+              finalAveragePrice = existingAsset.average_price // Preço médio não muda na venda
+            }
           }
-        }
-        
-        // 2. Atualiza ou insere o ativo consolidado
-        if (existingAsset) {
-          if (finalQuantity <= 0) {
-             await supabase.from('assets').delete().eq('id', existingAsset.id)
-          } else {
-             await supabase.from('assets').update({
-               quantity: finalQuantity,
-               average_price: finalAveragePrice
-             }).eq('id', existingAsset.id)
+          
+          // 2. Atualiza ou insere o ativo consolidado
+          if (existingAsset) {
+            if (finalQuantity <= 0) {
+               await supabase.from('assets').delete().eq('id', existingAsset.id)
+            } else {
+               await supabase.from('assets').update({
+                 quantity: finalQuantity,
+                 average_price: finalAveragePrice
+               }).eq('id', existingAsset.id)
+            }
+          } else if (tx.operation === 'buy') {
+            await supabase.from('assets').insert({
+              user_id: userData.user.id,
+              type: safeType,
+              ticker: safeTicker,
+              name: safeTicker,
+              quantity: safeQuantity,
+              average_price: tx.price,
+              currency: tx.currency || 'USD',
+              purchase_date: tx.date || new Date().toISOString()
+            })
           }
-        } else if (tx.operation === 'buy') {
-          await supabase.from('assets').insert({
-            user_id: userData.user.id,
-            type: tx.type || 'stock',
-            ticker: tx.ticker.toUpperCase(),
-            name: tx.ticker.toUpperCase(),
-            quantity: tx.quantity,
-            average_price: tx.price,
-            currency: tx.currency || 'USD',
-            purchase_date: tx.date || new Date().toISOString()
-          })
         }
 
-        // 3. Insere a movimentação no histórico
+        // 3. Insere a movimentação no histórico SEMPRE (todas as operações)
         await supabase.from('asset_transactions').insert({
           user_id: userData.user.id,
-          ticker: tx.ticker.toUpperCase(),
-          asset_type: tx.type || 'stock',
-          operation: tx.operation || 'buy',
-          quantity: tx.quantity,
+          ticker: safeTicker,
+          asset_type: safeType,
+          operation: tx.operation,
+          quantity: safeQuantity,
           price: tx.price,
           currency: tx.currency || 'USD',
           operation_date: tx.date || new Date().toISOString()
