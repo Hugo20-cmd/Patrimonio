@@ -45,7 +45,9 @@ export async function POST(request: Request) {
           global.Path2D = class Path2D {} as any
         }
         
-        const pdfParse = require('pdf-parse')
+        const pdfParseModule = require('pdf-parse')
+        const pdfParse = pdfParseModule.default || pdfParseModule
+        
         const buffer = Buffer.from(await file.arrayBuffer())
         const parsed = await pdfParse(buffer)
         textContent = parsed.text
