@@ -887,13 +887,19 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                   <div style={{ marginBottom: "24px" }}>
                     <label>Data e Hora da Operação</label>
                     <input name="date" type="datetime-local" defaultValue={editingAssetId ? new Date(new Date(assets.find(a => a.id === editingAssetId)?.purchaseDate || Date.now()).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)} required />
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "8px" }}>
+                      <AlertCircle size={12} color="var(--orange-primary)" />
+                      <span style={{ fontSize: "0.75rem", color: "var(--orange-primary)", lineHeight: 1.3 }}>
+                        Para lançamentos passados, o sistema não busca a cotação da época automaticamente. <b>Você deve digitar manualmente</b> a cotação exata no campo "Preço Un."
+                      </span>
+                    </div>
                   </div>
 
                   {assetType !== "treasury" && (
                   <div style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)", borderRadius: "8px", padding: "12px", display: "flex", gap: "10px", alignItems: "flex-start", marginBottom: "24px" }}>
                     <AlertCircle size={16} color="var(--green-primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
                     <p style={{ fontSize: "0.8rem", color: "var(--text-secondary)", margin: 0, lineHeight: 1.5 }}>
-                      O preço atual será buscado automaticamente via Brapi (B3 ao vivo) após salvar.
+                      O preço de hoje será buscado automaticamente via Brapi (B3 ao vivo).
                     </p>
                   </div>
                   )}
