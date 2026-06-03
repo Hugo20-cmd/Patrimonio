@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
-import pdfParse from 'pdf-parse'
 import OpenAI from 'openai'
+const pdfParse = require('pdf-parse')
 
 // O Next.js não permite pdf-parse nativamente no Edge, por isso garantimos que rode em Node
 export const runtime = 'nodejs'
