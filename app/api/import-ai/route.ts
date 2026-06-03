@@ -182,11 +182,15 @@ export async function POST(request: Request) {
       }
       
       // If we successfully processed the file, we save it to imported_files to avoid re-running OpenAI
-      await supabase.from('imported_files').insert({
+      const { error: insertError } = await supabase.from('imported_files').insert({
         user_id: userData.user.id,
         file_hash: fileHash,
         file_name: file.name
       });
+      if (insertError) {
+        console.error("Failed to insert file hash into imported_files:", insertError);
+        throw new Error(`Erro ao salvar histórico do arquivo: ${insertError.message}`);
+      }
     }
     
     let msg = `Mágica Finalizada! A Inteligência leu os arquivos. Ela encontrou ${totalImported} operação(ões) nova(s).`
