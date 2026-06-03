@@ -30,6 +30,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Usuário não autenticado.' }, { status: 401 })
     }
 
+    const { getSubscriptionStatus } = require('@/app/actions/subscription')
+    const { status } = await getSubscriptionStatus()
+    
+    if (status !== 'premium') {
+      return NextResponse.json({ error: 'Recurso Premium. Assine o Patrimônio+ PRO para usar o Leitor Mágico com Inteligência Artificial.' }, { status: 403 })
+    }
+
     let totalImported = 0
     let duplicatedFiles = 0
     const crypto = require('crypto')

@@ -317,7 +317,13 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
             {quotesLoading ? "Atualizando..." : "Atualizar"}
           </button>
           
-          <button className="btn btn-secondary" style={{ gap: "8px", background: "var(--bg-elevated)", border: "1px solid var(--blue-primary)", color: "var(--blue-primary)", whiteSpace: "nowrap" }} onClick={() => setIsAiImportOpen(true)}>
+          <button className="btn btn-secondary" style={{ gap: "8px", background: "var(--bg-elevated)", border: "1px solid var(--blue-primary)", color: "var(--blue-primary)", whiteSpace: "nowrap" }} onClick={() => {
+            if (subscriptionStatus === 'free') {
+              setShowPaywall(true);
+            } else {
+              setIsAiImportOpen(true);
+            }
+          }}>
             <BrainCircuit size={16} />
             Leitor IA (PDF/CSV)
           </button>
