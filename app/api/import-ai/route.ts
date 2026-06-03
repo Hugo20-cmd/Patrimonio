@@ -46,11 +46,18 @@ export async function POST(request: Request) {
         }
         
         const pdfParseModule = require('pdf-parse')
-        const pdfParse = pdfParseModule.default || pdfParseModule
-        
         const buffer = Buffer.from(await file.arrayBuffer())
-        const parsed = await pdfParse(buffer)
-        textContent = parsed.text
+        
+        if (pdfParseModule.PDFParse) {
+          const parser = new pdfParseModule.PDFParse({ data: buffer })
+          await parser.load()
+          textContent = await parser.getText()
+        } else {
+          // Fallback for older versions
+          const pdfParse = pdfParseModule.default || pdfParseModule
+          const parsed = await pdfParse(buffer)
+          textContent = parsed.text
+        }
       } else {
         textContent = await file.text()
       }
