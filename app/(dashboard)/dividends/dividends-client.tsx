@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   DollarSign, Calendar, TrendingUp, Filter, ChevronLeft, ChevronRight,
-  DownloadCloud, Plus, X, Edit2
+  DownloadCloud, Plus, X, Edit2, Loader2
 } from "lucide-react";
 import { 
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell
@@ -26,6 +26,51 @@ export default function DividendsClient({ initialDividends }: { initialDividends
   const [date, setDate] = useState("");
   const [type, setType] = useState("dividendo");
   const [currency, setCurrency] = useState("BRL");
+
+  // Autocomplete State
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
+  const [selectedQuote, setSelectedQuote] = useState<any | null>(null);
+  const tickerRef = useRef<HTMLDivElement>(null);
+
+  // Autocomplete Effect
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (ticker.length < 2) {
+        setSuggestions([]);
+        return;
+      }
+      setSuggestionsLoading(true);
+      try {
+        const res = await fetch(`https://brapi.dev/api/quote/list?search=${ticker}&limit=5&token=csbJ4wAomx1KStV72P9pQj`);
+        const data = await res.json();
+        if (data.stocks) setSuggestions(data.stocks);
+      } catch (err) {
+        console.error("Brapi Error:", err);
+      } finally {
+        setSuggestionsLoading(false);
+      }
+    };
+    const timeoutId = setTimeout(fetchSuggestions, 400);
+    return () => clearTimeout(timeoutId);
+  }, [ticker]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (tickerRef.current && !tickerRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSelectSuggestion = (stock: any) => {
+    setTicker(stock.symbol);
+    setSelectedQuote(stock);
+    setShowSuggestions(false);
+  };
 
   // Filters
   const filteredDividends = dividends.filter(d => {
@@ -58,6 +103,7 @@ export default function DividendsClient({ initialDividends }: { initialDividends
     setCurrency("BRL");
     setEditingId(null);
     setErrorMsg("");
+    setSelectedQuote(null);
   }
 
   function openEdit(div: any) {
@@ -275,9 +321,60 @@ export default function DividendsClient({ initialDividends }: { initialDividends
                   else window.location.reload();
                   setLoading(false);
                 }}>
-                  <div style={{ marginBottom: "12px" }}>
+                  <div style={{ marginBottom: "12px", position: "relative" }} ref={tickerRef}>
                     <label>Ticker (Ex: MXRF11)</label>
-                    <input name="ticker" required value={ticker} onChange={e=>setTicker(e.target.value.toUpperCase())} style={{ width: "100%" }} />
+                    <div style={{ position: "relative" }}>
+                      <input 
+                        name="ticker" 
+                        required 
+                        value={ticker} 
+                        onChange={e => {
+                          setTicker(e.target.value.toUpperCase());
+                          setSelectedQuote(null);
+                        }} 
+                        onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+                        autoComplete="off"
+                        style={{ width: "100%", paddingRight: "36px" }} 
+                      />
+                      {suggestionsLoading && (
+                        <Loader2 size={16} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--text-tertiary)", animation: "spin 1s linear infinite" }} />
+                      )}
+                    </div>
+                    {/* Selected asset preview */}
+                    {selectedQuote && (
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "8px", padding: "8px", background: "rgba(0,212,170,0.06)", border: "1px solid rgba(0,212,170,0.2)", borderRadius: "8px" }}>
+                        {selectedQuote.logoUrl && (
+                          <img src={selectedQuote.logoUrl} alt={selectedQuote.symbol} style={{ width: "20px", height: "20px", objectFit: "contain" }} onError={(e: any) => e.target.style.display = "none"} />
+                        )}
+                        <div style={{ flex: 1, fontSize: "0.8rem", fontWeight: 700 }}>{selectedQuote.symbol}</div>
+                      </div>
+                    )}
+                    {/* Suggestions Dropdown */}
+                    {showSuggestions && suggestions.length > 0 && (
+                      <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, background: "var(--bg-elevated)", border: "1px solid var(--border-default)", borderRadius: "12px", overflow: "hidden", zIndex: 1000, boxShadow: "0 8px 30px rgba(0,0,0,0.4)" }}>
+                        {suggestions.map((s, i) => (
+                          <div
+                            key={s.symbol}
+                            onClick={() => handleSelectSuggestion(s)}
+                            style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 14px", cursor: "pointer", borderBottom: i < suggestions.length - 1 ? "1px solid var(--border-subtle)" : "none", transition: "background 0.15s" }}
+                            onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.04)")}
+                            onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                          >
+                            <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: "var(--bg-card)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", flexShrink: 0 }}>
+                              {s.logoUrl ? (
+                                <img src={s.logoUrl} alt={s.symbol} style={{ width: "16px", height: "16px", objectFit: "contain" }} onError={(e: any) => e.target.style.display = "none"} />
+                              ) : (
+                                <span style={{ fontSize: "0.5rem", fontWeight: 700 }}>{s.symbol?.substring(0, 2)}</span>
+                              )}
+                            </div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-primary)" }}>{s.symbol}</div>
+                              <div style={{ fontSize: "0.7rem", color: "var(--text-tertiary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.name}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   <div style={{ marginBottom: "12px" }}>
                     <label>Valor Total Recebido</label>
