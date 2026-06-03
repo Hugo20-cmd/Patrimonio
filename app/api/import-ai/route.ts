@@ -9,6 +9,7 @@ export async function POST(request: Request) {
   try {
     const formData = await request.formData()
     const files = formData.getAll('files') as File[]
+    const importMode = formData.get('importMode') as string || 'trades' // 'trades' ou 'dividends_taxes'
     
     if (!files || files.length === 0) {
       return NextResponse.json({ error: 'Nenhum arquivo enviado.' }, { status: 400 })
@@ -81,24 +82,35 @@ export async function POST(request: Request) {
       // Se não tem texto, ignora
       if (!textContent || textContent.trim() === '') continue;
 
-      // Chama a OpenAI com Structured Data/JSON Mode (via Prompt Engineering)
-      const prompt = `
-        Você é um Auditor Financeiro Expert. Leia o texto abaixo extraído de um PDF/extrato de corretagem e identifique TODAS as movimentações financeiras.
-        Retorne APENAS um JSON válido contendo um array 'transactions'.
+      // Constrói o Prompt dinamicamente baseado no importMode
+      let operationRules = ""
+      if (importMode === 'trades') {
+        operationRules = `
         Classifique rigorosamente nas seguintes categorias de "operation":
         - "buy": Compra de ativos.
         - "sell": Venda de ativos.
+        (IMPORTANTE: IGNORE COMPLETAMENTE dividendos, taxas, impostos, depósitos e saques neste modo. Extraia APENAS compras e vendas de ativos).`
+      } else {
+        operationRules = `
+        Classifique rigorosamente nas seguintes categorias de "operation":
         - "dividend": Rendimentos, Dividendos ou Juros recebidos.
         - "tax": Impostos retidos (IRRF), Taxas de Corretagem, Taxas B3, etc.
         - "deposit": Depósito, PIX ou Transferência de entrada.
         - "withdrawal": Saque, Resgate ou Transferência de saída.
+        (ATENÇÃO MÁXIMA: É ESTRITAMENTE PROIBIDO extrair operações de "buy" ou "sell" neste modo. IGNORE COMPLETAMENTE QUALQUER COMPRA OU VENDA DE ATIVOS que aparecer no documento).`
+      }
+
+      const prompt = `
+        Você é um Auditor Financeiro Expert. Leia o texto abaixo extraído de um PDF/extrato de corretagem e identifique TODAS as movimentações financeiras permitidas.
+        Retorne APENAS um JSON válido contendo um array 'transactions'.
+        ${operationRules}
 
         O JSON deve ter este formato:
         {
           "transactions": [
             {
               "ticker": "VOO", // Se for taxa geral, depósito ou saque, use "CASH" ou "TAX"
-              "operation": "buy", // 'buy', 'sell', 'dividend', 'tax', 'deposit', 'withdrawal'
+              "operation": "buy", // Dependendo da regra acima
               "quantity": 0.07972, // Se não houver quantidade (ex: dividendos/taxas), coloque 1
               "price": 698.32, // O valor total exato da operação ou o preço unitário se aplicável
               "date": "2026-02-13T17:18:00Z",

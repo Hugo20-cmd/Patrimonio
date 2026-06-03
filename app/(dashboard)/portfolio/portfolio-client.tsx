@@ -74,6 +74,7 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
   const [isAiImportOpen, setIsAiImportOpen] = useState(false);
   const [aiImportStatus, setAiImportStatus] = useState<"idle" | "uploading" | "analyzing" | "success" | "error">("idle");
   const [aiImportMsg, setAiImportMsg] = useState("");
+  const [importMode, setImportMode] = useState<"trades" | "dividends_taxes">("trades");
 
   // ── Ticker autocomplete ──
   const [tickerInput, setTickerInput] = useState("");
@@ -990,15 +991,27 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                       Faça upload do seu arquivo de notas de corretagem ou extrato da B3 em formato <strong>.PDF, .CSV ou .OFX</strong>. A Inteligência Artificial da Patrimônio+ vai ler o arquivo, entender as operações e cadastrar tudo para você automaticamente.
                     </p>
                     <div style={{ background: "rgba(79, 110, 247, 0.05)", border: "1px solid rgba(79, 110, 247, 0.2)", borderRadius: "12px", padding: "16px", marginBottom: "24px", textAlign: "left" }}>
-                      <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--blue-primary)", marginBottom: "4px" }}>💡 Dica de Ouro</div>
-                      <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: 1.5 }}>
-                        • Para importar <strong>Compras e Vendas</strong>: envie a <i>Nota de Corretagem (Trade Confirmation)</i>.<br/>
-                        • Para importar <strong>Dividendos e Taxas</strong>: envie o <i>Extrato de Conta Mensal (Account Statement)</i>.
-                      </div>
+                      <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-primary)", marginBottom: "12px" }}>O que você deseja importar?</div>
+                      
+                      <label style={{ display: "flex", gap: "12px", alignItems: "flex-start", marginBottom: "16px", cursor: "pointer", padding: "12px", borderRadius: "8px", background: importMode === "trades" ? "rgba(79, 110, 247, 0.1)" : "transparent", border: importMode === "trades" ? "1px solid var(--blue-primary)" : "1px solid var(--border-subtle)" }}>
+                        <input type="radio" name="importMode" value="trades" checked={importMode === "trades"} onChange={() => setImportMode("trades")} style={{ marginTop: "2px" }} />
+                        <div>
+                          <div style={{ fontSize: "0.9rem", fontWeight: 600, color: importMode === "trades" ? "var(--blue-primary)" : "var(--text-primary)" }}>Ler Compras e Vendas (Apenas)</div>
+                          <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", marginTop: "4px" }}>Recomendado para Notas de Corretagem. Ignora impostos e dividendos.</div>
+                        </div>
+                      </label>
+                      
+                      <label style={{ display: "flex", gap: "12px", alignItems: "flex-start", cursor: "pointer", padding: "12px", borderRadius: "8px", background: importMode === "dividends_taxes" ? "rgba(79, 110, 247, 0.1)" : "transparent", border: importMode === "dividends_taxes" ? "1px solid var(--blue-primary)" : "1px solid var(--border-subtle)" }}>
+                        <input type="radio" name="importMode" value="dividends_taxes" checked={importMode === "dividends_taxes"} onChange={() => setImportMode("dividends_taxes")} style={{ marginTop: "2px" }} />
+                        <div>
+                          <div style={{ fontSize: "0.9rem", fontWeight: 600, color: importMode === "dividends_taxes" ? "var(--blue-primary)" : "var(--text-primary)" }}>Ler Rendimentos e Aportes (Apenas)</div>
+                          <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", marginTop: "4px" }}>Recomendado para Extrato Mensal. Ignora as compras para não duplicá-las.</div>
+                        </div>
+                      </label>
                     </div>
                     
                     <label style={{ display: "inline-block", background: "var(--blue-primary)", color: "#fff", padding: "14px 24px", borderRadius: "12px", fontWeight: 600, cursor: "pointer", transition: "transform 0.1s" }} className="hover-scale">
-                      Selecionar Arquivos
+                      Selecionar Arquivo
                       <input type="file" multiple style={{ display: "none" }} accept=".csv,.pdf,.ofx" onChange={async (e) => {
                         const files = Array.from(e.target.files || []);
                         if (files.length === 0) return;
@@ -1014,6 +1027,7 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                         try {
                           const formData = new FormData();
                           files.forEach(file => formData.append("files", file));
+                          formData.append("importMode", importMode);
                           const res = await fetch("/api/import-ai", { method: "POST", body: formData });
                           const data = await res.json();
                           
