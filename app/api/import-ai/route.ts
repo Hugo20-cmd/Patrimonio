@@ -151,7 +151,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ 
       success: true, 
       count: totalImported,
-      message: \`Sucesso! Foram processadas \${totalImported} operação(ões) através do Leitor Mágico.\`
+      message: `Sucesso! Foram processadas ${totalImported} operação(ões) através do Leitor Mágico.`
     })
 
   } catch (error: any) {
