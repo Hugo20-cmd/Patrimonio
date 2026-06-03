@@ -30,14 +30,33 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Usuário não autenticado.' }, { status: 401 })
     }
 
-    let totalImported = 0;
-
+    let totalImported = 0
+    let duplicatedFiles = 0
+    const crypto = require('crypto')
+    
     for (const file of files) {
+      const buffer = Buffer.from(await file.arrayBuffer())
+      
+      // Calculate file hash to prevent duplicates
+      const fileHash = crypto.createHash('sha256').update(buffer).digest('hex')
+      
+      // Check if file already imported
+      const { data: existingFile } = await supabase
+        .from('imported_files')
+        .select('id')
+        .eq('user_id', userData.user.id)
+        .eq('file_hash', fileHash)
+        .maybeSingle()
+        
+      if (existingFile) {
+        duplicatedFiles++;
+        continue;
+      }
+
       let textContent = ""
       
       // Se for PDF, extrai texto com pdf2json (seguro para Next.js). Se for CSV/TXT, lê direto.
       if (file.name.toLowerCase().endsWith('.pdf')) {
-        const buffer = Buffer.from(await file.arrayBuffer())
         const PDFParser = require("pdf2json")
         const pdfParser = new PDFParser(null, 1)
         
@@ -49,39 +68,47 @@ export async function POST(request: Request) {
           pdfParser.parseBuffer(buffer)
         })
       } else {
-        textContent = await file.text()
+        textContent = buffer.toString('utf-8')
       }
 
-      // Prompt para a OpenAI interpretar o extrato
+      // Se não tem texto, ignora
+      if (!textContent || textContent.trim() === '') continue;
+
+      // Chama a OpenAI com Structured Data/JSON Mode (via Prompt Engineering)
       const prompt = `
-      Você é um especialista financeiro. Leia o texto abaixo extraído de uma nota de corretagem (ex: Nomad, Inter, B3).
-      Identifique TODAS as operações de compra ou venda de ações, FIIs e ETFs.
-      
-      Devolva EXCLUSIVAMENTE um JSON válido no formato de um array de objetos, onde cada objeto tem:
-      - "ticker": (string) Ticker do ativo (ex: VOO, AAPL, PETR4).
-      - "type": (string) "stock" para ações/BDRs, "ETF" para ETFs, "FII" para FIIs.
-      - "operation": (string) "buy" para compra, "sell" para venda.
-      - "quantity": (number) Quantidade operada (pode ser fracionada).
-      - "price": (number) Preço unitário exato pago (cotação do dia com spread, sem taxa de corretagem embutida no preço unitário, se possível, ou o valor bruto dividido pela qtd).
-      - "currency": (string) "USD" se for mercado americano, "BRL" se for Brasil.
-      - "date": (string) Data da operação no formato YYYY-MM-DDTHH:mm:ssZ. Estime a hora se não houver (ex: 12:00:00Z).
-      
-      Se não houver nenhuma operação, devolva um array vazio [].
-      Não escreva mais nada além do JSON puro.
-      
-      TEXTO DO EXTRATO:
-      ${textContent.substring(0, 8000)} // Limite de segurança para não estourar tokens
+        Você é um assistente financeiro especialista em ler notas de corretagem e extratos de investimentos.
+        Extraia as operações de compra e venda do texto abaixo e retorne APENAS um JSON válido contendo um array 'transactions'.
+        Se houver impostos ou taxas, ignore. Eu quero apenas as ações/ETFs/FIIs/Bonds operados.
+        O JSON deve ter este formato:
+        {
+          "transactions": [
+            {
+              "ticker": "VOO",
+              "operation": "buy", // 'buy' ou 'sell'
+              "quantity": 0.07972,
+              "price": 698.32, // Preço unitário pago
+              "date": "2026-02-13T17:18:00Z",
+              "currency": "USD", // 'USD' ou 'BRL'
+              "type": "stock" // 'stock', 'ETF', 'FII', 'treasury'
+            }
+          ]
+        }
+
+        Texto do arquivo:
+        ${textContent.substring(0, 8000)}
       `
 
       const completion = await openai.chat.completions.create({
-        messages: [{ role: 'user', content: prompt }],
         model: 'gpt-4o-mini',
-        response_format: { type: 'json_object' }
+        response_format: { type: "json_object" },
+        messages: [
+          { role: 'system', content: prompt }
+        ],
+        temperature: 0.1
       })
 
       const aiResponseText = completion.choices[0].message.content || '{"transactions":[]}'
       
-      // O gpt-4o-mini com json_object costuma devolver { "transactions": [...] } ou só o array.
       let parsedJson: any = {}
       try {
         parsedJson = JSON.parse(aiResponseText)
@@ -153,12 +180,24 @@ export async function POST(request: Request) {
         
         totalImported++;
       }
+      
+      // If we successfully processed the file, we save it to imported_files to avoid re-running OpenAI
+      await supabase.from('imported_files').insert({
+        user_id: userData.user.id,
+        file_hash: fileHash,
+        file_name: file.name
+      });
     }
     
+    let msg = `Mágica Finalizada! A Inteligência leu os arquivos. Ela encontrou ${totalImported} operação(ões) nova(s).`
+    if (duplicatedFiles > 0) {
+      msg += ` Além disso, ignoramos ${duplicatedFiles} arquivo(s) que já haviam sido processados antes, protegendo sua conta e saldo!`
+    }
+
     return NextResponse.json({ 
       success: true, 
       count: totalImported,
-      message: `Mágica Finalizada! A Inteligência leu o arquivo. Ela encontrou ${totalImported} operação(ões) válida(s). Se o número for 0, o texto extraído estava vazio ou o PDF não era suportado.`
+      message: msg
     })
 
   } catch (error: any) {
