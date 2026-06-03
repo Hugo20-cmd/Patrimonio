@@ -990,34 +990,34 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                     <p style={{ color: "var(--text-tertiary)", fontSize: "0.95rem", lineHeight: 1.5, marginBottom: "24px" }}>
                       Faça upload do seu arquivo de notas de corretagem ou extrato da B3 em formato <strong>.PDF, .CSV ou .OFX</strong>. A Inteligência Artificial da Patrimônio+ vai ler o arquivo, entender as operações e cadastrar tudo para você automaticamente.
                     </p>
-                    <div style={{ marginBottom: "24px", textAlign: "left" }}>
-                      <div style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--text-primary)", marginBottom: "12px", display: "flex", alignItems: "center", gap: "8px" }}>
+                    <div style={{ marginBottom: "20px", textAlign: "left" }}>
+                      <div style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--text-primary)", marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
                         O que você deseja importar?
                       </div>
                       
-                      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                         {/* Card 1: Compras e Vendas */}
                         <div 
                           onClick={() => setImportMode("trades")}
                           style={{ 
-                            display: "flex", gap: "16px", alignItems: "center", cursor: "pointer", 
-                            padding: "16px", borderRadius: "12px", transition: "all 0.2s",
+                            display: "flex", gap: "12px", alignItems: "center", cursor: "pointer", 
+                            padding: "10px 14px", borderRadius: "10px", transition: "all 0.2s",
                             background: importMode === "trades" ? "rgba(79, 110, 247, 0.08)" : "var(--bg-elevated)", 
-                            border: importMode === "trades" ? "2px solid var(--blue-primary)" : "1px solid var(--border-subtle)" 
+                            border: importMode === "trades" ? "1.5px solid var(--blue-primary)" : "1px solid var(--border-subtle)" 
                           }}
                         >
-                          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "24px", height: "24px", flexShrink: 0 }}>
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "18px", height: "18px", flexShrink: 0 }}>
                             {importMode === "trades" ? (
-                              <CheckCircle2 size={24} color="var(--blue-primary)" />
+                              <CheckCircle2 size={18} color="var(--blue-primary)" />
                             ) : (
-                              <div style={{ width: "20px", height: "20px", borderRadius: "50%", border: "2px solid var(--border-subtle)" }} />
+                              <div style={{ width: "16px", height: "16px", borderRadius: "50%", border: "1.5px solid var(--text-tertiary)" }} />
                             )}
                           </div>
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: "0.95rem", fontWeight: 600, color: importMode === "trades" ? "var(--text-primary)" : "var(--text-secondary)", marginBottom: "4px" }}>
+                            <div style={{ fontSize: "0.85rem", fontWeight: 600, color: importMode === "trades" ? "var(--text-primary)" : "var(--text-secondary)", marginBottom: "2px" }}>
                               Ler Compras e Vendas (Apenas)
                             </div>
-                            <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", lineHeight: 1.4 }}>
+                            <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", lineHeight: 1.3 }}>
                               Recomendado para <b>Notas de Corretagem</b>. Ignora impostos e dividendos.
                             </div>
                           </div>
@@ -1027,24 +1027,24 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                         <div 
                           onClick={() => setImportMode("dividends_taxes")}
                           style={{ 
-                            display: "flex", gap: "16px", alignItems: "center", cursor: "pointer", 
-                            padding: "16px", borderRadius: "12px", transition: "all 0.2s",
+                            display: "flex", gap: "12px", alignItems: "center", cursor: "pointer", 
+                            padding: "10px 14px", borderRadius: "10px", transition: "all 0.2s",
                             background: importMode === "dividends_taxes" ? "rgba(0, 212, 170, 0.08)" : "var(--bg-elevated)", 
-                            border: importMode === "dividends_taxes" ? "2px solid var(--green-primary)" : "1px solid var(--border-subtle)" 
+                            border: importMode === "dividends_taxes" ? "1.5px solid var(--green-primary)" : "1px solid var(--border-subtle)" 
                           }}
                         >
-                          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "24px", height: "24px", flexShrink: 0 }}>
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "18px", height: "18px", flexShrink: 0 }}>
                             {importMode === "dividends_taxes" ? (
-                              <CheckCircle2 size={24} color="var(--green-primary)" />
+                              <CheckCircle2 size={18} color="var(--green-primary)" />
                             ) : (
-                              <div style={{ width: "20px", height: "20px", borderRadius: "50%", border: "2px solid var(--border-subtle)" }} />
+                              <div style={{ width: "16px", height: "16px", borderRadius: "50%", border: "1.5px solid var(--text-tertiary)" }} />
                             )}
                           </div>
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: "0.95rem", fontWeight: 600, color: importMode === "dividends_taxes" ? "var(--text-primary)" : "var(--text-secondary)", marginBottom: "4px" }}>
+                            <div style={{ fontSize: "0.85rem", fontWeight: 600, color: importMode === "dividends_taxes" ? "var(--text-primary)" : "var(--text-secondary)", marginBottom: "2px" }}>
                               Ler Rendimentos e Aportes (Apenas)
                             </div>
-                            <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", lineHeight: 1.4 }}>
+                            <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", lineHeight: 1.3 }}>
                               Recomendado para <b>Extrato Mensal</b>. Ignora as compras para não duplicá-las.
                             </div>
                           </div>
