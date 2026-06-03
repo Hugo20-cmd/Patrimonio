@@ -971,8 +971,8 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                           if (!res.ok) throw new Error(data.error || "Erro ao processar");
                           
                           setAiImportStatus("success");
-                          setAiImportMsg(`Sucesso! Foram processados os documentos, porém a integração com IA real requer configuração da API Key.`);
-                          // setTimeout(() => window.location.reload(), 3000);
+                          setAiImportMsg(data.message || `Sucesso! Foram processados os documentos.`);
+                          setTimeout(() => window.location.reload(), 2000);
                         } catch(err: any) {
                           setAiImportStatus("error");
                           setAiImportMsg(err.message || "Não foi possível ler este arquivo.");
