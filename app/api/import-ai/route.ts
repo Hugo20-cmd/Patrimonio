@@ -158,7 +158,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ 
       success: true, 
       count: totalImported,
-      message: `Sucesso! Foram processadas ${totalImported} operação(ões) através do Leitor Mágico.`
+      message: `Mágica Finalizada! A Inteligência leu o arquivo. Ela encontrou ${totalImported} operação(ões) válida(s). Se o número for 0, o texto extraído estava vazio ou o PDF não era suportado.`
     })
 
   } catch (error: any) {
