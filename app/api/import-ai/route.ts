@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
 import OpenAI from 'openai'
-const pdfParse = require('pdf-parse')
 
 // O Next.js não permite pdf-parse nativamente no Edge, por isso garantimos que rode em Node
 export const runtime = 'nodejs'
@@ -38,6 +37,7 @@ export async function POST(request: Request) {
       
       // Se for PDF, usa pdf-parse. Se for CSV/TXT, lê como texto plano.
       if (file.name.toLowerCase().endsWith('.pdf')) {
+        const pdfParse = require('pdf-parse')
         const buffer = Buffer.from(await file.arrayBuffer())
         const parsed = await pdfParse(buffer)
         textContent = parsed.text
