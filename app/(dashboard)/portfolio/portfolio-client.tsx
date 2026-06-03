@@ -10,6 +10,7 @@ import {
   formatCurrency, formatPercent, assetTypeColor, assetTypeLabel, AssetType
 } from "@/lib/mock-data";
 import { addAsset, deleteAsset, editAsset } from "@/app/actions/assets";
+import { deleteAssetTransaction } from "@/app/actions/asset-transactions";
 import { getMultipleQuotes, searchAsset, getQuote, getExchangeRate } from "@/app/actions/market";
 import PaywallModal from "@/components/PaywallModal";
 
@@ -584,13 +585,26 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                   <div style={{ fontSize: "1.1rem", fontWeight: 600, color: "var(--text-primary)", marginBottom: "4px" }}>{opLabel} {tx.ticker}</div>
                   <div style={{ fontSize: "0.85rem", color: "var(--text-tertiary)" }}>Concluído</div>
                 </div>
-                <div style={{ textAlign: "right" }}>
+                <div style={{ textAlign: "right", display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
                   <div style={{ fontSize: "1.1rem", fontWeight: 600, color: valueColor }}>
                     {sign}{formatCurrency(tx.quantity * tx.price, tx.currency)}
                   </div>
                   <div style={{ fontSize: "0.85rem", color: "var(--text-tertiary)", marginTop: "4px" }}>
                     Qtd: {tx.quantity} a {formatCurrency(tx.price, tx.currency)}
                   </div>
+                  <button 
+                    onClick={async () => {
+                      if(confirm("Deseja excluir esta movimentação? Isso não afetará a Posição Consolidada, apenas o histórico.")){
+                        setTransactions(prev => prev.filter(t => t.id !== tx.id));
+                        await deleteAssetTransaction(tx.id);
+                      }
+                    }}
+                    style={{ background: "none", border: "none", color: "var(--red-primary)", cursor: "pointer", fontSize: "0.75rem", display: "flex", alignItems: "center", gap: "4px", marginTop: "8px", opacity: 0.7, transition: "opacity 0.2s" }}
+                    onMouseEnter={e => e.currentTarget.style.opacity = "1"}
+                    onMouseLeave={e => e.currentTarget.style.opacity = "0.7"}
+                  >
+                    <X size={12} /> Excluir histórico
+                  </button>
                 </div>
               </div>
             );
