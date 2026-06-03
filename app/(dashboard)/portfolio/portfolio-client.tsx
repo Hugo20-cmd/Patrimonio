@@ -1013,7 +1013,7 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                               <div style={{ width: "20px", height: "20px", borderRadius: "50%", border: "2px solid var(--border-subtle)" }} />
                             )}
                           </div>
-                          <div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{ fontSize: "0.95rem", fontWeight: 600, color: importMode === "trades" ? "var(--text-primary)" : "var(--text-secondary)", marginBottom: "4px" }}>
                               Ler Compras e Vendas (Apenas)
                             </div>
@@ -1040,7 +1040,7 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                               <div style={{ width: "20px", height: "20px", borderRadius: "50%", border: "2px solid var(--border-subtle)" }} />
                             )}
                           </div>
-                          <div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{ fontSize: "0.95rem", fontWeight: 600, color: importMode === "dividends_taxes" ? "var(--text-primary)" : "var(--text-secondary)", marginBottom: "4px" }}>
                               Ler Rendimentos e Aportes (Apenas)
                             </div>
