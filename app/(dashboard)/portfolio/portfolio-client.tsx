@@ -887,10 +887,10 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                   <div style={{ marginBottom: "24px" }}>
                     <label>Data e Hora da Operação</label>
                     <input name="date" type="datetime-local" defaultValue={editingAssetId ? new Date(new Date(assets.find(a => a.id === editingAssetId)?.purchaseDate || Date.now()).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)} required />
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "8px" }}>
-                      <AlertCircle size={12} color="var(--orange-primary)" />
-                      <span style={{ fontSize: "0.75rem", color: "var(--orange-primary)", lineHeight: 1.3 }}>
-                        Para lançamentos passados, o sistema não busca a cotação da época automaticamente. <b>Você deve digitar manualmente</b> a cotação exata no campo "Preço Un."
+                    <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", marginTop: "12px", padding: "12px", background: "rgba(255, 152, 0, 0.1)", borderRadius: "8px", border: "1px solid rgba(255, 152, 0, 0.2)" }}>
+                      <AlertCircle size={16} color="var(--orange-primary)" style={{ flexShrink: 0, marginTop: "2px" }} />
+                      <span style={{ fontSize: "0.8rem", color: "var(--orange-primary)", lineHeight: 1.4 }}>
+                        <strong>Lançamentos Antigos:</strong> O sistema não busca preços do passado porque cada corretora cobra um <b>Spread</b> (margem oculta) diferente na execução da ordem. <b>Apague o valor de hoje sugerido e digite manualmente</b> o "Preço Un." exato cobrado na sua corretora para que a matemática fique 100% perfeita!
                       </span>
                     </div>
                   </div>
