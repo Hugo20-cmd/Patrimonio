@@ -949,13 +949,13 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                     </p>
                     
                     <label style={{ display: "inline-block", background: "var(--blue-primary)", color: "#fff", padding: "14px 24px", borderRadius: "12px", fontWeight: 600, cursor: "pointer", transition: "transform 0.1s" }} className="hover-scale">
-                      Selecionar Arquivo
-                      <input type="file" style={{ display: "none" }} accept=".csv,.pdf,.ofx" onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (!file) return;
+                      Selecionar Arquivos
+                      <input type="file" multiple style={{ display: "none" }} accept=".csv,.pdf,.ofx" onChange={async (e) => {
+                        const files = Array.from(e.target.files || []);
+                        if (files.length === 0) return;
                         
                         setAiImportStatus("uploading");
-                        setAiImportMsg("Enviando arquivo seguro...");
+                        setAiImportMsg(`Enviando ${files.length} arquivo(s) seguro(s)...`);
                         
                         await new Promise(r => setTimeout(r, 1500));
                         
@@ -964,15 +964,15 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                         
                         try {
                           const formData = new FormData();
-                          formData.append("file", file);
+                          files.forEach(file => formData.append("files", file));
                           const res = await fetch("/api/import-ai", { method: "POST", body: formData });
                           const data = await res.json();
                           
                           if (!res.ok) throw new Error(data.error || "Erro ao processar");
                           
                           setAiImportStatus("success");
-                          setAiImportMsg(`Sucesso! Foram encontrados e adicionados ${data.count || 0} ativos na sua carteira.`);
-                          setTimeout(() => window.location.reload(), 3000);
+                          setAiImportMsg(`Sucesso! Foram processados os documentos, porém a integração com IA real requer configuração da API Key.`);
+                          // setTimeout(() => window.location.reload(), 3000);
                         } catch(err: any) {
                           setAiImportStatus("error");
                           setAiImportMsg(err.message || "Não foi possível ler este arquivo.");
