@@ -310,7 +310,7 @@ export default function SimuladorClient({ initialAccount, initialPositions, init
 
                   return (
                     <div key={pos.id} style={{ display: "flex", flexDirection: "column", padding: "16px", background: "var(--bg-elevated)", borderRadius: "12px", border: "1px solid var(--border-subtle)", gap: "12px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: "8px" }}>
                         <div>
                           <div style={{ fontWeight: 900, color: "var(--text-primary)", fontSize: "1.1rem" }}>{pos.ticker}</div>
                           <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", marginTop: "4px" }}>
@@ -319,14 +319,14 @@ export default function SimuladorClient({ initialAccount, initialPositions, init
                         </div>
                         <div style={{ textAlign: "right" }}>
                           <div style={{ fontWeight: 800, color: "var(--text-primary)" }}>R$ {totalValue.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits:2})}</div>
-                          <div style={{ fontSize: "0.85rem", fontWeight: 700, color: isProfit ? "var(--green-primary)" : "var(--red-primary)", marginTop: "4px", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "4px" }}>
+                          <div style={{ fontSize: "0.85rem", fontWeight: 700, color: isProfit ? "var(--green-primary)" : "var(--red-primary)", marginTop: "4px", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "4px", flexWrap: "wrap" }}>
                             {isProfit ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
                             {profit > 0 ? "+" : ""}R$ {profit.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits:2})} ({profitPct > 0 ? "+" : ""}{profitPct.toFixed(2)}%)
                           </div>
                         </div>
                       </div>
                       
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "4px", borderTop: "1px solid var(--border-default)", paddingTop: "12px" }}>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", justifyContent: "space-between", alignItems: "center", marginTop: "4px", borderTop: "1px solid var(--border-default)", paddingTop: "12px" }}>
                         <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
                           Cotação: <span style={{ fontWeight: 700, color: "var(--text-primary)" }}>R$ {Number(currentPrice).toFixed(2)}</span>
                         </div>
