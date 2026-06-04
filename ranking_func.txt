@@ -1,0 +1,39 @@
+export async function getSimulatorRanking() {
+  const { data: simProfiles } = await supabaseAdmin.from('simulator_profiles').select('*')
+  const { data: profiles } = await supabaseAdmin.from('profiles').select('id, name, avatar_url')
+  const { data: positions } = await supabaseAdmin.from('simulator_positions').select('*')
+  
+  if (!simProfiles || !profiles) return []
+
+  const uniqueTickers = [...new Set((positions || []).map(p => p.ticker))]
+  
+  const { getMultipleQuotes } = await import('./market')
+  const quotes = await getMultipleQuotes(uniqueTickers)
+  const quotesMap = new Map(quotes.filter((q: any) => q && q.symbol).map((q: any) => [q.symbol, q.price]))
+
+  const ranking = simProfiles.map(simProfile => {
+    const userProfile = profiles.find(p => p.id === simProfile.user_id) || { name: 'Usuário', avatar_url: null }
+    const userPositions = (positions || []).filter(p => p.user_id === simProfile.user_id)
+    
+    let investedValue = 0
+    for (const pos of userPositions) {
+      const currentPrice = quotesMap.get(pos.ticker) || pos.average_price
+      investedValue += pos.quantity * currentPrice
+    }
+    
+    const totalEquity = Number(simProfile.balance) + investedValue
+    const returnPercent = ((totalEquity / 100000) - 1) * 100
+
+    return {
+      user_id: simProfile.user_id,
+      name: userProfile.name,
+      avatar_url: userProfile.avatar_url,
+      balance: Number(simProfile.balance),
+      totalEquity,
+      returnPercent
+    }
+  })
+
+  ranking.sort((a, b) => b.totalEquity - a.totalEquity)
+  return ranking
+}
