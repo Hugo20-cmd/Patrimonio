@@ -276,8 +276,20 @@ export default function SimuladorClient({ initialAccount, initialPositions, init
                       <div style={{ fontWeight: 800, color: "var(--text-primary)" }}>{pos.ticker}</div>
                       <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)" }}>PM: R$ {Number(pos.average_price).toFixed(2)}</div>
                     </div>
-                    <div style={{ textAlign: "right" }}>
+                    <div style={{ textAlign: "right", display: "flex", alignItems: "center", gap: "12px" }}>
                       <div style={{ fontWeight: 800, color: "var(--text-primary)" }}>{Number(pos.quantity)} unid</div>
+                      <button 
+                        onClick={() => {
+                          setQuantity(pos.quantity.toString());
+                          selectAsset(pos.ticker);
+                          window.scrollTo({ top: 0, behavior: "smooth" });
+                        }}
+                        style={{ padding: "6px 12px", background: "rgba(255,0,0,0.1)", color: "var(--red-primary)", border: "1px solid rgba(255,0,0,0.2)", borderRadius: "6px", fontSize: "0.75rem", fontWeight: 800, cursor: "pointer", transition: "all 0.2s" }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,0,0,0.2)"}
+                        onMouseLeave={(e) => e.currentTarget.style.background = "rgba(255,0,0,0.1)"}
+                      >
+                        Vender
+                      </button>
                     </div>
                   </div>
                 ))}
