@@ -106,6 +106,31 @@ export default function SimuladorClient({ initialAccount, initialPositions, init
       animate={{ opacity: 1, y: 0 }}
       style={{ display: "flex", flexDirection: "column", gap: "24px", maxWidth: "1200px", margin: "0 auto", paddingBottom: "100px" }}
     >
+      <style>{`
+        .sim-main-grid {
+          display: grid;
+          grid-template-columns: 1fr 380px;
+          gap: 24px;
+          align-items: start;
+        }
+        .sim-chart-container {
+          height: 600px;
+        }
+        @media (max-width: 992px) {
+          .sim-main-grid {
+            grid-template-columns: 1fr;
+          }
+          .sim-chart-container {
+            height: 450px;
+          }
+        }
+        @media (max-width: 600px) {
+          .sim-chart-container {
+            height: 350px;
+          }
+        }
+      `}</style>
+
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <h1 style={{ fontSize: "2rem", fontWeight: 900, marginBottom: "8px", display: "flex", alignItems: "center", gap: "12px" }}>
@@ -136,10 +161,10 @@ export default function SimuladorClient({ initialAccount, initialPositions, init
       </div>
 
       {/* Main Trading Area */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: "24px", alignItems: "start" }}>
+      <div className="sim-main-grid">
         
         {/* Left Column: Chart */}
-        <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", overflow: "hidden", display: "flex", flexDirection: "column", height: "600px" }}>
+        <div className="sim-chart-container" style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
           <div style={{ padding: "16px 24px", borderBottom: "1px solid var(--border-subtle)", background: "var(--bg-elevated)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div style={{ fontWeight: 800, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
               <Activity size={18} color="var(--blue-primary)" />
