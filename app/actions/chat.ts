@@ -36,8 +36,14 @@ export async function getChatMessages(channel: string = 'geral') {
     }, { onConflict: 'id' })
   }
 
+  const { createClient: createAdminClient } = await import('@supabase/supabase-js')
+  const supabaseAdmin = createAdminClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
   // Fetch messages
-  const { data: rawMessages, error } = await supabase
+  const { data: rawMessages, error } = await supabaseAdmin
     .from('chat_messages')
     .select(`
       id,
@@ -57,7 +63,7 @@ export async function getChatMessages(channel: string = 'geral') {
 
   // Manual join with profiles
   const userIds = [...new Set((rawMessages || []).map(m => m.user_id))]
-  const { data: profiles } = await supabase
+  const { data: profiles } = await supabaseAdmin
     .from('profiles')
     .select('id, name, level, email, avatar_url')
     .in('id', userIds)
