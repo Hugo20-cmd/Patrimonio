@@ -670,7 +670,7 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "20px", width: "100%", maxWidth: "500px", boxShadow: "var(--shadow-lg), 0 0 40px rgba(0,212,170,0.1)", overflow: "hidden" }}
+              style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "20px", width: "100%", maxWidth: "500px", boxShadow: "var(--shadow-lg), 0 0 40px rgba(0,212,170,0.1)", overflow: "hidden", display: "flex", flexDirection: "column", maxHeight: "calc(100vh - 48px)" }}
             >
               <div style={{ padding: "20px 24px", borderBottom: "1px solid var(--border-subtle)", display: "flex", justifyContent: "space-between", alignItems: "center", background: "var(--bg-elevated)" }}>
                 <h3 style={{ fontSize: "1.2rem", fontWeight: 700 }}>{editingAssetId ? "Editar Ativo" : "Novo Lançamento"}</h3>
@@ -679,7 +679,7 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                 </button>
               </div>
 
-              <div style={{ padding: "24px" }}>
+              <div style={{ padding: "24px", overflowY: "auto", flex: 1 }}>
                 {errorMsg && (
                   <div style={{ background: "rgba(255,0,0,0.1)", color: "var(--red-primary)", padding: "12px", borderRadius: "8px", marginBottom: "16px", fontSize: "0.85rem", border: "1px solid rgba(255,0,0,0.2)" }}>
                     {errorMsg}
@@ -969,7 +969,7 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              style={{ background: "var(--bg-card)", border: "1px solid var(--blue-primary)", borderRadius: "20px", width: "100%", maxWidth: "500px", boxShadow: "0 0 40px rgba(79,110,247,0.2)", overflow: "hidden" }}
+              style={{ background: "var(--bg-card)", border: "1px solid var(--blue-primary)", borderRadius: "20px", width: "100%", maxWidth: "500px", boxShadow: "0 0 40px rgba(79,110,247,0.2)", overflow: "hidden", display: "flex", flexDirection: "column", maxHeight: "calc(100vh - 48px)" }}
             >
               <div style={{ padding: "20px 24px", borderBottom: "1px solid var(--border-subtle)", display: "flex", justifyContent: "space-between", alignItems: "center", background: "linear-gradient(90deg, rgba(79,110,247,0.1), transparent)" }}>
                 <h3 style={{ fontSize: "1.2rem", fontWeight: 700, display: "flex", alignItems: "center", gap: "8px" }}>
@@ -980,7 +980,7 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                 </button>
               </div>
 
-              <div style={{ padding: "32px", textAlign: "center" }}>
+              <div style={{ padding: "32px", textAlign: "center", overflowY: "auto", flex: 1 }}>
                 {aiImportStatus === "idle" && (
                   <>
                     <div style={{ width: "80px", height: "80px", borderRadius: "50%", background: "rgba(79,110,247,0.1)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
