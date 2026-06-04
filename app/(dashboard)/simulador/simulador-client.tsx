@@ -95,7 +95,7 @@ export default function SimuladorClient({ initialAccount, initialPositions, init
     if (!symbol) return "BMFBOVESPA:IBOV";
     if (symbol.startsWith("BINANCE:")) return symbol;
     if (/^[A-Z]+$/.test(symbol.trim().toUpperCase())) {
-      return `NASDAQ:${symbol}`;
+      return symbol;
     }
     return `BMFBOVESPA:${symbol}`;
   };
