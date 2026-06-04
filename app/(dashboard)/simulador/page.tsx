@@ -21,6 +21,7 @@ export default async function SimuladorPage() {
       initialHistory={history} 
       initialQuotes={quotes}
       initialRanking={ranking}
+      initialRanking={ranking}
     />
   );
 }

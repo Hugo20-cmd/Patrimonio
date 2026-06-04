@@ -674,3 +674,26 @@ label {
     display: none !important;
   }
 }
+
+.sim-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  align-items: start;
+}
+.sim-chart-container {
+  height: 600px;
+}
+@media (max-width: 992px) {
+  .sim-main-grid {
+    grid-template-columns: 1fr;
+  }
+  .sim-chart-container {
+    height: 450px;
+  }
+}
+@media (max-width: 600px) {
+  .sim-chart-container {
+    height: 350px;
+  }
+}
