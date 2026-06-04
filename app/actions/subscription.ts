@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
+import { createClient as createAdminClient } from '@supabase/supabase-js'
 
 export async function getSubscriptionStatus() {
   const supabase = await createClient()
@@ -14,7 +15,13 @@ export async function getSubscriptionStatus() {
     return { status: 'premium', current_period_end: '2099-12-31' }
   }
 
-  const { data: subscription } = await supabase
+  // Use Admin Client to bypass RLS on subscriptions table
+  const supabaseAdmin = createAdminClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
+  const { data: subscription } = await supabaseAdmin
     .from('subscriptions')
     .select('status, current_period_end')
     .eq('user_id', userData.user.id)
