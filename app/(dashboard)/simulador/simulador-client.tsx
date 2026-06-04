@@ -6,7 +6,7 @@ import { Search, DollarSign, TrendingUp, TrendingDown, Crosshair, RefreshCw, Ref
 import { searchAsset, getQuote } from "@/app/actions/market";
 import { executeSimulatorOrder, resetSimulatorAccount } from "@/app/actions/simulator";
 
-export default function SimuladorClient({ initialAccount, initialPositions, initialHistory }: any) {
+export default function SimuladorClient({ initialAccount, initialPositions, initialHistory, initialQuotes = [] }: any) {
   const [account, setAccount] = useState(initialAccount);
   const [positions, setPositions] = useState<any[]>(initialPositions);
   const [history, setHistory] = useState<any[]>(initialHistory);
@@ -87,8 +87,12 @@ export default function SimuladorClient({ initialAccount, initialPositions, init
     }
   };
 
-  // Calculate live portfolio value using the stored average prices for simplicity (in a real app, we'd fetch live quotes for all positions)
-  const portfolioInvested = positions.reduce((acc, pos) => acc + (Number(pos.quantity) * Number(pos.average_price)), 0);
+  // Calculate live portfolio value using live quotes
+  const portfolioInvested = positions.reduce((acc, pos) => {
+    const quote = initialQuotes?.find((q: any) => q.symbol === pos.ticker);
+    const currentPrice = quote?.price || pos.average_price;
+    return acc + (Number(pos.quantity) * Number(currentPrice));
+  }, 0);
   const totalEquity = Number(account?.balance || 0) + portfolioInvested;
 
   const getTradingViewSymbol = (symbol: string) => {
@@ -295,29 +299,53 @@ export default function SimuladorClient({ initialAccount, initialPositions, init
               <div style={{ color: "var(--text-tertiary)", fontSize: "0.9rem", textAlign: "center", padding: "20px" }}>Nenhum ativo na carteira virtual.</div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                {positions.map(pos => (
-                  <div key={pos.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px", background: "var(--bg-elevated)", borderRadius: "12px", border: "1px solid var(--border-subtle)" }}>
-                    <div>
-                      <div style={{ fontWeight: 800, color: "var(--text-primary)" }}>{pos.ticker}</div>
-                      <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)" }}>PM: R$ {Number(pos.average_price).toFixed(2)}</div>
+                {positions.map(pos => {
+                  const quote = initialQuotes?.find((q: any) => q.symbol === pos.ticker);
+                  const currentPrice = quote?.price || pos.average_price;
+                  const totalValue = currentPrice * pos.quantity;
+                  const invested = pos.average_price * pos.quantity;
+                  const profit = totalValue - invested;
+                  const profitPct = invested > 0 ? (profit / invested) * 100 : 0;
+                  const isProfit = profit >= 0;
+
+                  return (
+                    <div key={pos.id} style={{ display: "flex", flexDirection: "column", padding: "16px", background: "var(--bg-elevated)", borderRadius: "12px", border: "1px solid var(--border-subtle)", gap: "12px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                        <div>
+                          <div style={{ fontWeight: 900, color: "var(--text-primary)", fontSize: "1.1rem" }}>{pos.ticker}</div>
+                          <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", marginTop: "4px" }}>
+                            {Number(pos.quantity)} unid • PM: R$ {Number(pos.average_price).toFixed(2)}
+                          </div>
+                        </div>
+                        <div style={{ textAlign: "right" }}>
+                          <div style={{ fontWeight: 800, color: "var(--text-primary)" }}>R$ {totalValue.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits:2})}</div>
+                          <div style={{ fontSize: "0.85rem", fontWeight: 700, color: isProfit ? "var(--green-primary)" : "var(--red-primary)", marginTop: "4px", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "4px" }}>
+                            {isProfit ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                            {profit > 0 ? "+" : ""}R$ {profit.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits:2})} ({profitPct > 0 ? "+" : ""}{profitPct.toFixed(2)}%)
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "4px", borderTop: "1px solid var(--border-default)", paddingTop: "12px" }}>
+                        <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+                          Cotação: <span style={{ fontWeight: 700, color: "var(--text-primary)" }}>R$ {Number(currentPrice).toFixed(2)}</span>
+                        </div>
+                        <button 
+                          onClick={() => {
+                            setQuantity(pos.quantity.toString());
+                            selectAsset(pos.ticker);
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                          }}
+                          style={{ padding: "6px 16px", background: "rgba(255,0,0,0.1)", color: "var(--red-primary)", border: "1px solid rgba(255,0,0,0.2)", borderRadius: "8px", fontSize: "0.8rem", fontWeight: 800, cursor: "pointer", transition: "all 0.2s" }}
+                          onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,0,0,0.2)"}
+                          onMouseLeave={(e) => e.currentTarget.style.background = "rgba(255,0,0,0.1)"}
+                        >
+                          Vender Tudo
+                        </button>
+                      </div>
                     </div>
-                    <div style={{ textAlign: "right", display: "flex", alignItems: "center", gap: "12px" }}>
-                      <div style={{ fontWeight: 800, color: "var(--text-primary)" }}>{Number(pos.quantity)} unid</div>
-                      <button 
-                        onClick={() => {
-                          setQuantity(pos.quantity.toString());
-                          selectAsset(pos.ticker);
-                          window.scrollTo({ top: 0, behavior: "smooth" });
-                        }}
-                        style={{ padding: "6px 12px", background: "rgba(255,0,0,0.1)", color: "var(--red-primary)", border: "1px solid rgba(255,0,0,0.2)", borderRadius: "6px", fontSize: "0.75rem", fontWeight: 800, cursor: "pointer", transition: "all 0.2s" }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,0,0,0.2)"}
-                        onMouseLeave={(e) => e.currentTarget.style.background = "rgba(255,0,0,0.1)"}
-                      >
-                        Vender
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
