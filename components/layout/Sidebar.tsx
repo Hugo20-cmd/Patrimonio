@@ -129,6 +129,7 @@ export default function Sidebar({
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => setIsOpen?.(false)}
               style={{
                 display: "flex", alignItems: "center", gap: "12px", padding: "12px 16px",
                 borderRadius: "12px", textDecoration: "none",
