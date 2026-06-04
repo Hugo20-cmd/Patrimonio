@@ -66,7 +66,10 @@ export async function signup(formData: FormData) {
   const { data, error } = await supabase.auth.signUp({
     ...dataToSubmit,
     options: {
-      data: { last_ip: ip }
+      data: { 
+        last_ip: ip,
+        name: formData.get('name') as string || null
+      }
     }
   })
 
