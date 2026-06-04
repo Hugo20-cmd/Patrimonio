@@ -1,7 +1,13 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
+import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
+
+const supabaseAdmin = createAdminClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 // 1. Iniciar ou obter conta do Simulador
 export async function getSimulatorAccount() {
@@ -90,7 +96,8 @@ export async function executeSimulatorOrder(ticker: string, quantity: number, pr
 
     // Desconta o saldo
     const newBalance = Number(account.balance) - totalValue
-    await supabase.from('simulator_profiles').update({ balance: newBalance }).eq('user_id', userId)
+    const { error: err1 } = await supabaseAdmin.from('simulator_profiles').update({ balance: newBalance }).eq('user_id', userId)
+    if (err1) return { error: 'Erro ao atualizar saldo: ' + err1.message }
 
     // Atualiza ou cria posição
     if (position) {
@@ -99,17 +106,19 @@ export async function executeSimulatorOrder(ticker: string, quantity: number, pr
       const newQuantity = oldQuantity + quantity
       const newAvgPrice = ((oldQuantity * oldAvgPrice) + totalValue) / newQuantity
 
-      await supabase.from('simulator_positions').update({
+      const { error: err2 } = await supabaseAdmin.from('simulator_positions').update({
         quantity: newQuantity,
         average_price: newAvgPrice
       }).eq('id', position.id)
+      if (err2) return { error: 'Erro ao atualizar posição: ' + err2.message }
     } else {
-      await supabase.from('simulator_positions').insert({
+      const { error: err3 } = await supabaseAdmin.from('simulator_positions').insert({
         user_id: userId,
         ticker,
         quantity,
         average_price: price
       })
+      if (err3) return { error: 'Erro ao criar posição: ' + err3.message }
     }
   } else if (operation === 'sell') {
     if (!position || Number(position.quantity) < quantity) {
@@ -118,21 +127,24 @@ export async function executeSimulatorOrder(ticker: string, quantity: number, pr
 
     // Aumenta o saldo
     const newBalance = Number(account.balance) + totalValue
-    await supabase.from('simulator_profiles').update({ balance: newBalance }).eq('user_id', userId)
+    const { error: err4 } = await supabaseAdmin.from('simulator_profiles').update({ balance: newBalance }).eq('user_id', userId)
+    if (err4) return { error: 'Erro ao atualizar saldo: ' + err4.message }
 
     // Atualiza posição
     const newQuantity = Number(position.quantity) - quantity
     if (newQuantity <= 0) {
-      await supabase.from('simulator_positions').delete().eq('id', position.id)
+      const { error: err5 } = await supabaseAdmin.from('simulator_positions').delete().eq('id', position.id)
+      if (err5) return { error: 'Erro ao deletar posição: ' + err5.message }
     } else {
-      await supabase.from('simulator_positions').update({
+      const { error: err6 } = await supabaseAdmin.from('simulator_positions').update({
         quantity: newQuantity
       }).eq('id', position.id)
+      if (err6) return { error: 'Erro ao atualizar posição: ' + err6.message }
     }
   }
 
   // Registra no histórico
-  await supabase.from('simulator_history').insert({
+  await supabaseAdmin.from('simulator_history').insert({
     user_id: userId,
     ticker,
     operation,
