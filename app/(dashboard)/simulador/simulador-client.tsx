@@ -249,7 +249,14 @@ export default function SimuladorClient({ initialAccount, initialPositions, init
                 </div>
 
                 <div>
-                  <label style={{ fontSize: "0.85rem", color: "var(--text-tertiary)", fontWeight: 700, marginBottom: "8px", display: "block" }}>Quantidade</label>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "8px" }}>
+                    <label style={{ fontSize: "0.85rem", color: "var(--text-tertiary)", fontWeight: 700, display: "block" }}>Quantidade</label>
+                    {positions.find(p => p.ticker === selectedAsset.symbol) && (
+                      <span style={{ fontSize: "0.75rem", color: "var(--blue-primary)", fontWeight: 700 }}>
+                        Em Carteira: {positions.find(p => p.ticker === selectedAsset.symbol)?.quantity} unid
+                      </span>
+                    )}
+                  </div>
                   <input 
                     type="number" 
                     value={quantity}
@@ -340,7 +347,7 @@ export default function SimuladorClient({ initialAccount, initialPositions, init
                           onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,0,0,0.2)"}
                           onMouseLeave={(e) => e.currentTarget.style.background = "rgba(255,0,0,0.1)"}
                         >
-                          Vender Tudo
+                          Negociar
                         </button>
                       </div>
                     </div>
