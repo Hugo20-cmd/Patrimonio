@@ -172,10 +172,16 @@ export async function resetSimulatorAccount() {
 
 export async function getSimulatorRanking() {
   const { data: simProfiles } = await supabaseAdmin.from('simulator_profiles').select('*')
-  const { data: profiles } = await supabaseAdmin.from('profiles').select('id, name, avatar_url')
+  const { data: profiles } = await supabaseAdmin.from('profiles').select('id, name, avatar_url, email')
   const { data: positions } = await supabaseAdmin.from('simulator_positions').select('*')
   
   if (!simProfiles || !profiles) return []
+
+  const adminEmails = ['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br']
+  const filteredProfiles = profiles.filter(p => !adminEmails.includes(p.email))
+  const allowedUserIds = new Set(filteredProfiles.map(p => p.id))
+
+  const validSimProfiles = simProfiles.filter(sp => allowedUserIds.has(sp.user_id))
 
   const uniqueTickers = [...new Set((positions || []).map(p => p.ticker))]
   
@@ -183,7 +189,7 @@ export async function getSimulatorRanking() {
   const quotes = await getMultipleQuotes(uniqueTickers)
   const quotesMap = new Map(quotes.filter((q: any) => q && q.symbol).map((q: any) => [q.symbol, q.price]))
 
-  const ranking = simProfiles.map(simProfile => {
+  const ranking = validSimProfiles.map(simProfile => {
     const userProfile = profiles.find(p => p.id === simProfile.user_id) || { name: 'Usuário', avatar_url: null }
     const userPositions = (positions || []).filter(p => p.user_id === simProfile.user_id)
     
