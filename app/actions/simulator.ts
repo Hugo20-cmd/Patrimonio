@@ -175,13 +175,10 @@ export async function getSimulatorRanking() {
   const { data: profiles } = await supabaseAdmin.from('profiles').select('id, name, avatar_url, email')
   const { data: positions } = await supabaseAdmin.from('simulator_positions').select('*')
   
-  if (!simProfiles || !profiles) return []
+  if (!profiles) return []
 
   const adminEmails = ['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br']
   const filteredProfiles = profiles.filter(p => !adminEmails.includes(p.email))
-  const allowedUserIds = new Set(filteredProfiles.map(p => p.id))
-
-  const validSimProfiles = simProfiles.filter(sp => allowedUserIds.has(sp.user_id))
 
   const uniqueTickers = [...new Set((positions || []).map(p => p.ticker))]
   
@@ -189,9 +186,9 @@ export async function getSimulatorRanking() {
   const quotes = await getMultipleQuotes(uniqueTickers)
   const quotesMap = new Map(quotes.filter((q: any) => q && q.symbol).map((q: any) => [q.symbol, q.price]))
 
-  const ranking = validSimProfiles.map(simProfile => {
-    const userProfile = profiles.find(p => p.id === simProfile.user_id) || { name: 'Usuário', avatar_url: null }
-    const userPositions = (positions || []).filter(p => p.user_id === simProfile.user_id)
+  const ranking = filteredProfiles.map(userProfile => {
+    const simProfile = (simProfiles || []).find(sp => sp.user_id === userProfile.id) || { balance: 100000 }
+    const userPositions = (positions || []).filter(p => p.user_id === userProfile.id)
     
     let investedValue = 0
     for (const pos of userPositions) {
@@ -203,8 +200,8 @@ export async function getSimulatorRanking() {
     const returnPercent = ((totalEquity / 100000) - 1) * 100
 
     return {
-      user_id: simProfile.user_id,
-      name: userProfile.name,
+      user_id: userProfile.id,
+      name: userProfile.name || 'Investidor P+',
       avatar_url: userProfile.avatar_url,
       balance: Number(simProfile.balance),
       totalEquity,
