@@ -679,15 +679,10 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                 </button>
               </div>
 
-              <div style={{ padding: "24px", overflowY: "auto", flex: 1 }}>
-                {errorMsg && (
-                  <div style={{ background: "rgba(255,0,0,0.1)", color: "var(--red-primary)", padding: "12px", borderRadius: "8px", marginBottom: "16px", fontSize: "0.85rem", border: "1px solid rgba(255,0,0,0.2)" }}>
-                    {errorMsg}
-                  </div>
-                )}
-                <form
-                  action={async (formData) => {
-                    setLoading(true);
+              <form
+                style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}
+                action={async (formData) => {
+                  setLoading(true);
                     setErrorMsg("");
                     // Inject ticker manually since it's controlled
                     formData.set("ticker", tickerInput.toUpperCase());
@@ -710,7 +705,13 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                     setLoading(false);
                   }}
                 >
-                  <div style={{ display: "flex", gap: "16px", marginBottom: "20px" }}>
+                  <div style={{ padding: "24px", overflowY: "auto", flex: 1 }}>
+                    {errorMsg && (
+                      <div style={{ background: "rgba(255,0,0,0.1)", color: "var(--red-primary)", padding: "12px", borderRadius: "8px", marginBottom: "16px", fontSize: "0.85rem", border: "1px solid rgba(255,0,0,0.2)" }}>
+                        {errorMsg}
+                      </div>
+                    )}
+                    <div style={{ display: "flex", gap: "16px", marginBottom: "20px" }}>
                     <div style={{ flex: 1 }}>
                       <label>Tipo de Ativo</label>
                       <select
@@ -947,14 +948,14 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                   </div>
                   )}
 
-                  <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+                  </div>
+                  <div style={{ padding: "16px 24px", background: "var(--bg-elevated)", borderTop: "1px solid var(--border-subtle)", display: "flex", gap: "12px", justifyContent: "flex-end", flexShrink: 0 }}>
                     <button type="button" className="btn btn-ghost" onClick={resetModal}>Cancelar</button>
                     <button type="submit" className="btn btn-primary" style={{ gap: "8px" }} disabled={loading}>
                       <Save size={16} /> {loading ? "Salvando..." : "Salvar Lançamento"}
                     </button>
                   </div>
                 </form>
-              </div>
             </motion.div>
           </div>
         )}
