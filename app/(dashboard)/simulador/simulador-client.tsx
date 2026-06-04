@@ -93,8 +93,8 @@ export default function SimuladorClient({ initialAccount, initialPositions, init
 
   const getTradingViewSymbol = (symbol: string) => {
     if (!symbol) return "BMFBOVESPA:IBOV";
-    // Check if it's US market (simplistic check)
-    if (symbol.includes("AAPL") || symbol.includes("TSLA") || symbol.includes("AMZN") || symbol.length > 6) {
+    if (symbol.startsWith("BINANCE:")) return symbol;
+    if (/^[A-Z]+$/.test(symbol.trim().toUpperCase())) {
       return `NASDAQ:${symbol}`;
     }
     return `BMFBOVESPA:${symbol}`;
@@ -143,7 +143,7 @@ export default function SimuladorClient({ initialAccount, initialPositions, init
           <div style={{ padding: "16px 24px", borderBottom: "1px solid var(--border-subtle)", background: "var(--bg-elevated)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div style={{ fontWeight: 800, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
               <Activity size={18} color="var(--blue-primary)" />
-              {selectedAsset ? selectedAsset.symbol : "IBOVESPA"}
+              {selectedAsset ? selectedAsset.symbol.replace('BINANCE:', '') : "IBOVESPA"}
             </div>
           </div>
           <div style={{ flex: 1, width: "100%", background: "#131722" }}>
@@ -187,8 +187,15 @@ export default function SimuladorClient({ initialAccount, initialPositions, init
                       onMouseEnter={(e) => e.currentTarget.style.background = "var(--bg-card)"}
                       onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
                     >
-                      <div style={{ fontWeight: 700 }}>{s.symbol}</div>
-                      <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", maxWidth: "150px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.shortName}</div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <div style={{ fontWeight: 700 }}>{s.symbol.replace('BINANCE:', '')}</div>
+                        {s.type && (
+                          <div style={{ fontSize: "0.65rem", background: "rgba(255,255,255,0.1)", padding: "2px 6px", borderRadius: "4px", color: "var(--text-secondary)", textTransform: "uppercase", fontWeight: 800 }}>
+                            {s.type}
+                          </div>
+                        )}
+                      </div>
+                      <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", maxWidth: "150px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.shortName || s.name}</div>
                     </div>
                   ))}
                 </div>

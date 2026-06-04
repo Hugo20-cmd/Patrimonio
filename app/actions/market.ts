@@ -14,6 +14,7 @@ function finnhubToken() { return process.env.FINNHUB_TOKEN || '' }
 // Tickers BR terminam com dígitos: PETR4, BOVA11, JEPI39, MXRF11, etc.
 // Tickers US são apenas letras: JEPI, SPY, QQQ, SCHW, etc.
 function isUSATicker(ticker: string): boolean {
+  if (ticker.startsWith('BINANCE:')) return true
   return /^[A-Z]+$/.test(ticker.trim().toUpperCase())
 }
 
@@ -62,10 +63,12 @@ async function fetchFinnhub(ticker: string) {
   // c = current price, d = change, dp = % change, h = high, l = low, pc = previous close
   if (!quote.c || quote.c === 0) return null
 
+  const nameFallback = ticker.startsWith('BINANCE:') ? ticker.replace('BINANCE:', '').replace('USDT', '') + ' (Crypto)' : ticker;
+
   return {
     symbol:        ticker,
-    shortName:     profile.name || ticker,
-    longName:      profile.name || ticker,
+    shortName:     profile.name || nameFallback,
+    longName:      profile.name || nameFallback,
     currency:      profile.currency || 'USD',
     price:         quote.c,
     change:        quote.d,
@@ -106,6 +109,7 @@ async function searchFinnhub(query: string) {
       change:  0,
       logoUrl: null,
       market:  'US',
+      type:    r.type === 'ETP' ? 'ETF EUA' : 'Ação EUA',
     }))
 }
 
@@ -198,37 +202,44 @@ export async function getMultipleQuotes(tickers: string[]) {
 export async function searchAsset(query: string) {
   if (!query || query.length < 1) return []
 
-  const isUS = isUSATicker(query.replace(/\d/g, '')) && !/\d/.test(query)
+  const searchUpper = query.toUpperCase().trim()
 
-  if (isUS) {
-    // Busca na Finnhub para tickers americanos
-    return searchFinnhub(query)
-  }
+  // 1. Hardcoded Criptos e Tesouros Fictícios para o Simulador
+  const localAssets = [
+    { symbol: 'BINANCE:BTCUSDT', name: 'Bitcoin (Crypto)', type: 'Cripto', market: 'US' },
+    { symbol: 'BINANCE:ETHUSDT', name: 'Ethereum (Crypto)', type: 'Cripto', market: 'US' },
+    { symbol: 'BINANCE:SOLUSDT', name: 'Solana (Crypto)', type: 'Cripto', market: 'US' },
+    { symbol: 'BINANCE:DOGEUSDT', name: 'Dogecoin (Crypto)', type: 'Cripto', market: 'US' },
+    { symbol: 'SGOV', name: 'iShares 0-3 Month Treasury Bond ETF', type: 'Tesouro EUA', market: 'US' },
+    { symbol: 'QQQ', name: 'Invesco QQQ Trust', type: 'ETF EUA', market: 'US' },
+    { symbol: 'VOO', name: 'Vanguard S&P 500 ETF', type: 'ETF EUA', market: 'US' },
+    { symbol: 'SCHD', name: 'Schwab US Dividend Equity ETF', type: 'ETF EUA', market: 'US' },
+  ].filter(a => a.symbol.includes(searchUpper) || a.name.toUpperCase().includes(searchUpper));
 
-  // Busca na Brapi para tickers brasileiros
-  try {
-    const res = await fetch(
-      `${BRAPI_BASE}/quote/list?search=${encodeURIComponent(query)}&token=${brapiToken()}&limit=10`,
-      { next: { revalidate: 600 } }
-    )
-    const json = await res.json()
-    if (!json.stocks) return []
-    return json.stocks.map((s: any) => ({
-      symbol:  s.stock,
-      name:    s.name,
-      close:   s.close,
-      change:  s.change,
-      volume:  s.volume,
-      marketCap: s.market_cap,
-      logoUrl: s.logo,
-      sector:  s.sector,
-      type:    s.type,
-      market:  'BR',
-    }))
-  } catch (err) {
-    console.error('[market] Brapi search error:', err)
-    return []
-  }
+  // 2. Busca Brapi (BR)
+  const brapiPromise = fetch(`${BRAPI_BASE}/quote/list?search=${encodeURIComponent(query)}&token=${brapiToken()}&limit=5`, { next: { revalidate: 600 } })
+    .then(r => r.json())
+    .then(json => {
+      if (!json.stocks) return [];
+      return json.stocks.map((s: any) => ({
+        symbol:  s.stock,
+        name:    s.name,
+        type:    s.type === 'fund' ? 'FII / ETF BR' : 'Ação BR',
+        market:  'BR',
+      }));
+    }).catch(() => []);
+
+  // 3. Busca Finnhub (US)
+  const finnhubPromise = searchFinnhub(query).catch(() => []);
+
+  const [brapiRes, finnhubRes] = await Promise.all([brapiPromise, finnhubPromise]);
+
+  const combined = [...localAssets, ...brapiRes, ...finnhubRes];
+  
+  // Remove duplicates by symbol
+  const unique = Array.from(new Map(combined.map(item => [item.symbol, item])).values());
+  
+  return unique.slice(0, 10);
 }
 
 export async function getExchangeRate() {
