@@ -26,9 +26,23 @@ export default function ChatClient({ initialMessages, isAdmin = false }: { initi
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const lastMessageId = messages.length > 0 ? messages[messages.length - 1].id : null;
+
+  // Auto-scroll apenas quando chegar mensagem nova
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [lastMessageId]);
+
+  // Polling para simular Realtime (Atualiza a cada 3 segundos)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Re-busca as mensagens silenciosamente
+      getChatMessages(activeChannel).then(res => {
+        if (res.success) setMessages(res.data);
+      });
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [activeChannel]);
 
   const loadChannelMessages = async (channelId: string) => {
     setActiveChannel(channelId);
