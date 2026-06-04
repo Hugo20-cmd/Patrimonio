@@ -23,5 +23,5 @@ export default async function ForumPage() {
     );
   }
 
-  return <ChatClient initialMessages={postsResponse.data || []} isAdmin={isAdmin} />;
+  return <ChatClient initialMessages={postsResponse.data || []} isAdmin={isAdmin} currentUserId={userData?.user?.id} />;
 }

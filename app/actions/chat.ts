@@ -59,7 +59,7 @@ export async function getChatMessages(channel: string = 'geral') {
   const userIds = [...new Set((rawMessages || []).map(m => m.user_id))]
   const { data: profiles } = await supabase
     .from('profiles')
-    .select('id, name, level, email')
+    .select('id, name, level, email, avatar_url')
     .in('id', userIds)
 
   const adminId = isAdmin ? userData.user.id : null;
@@ -146,6 +146,25 @@ export async function deleteChatMessage(id: string) {
   const { error } = await supabase
     .from('chat_messages')
     .delete()
+    .eq('id', id)
+    .eq('user_id', userData.user.id)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/community')
+  return { success: true }
+}
+
+export async function editChatMessage(id: string, newContent: string) {
+  const supabase = await createServerClient()
+  const { data: userData } = await supabase.auth.getUser()
+
+  if (!userData?.user) return { error: 'Not authenticated' }
+  if (!newContent || newContent.trim() === '') return { error: 'Mensagem vazia' }
+
+  const { error } = await supabase
+    .from('chat_messages')
+    .update({ content: newContent })
     .eq('id', id)
     .eq('user_id', userData.user.id)
 

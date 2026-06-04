@@ -2,8 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Hash, CornerDownRight, Smile, ShieldCheck, Menu, X, Pin } from "lucide-react";
-import { sendChatMessage, getChatMessages, togglePinMessage } from "@/app/actions/chat";
+import { Send, Hash, CornerDownRight, Smile, ShieldCheck, Menu, X, Pin, Trash2, Edit2 } from "lucide-react";
+import { sendChatMessage, getChatMessages, togglePinMessage, deleteChatMessage, editChatMessage } from "@/app/actions/chat";
 
 const CHANNELS = [
   { id: 'geral', name: 'Geral', desc: 'Discussões gerais sobre finanças' },
@@ -13,11 +13,12 @@ const CHANNELS = [
   { id: 'cripto', name: 'Cripto', desc: 'Bitcoin, Ethereum e altcoins' },
 ];
 
-export default function ChatClient({ initialMessages, isAdmin = false }: { initialMessages: any[], isAdmin?: boolean }) {
+export default function ChatClient({ initialMessages, isAdmin = false, currentUserId }: { initialMessages: any[], isAdmin?: boolean, currentUserId?: string }) {
   const [messages, setMessages] = useState(initialMessages);
   const [activeChannel, setActiveChannel] = useState('geral');
   const [content, setContent] = useState("");
   const [replyTo, setReplyTo] = useState<any>(null);
+  const [editingMsg, setEditingMsg] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Para mobile
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -58,6 +59,20 @@ export default function ChatClient({ initialMessages, isAdmin = false }: { initi
     if (!content.trim()) return;
 
     setIsSubmitting(true);
+
+    if (editingMsg) {
+      const res = await editChatMessage(editingMsg.id, content);
+      setIsSubmitting(false);
+      if (res.success) {
+        setContent("");
+        setEditingMsg(null);
+        loadChannelMessages(activeChannel);
+      } else {
+        alert("Erro ao editar mensagem: " + (res.error || "Tente novamente."));
+      }
+      return;
+    }
+
     const fd = new FormData();
     fd.append("channel", activeChannel);
     fd.append("content", content);
@@ -82,6 +97,13 @@ export default function ChatClient({ initialMessages, isAdmin = false }: { initi
     const res = await togglePinMessage(id, currentStatus);
     if (res.success) {
       loadChannelMessages(activeChannel);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (confirm("Tem certeza que deseja apagar sua mensagem?")) {
+      const res = await deleteChatMessage(id);
+      if (res.success) loadChannelMessages(activeChannel);
     }
   };
 
@@ -204,6 +226,7 @@ export default function ChatClient({ initialMessages, isAdmin = false }: { initi
             messages.map((msg) => {
                   const repliedMsg = msg.reply_to_id ? getReplyMessage(msg.reply_to_id) : null;
                   const isAdminUser = msg.profiles?.name?.includes('Patrimônio+');
+                  const isMyMessage = msg.user_id === currentUserId;
                   
                   return (
                     <motion.div
@@ -214,7 +237,10 @@ export default function ChatClient({ initialMessages, isAdmin = false }: { initi
                       className="msg-container"
                     >
                       <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: msg.is_pinned ? "var(--purple-primary)" : "var(--bg-card)", color: msg.is_pinned ? "#fff" : "var(--text-secondary)", border: `1px solid ${msg.is_pinned ? "transparent" : "var(--border-subtle)"}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontWeight: 700, overflow: "hidden" }}>
-                        {isAdminUser ? <img src="/logo.png" alt="Patrimônio+" style={{width: "100%", height: "100%", objectFit: "cover"}} /> : (msg.is_pinned ? <Pin size={18} /> : (msg.profiles?.name?.charAt(0) || "U"))}
+                        {isAdminUser ? <img src="/logo.png" alt="Patrimônio+" style={{width: "100%", height: "100%", objectFit: "cover"}} /> : 
+                        (msg.is_pinned ? <Pin size={18} /> : 
+                        (msg.profiles?.avatar_url ? <img src={msg.profiles.avatar_url} style={{width: "100%", height: "100%", objectFit: "cover"}} /> : 
+                        <img src={`https://api.dicebear.com/7.x/notionists/svg?seed=${msg.profiles?.name || 'User'}`} style={{width: "100%", height: "100%", objectFit: "cover", background: "rgba(255,255,255,0.05)"}} />))}
                       </div>
                       <div style={{ flex: 1 }}>
                         <div style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "4px", flexWrap: "wrap" }}>
@@ -247,19 +273,36 @@ export default function ChatClient({ initialMessages, isAdmin = false }: { initi
                       {msg.content}
                     </div>
 
-                    <div style={{ marginTop: msg.is_pinned ? "8px" : "4px", display: "flex", gap: "12px" }}>
+                    <div style={{ marginTop: msg.is_pinned ? "8px" : "4px", display: "flex", gap: "16px", alignItems: "center" }}>
                       <button 
-                        onClick={() => setReplyTo(msg)}
-                        style={{ background: "none", border: "none", color: "var(--text-tertiary)", fontSize: "0.8rem", cursor: "pointer", padding: "0" }}
+                        onClick={() => { setReplyTo(msg); setEditingMsg(null); }}
+                        style={{ background: "none", border: "none", color: "var(--text-tertiary)", fontSize: "0.8rem", cursor: "pointer", padding: "0", display: "flex", alignItems: "center", gap: "4px", fontWeight: 600 }}
                         className="hover:text-primary"
                       >
-                        Responder
+                        <CornerDownRight size={14} /> Responder
                       </button>
                       
+                      {isMyMessage && !msg.is_pinned && (
+                        <>
+                          <button 
+                            onClick={() => { setEditingMsg(msg); setContent(msg.content); setReplyTo(null); }}
+                            style={{ background: "none", border: "none", color: "var(--blue-primary)", fontSize: "0.8rem", cursor: "pointer", padding: "0", display: "flex", alignItems: "center", gap: "4px", fontWeight: 600 }}
+                          >
+                            <Edit2 size={12} /> Editar
+                          </button>
+                          <button 
+                            onClick={() => handleDelete(msg.id)}
+                            style={{ background: "none", border: "none", color: "var(--red-primary)", fontSize: "0.8rem", cursor: "pointer", padding: "0", display: "flex", alignItems: "center", gap: "4px", fontWeight: 600 }}
+                          >
+                            <Trash2 size={12} /> Excluir
+                          </button>
+                        </>
+                      )}
+
                       {isAdmin && (
                         <button 
                           onClick={() => handlePin(msg.id, msg.is_pinned)}
-                          style={{ background: "none", border: "none", color: msg.is_pinned ? "var(--purple-primary)" : "var(--text-tertiary)", fontSize: "0.8rem", cursor: "pointer", padding: "0", display: "flex", alignItems: "center", gap: "4px" }}
+                          style={{ background: "none", border: "none", color: msg.is_pinned ? "var(--purple-primary)" : "var(--text-tertiary)", fontSize: "0.8rem", cursor: "pointer", padding: "0", display: "flex", alignItems: "center", gap: "4px", fontWeight: 600 }}
                         >
                           <Pin size={12} /> {msg.is_pinned ? 'Desfixar' : 'Fixar'}
                         </button>
@@ -288,6 +331,15 @@ export default function ChatClient({ initialMessages, isAdmin = false }: { initi
                 <span style={{ fontWeight: 600, color: "var(--text-primary)" }}>Respondendo a {replyTo.profiles?.name}:</span> {replyTo.content}
               </div>
               <button onClick={() => setReplyTo(null)} style={{ background: "none", border: "none", color: "var(--text-tertiary)", cursor: "pointer", flexShrink: 0, marginLeft: "8px" }}><X size={16} /></button>
+            </div>
+          )}
+
+          {editingMsg && (
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(0, 112, 243, 0.1)", padding: "8px 12px", borderRadius: "8px", marginBottom: "8px", borderLeft: "3px solid var(--blue-primary)" }}>
+              <div style={{ fontSize: "0.85rem", color: "var(--blue-primary)", fontWeight: 700, display: "flex", alignItems: "center", gap: "6px" }}>
+                <Edit2 size={14} /> Editando sua mensagem
+              </div>
+              <button onClick={() => { setEditingMsg(null); setContent(""); }} style={{ background: "none", border: "none", color: "var(--text-tertiary)", cursor: "pointer", flexShrink: 0, marginLeft: "8px", fontSize: "0.8rem", fontWeight: 700 }}>Cancelar</button>
             </div>
           )}
 
