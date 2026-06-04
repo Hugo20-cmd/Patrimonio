@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { createClient } from '@/utils/supabase/server'
 import ConnectionsClient from './connections-client'
 import { getSubscriptionStatus, getActiveSubscribersCount } from '@/app/actions/subscription'

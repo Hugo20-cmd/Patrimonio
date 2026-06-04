@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
 import OpenAI from 'openai'
+import { syncRetroactiveXp } from '@/app/actions/gamification'
 
 // O Next.js não permite pdf-parse nativamente no Edge, por isso garantimos que rode em Node
 export const runtime = 'nodejs'
@@ -231,6 +232,9 @@ export async function POST(request: Request) {
       }
     }
     
+    // Sync XP after successful import
+    try { await syncRetroactiveXp() } catch(e) { console.error('[import-ai] XP sync failed:', e) }
+
     let msg = `Mágica Finalizada! A Inteligência leu os arquivos. Ela encontrou ${totalImported} operação(ões) nova(s).`
     if (duplicatedFiles > 0) {
       msg += ` Além disso, ignoramos ${duplicatedFiles} arquivo(s) que já haviam sido processados antes, protegendo sua conta e saldo!`

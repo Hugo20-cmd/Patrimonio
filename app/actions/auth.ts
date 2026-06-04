@@ -3,8 +3,14 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
 import { headers, cookies } from 'next/headers'
+
+const supabaseAdmin = createSupabaseClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export async function login(formData: FormData) {
   const supabase = await createClient()
@@ -74,22 +80,49 @@ export async function signup(formData: FormData) {
     const myReferralCode = crypto.randomUUID().split('-')[0].toUpperCase()
     
     let referredById = null
-    const referralCode = formData.get('referralCode') as string
+    let referralCode = formData.get('referralCode') as string
     if (referralCode) {
-      const { data: referrer } = await supabase.from('profiles').select('id').eq('referral_code', referralCode).single()
+      // If user pasted full URL, extract the code
+      if (referralCode.includes('=')) {
+        referralCode = referralCode.split('=').pop() || referralCode
+      }
+      referralCode = referralCode.trim()
+
+      const { data: referrer } = await supabaseAdmin.from('profiles').select('id').eq('referral_code', referralCode).single()
       if (referrer) {
         referredById = referrer.id
       }
     }
 
-    await supabase.from('profiles').update({
+    // The profile is created by a DB trigger after auth.signUp.
+    // We retry upsert a few times to handle the async delay of the trigger.
+    const profilePayload = {
+      id: data.user.id,
       last_ip: ip,
       current_session_token: sessionToken,
       referral_code: myReferralCode,
       referred_by: referredById,
-      email: dataToSubmit.email
-    }).eq('id', data.user.id)
-    
+      email: dataToSubmit.email,
+      name: formData.get('name') as string || null,
+    }
+
+    let saved = false
+    for (let attempt = 0; attempt < 5; attempt++) {
+      // Wait 300ms on each retry to give the trigger time to fire
+      if (attempt > 0) await new Promise(r => setTimeout(r, 300))
+      
+      const { error: upsertError } = await supabaseAdmin
+        .from('profiles')
+        .upsert(profilePayload, { onConflict: 'id' })
+      
+      if (!upsertError) { saved = true; break }
+      console.warn(`[signup] Profile upsert attempt ${attempt + 1} failed:`, upsertError.message)
+    }
+
+    if (!saved) {
+      console.error('[signup] Failed to save referral data after 5 attempts for user:', data.user.id)
+    }
+
     // Só grava o cookie de sessão se o Supabase já logou o usuário direto (Sem confirmação de e-mail)
     if (data.session) {
       const cookieStore = await cookies()

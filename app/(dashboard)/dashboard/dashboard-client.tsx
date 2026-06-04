@@ -294,7 +294,9 @@ export default function DashboardClient({ initialAssets, dividends = [] }: { ini
           border: "1px solid rgba(255,255,255,0.08)",
           borderRadius: "16px",
           padding: "24px",
-          boxShadow: "inset 0 0 20px rgba(0,240,255,0.02)"
+          boxShadow: "inset 0 0 20px rgba(0,240,255,0.02)",
+          minWidth: 0,
+          overflow: "hidden"
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
             <h3 style={{ fontSize: "1.1rem", display: "flex", alignItems: "center", gap: "8px", textTransform: "uppercase", letterSpacing: "1px" }}>
@@ -480,7 +482,9 @@ export default function DashboardClient({ initialAssets, dividends = [] }: { ini
                         {assetTypeLabel[asset.type as AssetType]}
                       </div>
                     </td>
-                    <td style={{ padding: "16px 24px", textAlign: "right", fontWeight: 600, color: "#fff" }}>{asset.quantity}</td>
+                    <td style={{ padding: "16px 24px", textAlign: "right", fontWeight: 600, color: "#fff" }}>
+                      {Number(asset.quantity).toLocaleString('pt-BR', { maximumFractionDigits: 5 })}
+                    </td>
                     <td style={{ padding: "16px 24px", textAlign: "right", color: "var(--text-secondary)" }}>{formatCurrency(asset.averagePrice, asset.currency)}</td>
                     <td style={{ padding: "16px 24px", textAlign: "right", fontWeight: 600, color: "#fff" }}>{formatCurrency(livePrice, asset.currency)}</td>
                     <td style={{ padding: "16px 24px", textAlign: "right", fontWeight: 800, color: "#fff" }}>{formatCurrency(totalCurrent, asset.currency)}</td>

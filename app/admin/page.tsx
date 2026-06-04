@@ -17,3 +17,5 @@ export default async function AdminPage() {
     feedbacks={data.feedbacks} 
   />
 }
+
+// Trigger HMR

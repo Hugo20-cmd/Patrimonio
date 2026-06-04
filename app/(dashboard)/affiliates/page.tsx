@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { getAffiliateData } from "@/app/actions/affiliates";
 import { getSubscriptionStatus } from "@/app/actions/subscription";
 import AffiliatesClient from "./affiliates-client";

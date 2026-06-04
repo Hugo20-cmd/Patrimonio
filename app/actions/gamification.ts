@@ -73,8 +73,8 @@ export async function checkTransactionAchievements(userId: string) {
 
   // Analisa histórico do usuário (Lançamentos e Carteira)
   const { data: transactions } = await supabase
-    .from('transactions')
-    .select('amount, type, category')
+    .from('asset_transactions')
+    .select('price, quantity, operation, asset_type')
     .eq('user_id', userId)
 
   const { data: assets } = await supabase
@@ -89,23 +89,22 @@ export async function checkTransactionAchievements(userId: string) {
     if (transactions.length >= 1) eligibleKeys.add('primeira_transacao');
 
     totalInvested += transactions
-      .filter(t => t.type === 'income')
-      .reduce((acc, t) => acc + Number(t.amount), 0)
+      .filter(t => t.operation === 'buy')
+      .reduce((acc, t) => acc + (Number(t.price) * Number(t.quantity)), 0)
   }
 
+  // Apenas usamos os ativos atuais para conquistas de tipos (primeira_acao, etc)
   if (assets && assets.length > 0) {
     if (assets.length >= 1) eligibleKeys.add('primeira_transacao');
-
-    totalInvested += assets.reduce((acc, a) => acc + (Number(a.quantity) * Number(a.average_price)), 0)
   }
 
-  const hasAcao = (transactions && transactions.some(t => t.category && t.category.toLowerCase().includes('açã'))) || (assets && assets.some(a => a.type === 'stock'));
+  const hasAcao = (assets && assets.some(a => a.type === 'stock'));
   if (hasAcao) eligibleKeys.add('primeira_acao');
 
-  const hasFII = (transactions && transactions.some(t => t.category && t.category.toLowerCase().includes('fii'))) || (assets && assets.some(a => a.type === 'FII'));
+  const hasFII = (assets && assets.some(a => a.type === 'FII'));
   if (hasFII) eligibleKeys.add('primeiro_fii');
 
-  const hasETF = (transactions && transactions.some(t => t.category && t.category.toLowerCase().includes('etf'))) || (assets && assets.some(a => a.type === 'ETF'));
+  const hasETF = (assets && assets.some(a => a.type === 'ETF'));
   if (hasETF) eligibleKeys.add('primeiro_etf');
 
   if (totalInvested >= 1000) eligibleKeys.add('1k_investido')
@@ -208,35 +207,22 @@ export async function syncRetroactiveXp() {
 
   // 4. Somar o XP de transações antigas (Lançamentos e Carteira)
   const { data: transactions } = await supabase
-    .from('transactions')
-    .select('amount, category')
+    .from('asset_transactions')
+    .select('price, quantity, operation')
     .eq('user_id', userId)
 
   if (transactions && transactions.length > 0) {
-    const investmentCategories = ['ação', 'ações', 'etf', 'fii', 'cripto', 'investimento', 'renda fixa', 'tesouro']
-    
-    transactions.forEach(t => {
-      if (t.category && investmentCategories.some(c => t.category.toLowerCase().includes(c))) {
-        const xpBase = Math.floor(Number(t.amount) / 5)
+    transactions
+      .filter(t => t.operation === 'buy')
+      .forEach(t => {
+        const xpBase = Math.floor((Number(t.price) * Number(t.quantity)) / 5)
         const xpFinal = xpBase > 0 ? xpBase : 2
         totalXpToGive += xpFinal
-      }
-    });
+      });
   }
 
-  const { data: assets } = await supabase
-    .from('assets')
-    .select('quantity, average_price')
-    .eq('user_id', userId)
-
-  if (assets && assets.length > 0) {
-    assets.forEach(a => {
-      const invested = Number(a.quantity) * Number(a.average_price)
-      const xpBase = Math.floor(invested / 5)
-      const xpFinal = xpBase > 0 ? xpBase : 2
-      totalXpToGive += xpFinal
-    });
-  }
+  // We no longer calculate XP from 'assets' because 'asset_transactions' already contains all the buys.
+  // This prevents double counting XP.
 
   // 5. Atualizar o Perfil com o valor total recalibrado do zero
   let newLevel = 1

@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { getDividends } from "@/app/actions/dividends";
 import DividendsClient from "./dividends-client";
 

@@ -126,12 +126,6 @@ export async function POST(req: Request) {
         if (updatedSub?.user_id) {
           const userId = updatedSub.user_id;
 
-          // Downgrade to Free plan
-          await supabaseAdmin
-            .from('profiles')
-            .update({ plan: 'Free' })
-            .eq('id', userId);
-
           // Add notification
           await supabaseAdmin.from('notifications').insert({
             user_id: userId,
@@ -150,3 +144,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
+

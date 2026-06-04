@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { getAssets } from "@/app/actions/assets";
 import { getAssetTransactions } from "@/app/actions/asset-transactions";
 import PortfolioClient from "./portfolio-client";

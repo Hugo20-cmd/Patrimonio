@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { getTransactions } from "@/app/actions/transactions";
 import TransactionsClient from "./transactions-client";
 

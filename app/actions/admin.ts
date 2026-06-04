@@ -3,15 +3,18 @@
 import { createClient } from '@supabase/supabase-js'
 import { createClient as createServerClient } from '@/utils/supabase/server'
 
-// Usar o service role key para ter permissão total
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://dummy.supabase.co',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'dummy_key'
-)
+// supabaseAdmin is created per-call to ensure env vars are loaded
+function getSupabaseAdmin() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 export async function getAdminStats() {
   const supabase = await createServerClient()
   const { data: userData } = await supabase.auth.getUser()
+  const supabaseAdmin = getSupabaseAdmin()
 
   const ADMIN_EMAILS = ['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br']
   const userEmail = userData?.user?.email?.toLowerCase().trim() || ''
@@ -44,7 +47,7 @@ export async function getAdminStats() {
   // Pegar últimos usuários
   const { data: latestUsers } = await supabaseAdmin
     .from('profiles')
-    .select('id, name, email, plan, created_at')
+    .select('id, name, email, created_at')
     .order('created_at', { ascending: false })
     .limit(10)
 
@@ -62,7 +65,7 @@ export async function getAdminStats() {
     id: u.id,
     name: u.name || 'Sem nome',
     email: u.email,
-    plan: premiumUserIds.has(u.id) || ADMIN_EMAILS.includes(u.email?.toLowerCase().trim()) ? 'Premium' : 'Free',
+    plan: premiumUserIds.has(u.id) || ADMIN_EMAILS.includes((u.email || '').toLowerCase().trim()) ? 'Premium' : 'Free',
     date: new Date(u.created_at).toLocaleDateString('pt-BR'),
     status: 'Ativo'
   })) || []
@@ -111,6 +114,8 @@ export async function updateFeedbackStatus(id: string, status: string) {
     return { error: 'Unauthorized' }
   }
 
+  const supabaseAdmin = getSupabaseAdmin()
+
   const { error } = await supabaseAdmin
     .from('feedbacks')
     .update({ status })
@@ -130,6 +135,8 @@ export async function searchReferralsByCode(code: string) {
   if (!ADMIN_EMAILS.includes(userEmail)) {
     return { error: 'Unauthorized' }
   }
+
+  const supabaseAdmin = getSupabaseAdmin()
 
   // Find user with this referral code
   const { data: referrer, error: refErr } = await supabaseAdmin
@@ -186,3 +193,6 @@ export async function searchReferralsByCode(code: string) {
     }
   }
 }
+
+
+

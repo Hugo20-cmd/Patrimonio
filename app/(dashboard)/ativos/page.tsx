@@ -1,9 +1,11 @@
+export const dynamic = 'force-dynamic';
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Search, Plus, ShieldCheck, Building, Rocket, Bitcoin, MapPin, Info } from "lucide-react";
 import { addAsset } from "@/app/actions/assets";
+import { getMultipleQuotes } from "@/app/actions/market";
 import CryptoScreener from "@/components/market/CryptoScreener";
 
 function EduTooltip({ title, text, value }: { title: string, text: string, value: string }) {
@@ -105,7 +107,17 @@ const EDUCATIONAL_COLLECTIONS = [
 export default function AtivosIndexPage() {
   const [ticker, setTicker] = useState("");
   const [addingTicker, setAddingTicker] = useState<string | null>(null);
+  const [quotes, setQuotes] = useState<Record<string, any>>({});
   const router = useRouter();
+
+  useEffect(() => {
+    const allTickers = EDUCATIONAL_COLLECTIONS.flatMap(c => c.assets.map(a => a.ticker));
+    getMultipleQuotes(allTickers).then(res => {
+      const q: Record<string, any> = {};
+      res.forEach(r => { if (r?.symbol) q[r.symbol.toUpperCase()] = r; });
+      setQuotes(q);
+    }).catch(console.error);
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -219,6 +231,16 @@ export default function AtivosIndexPage() {
                       <h3 style={{ fontSize: "1.4rem", fontWeight: 900, color: "var(--text-primary)" }}>{asset.ticker}</h3>
                       <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: 600 }}>{asset.name}</p>
                     </div>
+                    {quotes[asset.ticker] && (
+                      <div style={{ textAlign: "right" }}>
+                        <div style={{ fontSize: "1.2rem", fontWeight: 800, color: "#fff" }}>
+                          {quotes[asset.ticker].currency === 'USD' ? 'US$' : 'R$'} {quotes[asset.ticker].price?.toFixed(2)}
+                        </div>
+                        <div style={{ fontSize: "0.8rem", fontWeight: 700, color: quotes[asset.ticker].change >= 0 ? "#00FF66" : "var(--red-primary)" }}>
+                          {quotes[asset.ticker].change >= 0 ? "+" : ""}{quotes[asset.ticker].changePercent?.toFixed(2)}% (Hoje)
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Tags */}

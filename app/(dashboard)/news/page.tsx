@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { getMarketNews } from "@/app/actions/news";
 import NewsClient from "./news-client";
 import PremiumPaywall from "@/components/layout/PremiumPaywall";

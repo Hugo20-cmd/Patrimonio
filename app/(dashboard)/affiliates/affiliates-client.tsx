@@ -68,20 +68,25 @@ export default function AffiliatesClient({ initialData, error }: { initialData?:
         overflow: "hidden"
       }}>
         <div style={{ fontSize: "0.8rem", color: "var(--green-primary)", fontWeight: 700, letterSpacing: "0.05em", marginBottom: "12px", textTransform: "uppercase" }}>
-          Seu Link Exclusivo
+          Seu Código Exclusivo
         </div>
         <div style={{ 
-          fontSize: "1.2rem", 
+          fontSize: "2rem", 
           color: "var(--text-primary)", 
           fontFamily: "monospace", 
           marginBottom: "20px",
           wordBreak: "break-all",
-          overflowWrap: "anywhere"
+          overflowWrap: "anywhere",
+          fontWeight: 800
         }}>
-          {referralUrl}
+          {referralCode}
         </div>
-        <button onClick={copyToClipboard} className={copied ? "btn btn-primary" : "btn btn-secondary"} style={{ minWidth: "140px", justifyContent: "center", gap: "8px" }}>
-          {copied ? <><Check size={16} /> Copiado!</> : <><Copy size={16} /> Copiar Link</>}
+        <button onClick={() => {
+          navigator.clipboard.writeText(referralCode);
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        }} className={copied ? "btn btn-primary" : "btn btn-secondary"} style={{ minWidth: "140px", justifyContent: "center", gap: "8px" }}>
+          {copied ? <><Check size={16} /> Copiado!</> : <><Copy size={16} /> Copiar Código</>}
         </button>
       </div>
 

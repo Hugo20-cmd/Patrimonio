@@ -228,7 +228,7 @@ function RegisterForm() {
               name="referralCode"
               id="referralCode"
               type="text"
-              placeholder="Ex: MARCOS123"
+              placeholder="Ex: 5559B2B3"
               value={referralCode}
               onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
               style={{ paddingLeft: "40px" }}

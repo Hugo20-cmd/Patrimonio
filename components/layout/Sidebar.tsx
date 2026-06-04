@@ -16,6 +16,7 @@ import { useEffect } from "react";
 const menuItems = [
   { icon: LayoutDashboard, label: "Visão Geral", href: "/dashboard" },
   { icon: Crown, label: "Academia PRO", href: "/academia", isPremium: true },
+  { icon: Target, label: "Simulador", href: "/simulador" },
   { icon: Search, label: "Explorar Mercado", href: "/ativos" },
   { icon: PieChart, label: "Carteira", href: "/portfolio" },
   { icon: ArrowRightLeft, label: "Lançamentos", href: "/transactions" },

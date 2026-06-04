@@ -20,11 +20,22 @@ export async function GET(req: Request) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    // Fetch all premium users (or all users)
+    // Fetch active premium subscribers via subscriptions table (profiles has no 'plan' column)
+    const { data: activeSubs } = await supabaseAdmin
+      .from('subscriptions')
+      .select('user_id')
+      .eq('status', 'active');
+    
+    const premiumUserIds = activeSubs?.map(s => s.user_id) || [];
+    
+    if (premiumUserIds.length === 0) {
+      return NextResponse.json({ message: 'No premium users found to send reports' });
+    }
+
     const { data: profiles } = await supabaseAdmin
       .from('profiles')
-      .select('id, name, email, plan')
-      .eq('plan', 'Premium'); // Apenas envia para Premium como benefício extra
+      .select('id, name, email')
+      .in('id', premiumUserIds);
 
     if (!profiles || profiles.length === 0) {
       return NextResponse.json({ message: 'No premium users found to send reports' });

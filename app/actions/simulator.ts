@@ -1,0 +1,159 @@
+'use server'
+
+import { createClient } from '@/utils/supabase/server'
+import { revalidatePath } from 'next/cache'
+
+// 1. Iniciar ou obter conta do Simulador
+export async function getSimulatorAccount() {
+  const supabase = await createClient()
+  const { data: userData } = await supabase.auth.getUser()
+  if (!userData?.user) return null
+
+  const userId = userData.user.id
+
+  // Tenta buscar a conta
+  const { data: account } = await supabase
+    .from('simulator_profiles')
+    .select('*')
+    .eq('user_id', userId)
+    .single()
+
+  if (account) return account
+
+  // Se não existir, cria com saldo inicial de 100.000
+  const { data: newAccount, error } = await supabase
+    .from('simulator_profiles')
+    .insert({ user_id: userId, balance: 100000 })
+    .select()
+    .single()
+
+  if (error) {
+    console.error("Erro ao criar conta simulador:", error)
+    return null
+  }
+  
+  return newAccount
+}
+
+export async function getSimulatorPositions() {
+  const supabase = await createClient()
+  const { data: userData } = await supabase.auth.getUser()
+  if (!userData?.user) return []
+
+  const { data: positions } = await supabase
+    .from('simulator_positions')
+    .select('*')
+    .eq('user_id', userData.user.id)
+
+  return positions || []
+}
+
+export async function getSimulatorHistory() {
+  const supabase = await createClient()
+  const { data: userData } = await supabase.auth.getUser()
+  if (!userData?.user) return []
+
+  const { data: history } = await supabase
+    .from('simulator_history')
+    .select('*')
+    .eq('user_id', userData.user.id)
+    .order('created_at', { ascending: false })
+
+  return history || []
+}
+
+// 2. Executar Ordem de Compra ou Venda
+export async function executeSimulatorOrder(ticker: string, quantity: number, price: number, operation: 'buy' | 'sell') {
+  const supabase = await createClient()
+  const { data: userData } = await supabase.auth.getUser()
+  if (!userData?.user) return { error: 'Not authenticated' }
+  const userId = userData.user.id
+
+  const totalValue = quantity * price
+  if (totalValue <= 0) return { error: 'Valor inválido' }
+
+  const account = await getSimulatorAccount()
+  if (!account) return { error: 'Conta não encontrada' }
+
+  // Busca posição atual se existir
+  const { data: position } = await supabase
+    .from('simulator_positions')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('ticker', ticker)
+    .single()
+
+  if (operation === 'buy') {
+    if (account.balance < totalValue) {
+      return { error: 'Saldo insuficiente para a compra.' }
+    }
+
+    // Desconta o saldo
+    const newBalance = Number(account.balance) - totalValue
+    await supabase.from('simulator_profiles').update({ balance: newBalance }).eq('user_id', userId)
+
+    // Atualiza ou cria posição
+    if (position) {
+      const oldQuantity = Number(position.quantity)
+      const oldAvgPrice = Number(position.average_price)
+      const newQuantity = oldQuantity + quantity
+      const newAvgPrice = ((oldQuantity * oldAvgPrice) + totalValue) / newQuantity
+
+      await supabase.from('simulator_positions').update({
+        quantity: newQuantity,
+        average_price: newAvgPrice
+      }).eq('id', position.id)
+    } else {
+      await supabase.from('simulator_positions').insert({
+        user_id: userId,
+        ticker,
+        quantity,
+        average_price: price
+      })
+    }
+  } else if (operation === 'sell') {
+    if (!position || Number(position.quantity) < quantity) {
+      return { error: 'Você não tem ativos suficientes para vender.' }
+    }
+
+    // Aumenta o saldo
+    const newBalance = Number(account.balance) + totalValue
+    await supabase.from('simulator_profiles').update({ balance: newBalance }).eq('user_id', userId)
+
+    // Atualiza posição
+    const newQuantity = Number(position.quantity) - quantity
+    if (newQuantity <= 0) {
+      await supabase.from('simulator_positions').delete().eq('id', position.id)
+    } else {
+      await supabase.from('simulator_positions').update({
+        quantity: newQuantity
+      }).eq('id', position.id)
+    }
+  }
+
+  // Registra no histórico
+  await supabase.from('simulator_history').insert({
+    user_id: userId,
+    ticker,
+    operation,
+    quantity,
+    price
+  })
+
+  revalidatePath('/simulador')
+  return { success: true }
+}
+
+export async function resetSimulatorAccount() {
+  const supabase = await createClient()
+  const { data: userData } = await supabase.auth.getUser()
+  if (!userData?.user) return { error: 'Not authenticated' }
+  const userId = userData.user.id
+
+  await supabase.from('simulator_history').delete().eq('user_id', userId)
+  await supabase.from('simulator_positions').delete().eq('user_id', userId)
+  await supabase.from('simulator_profiles').update({ balance: 100000 }).eq('user_id', userId)
+
+  revalidatePath('/simulador')
+  return { success: true }
+}

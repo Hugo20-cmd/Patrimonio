@@ -2,14 +2,20 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Users, DollarSign, Activity, TrendingUp, ShieldAlert, ArrowLeft, Check, X, Search, Link as LinkIcon, Award } from "lucide-react";
+import { Users, DollarSign, Activity, TrendingUp, ShieldAlert, ArrowLeft, Check, X, Search, Link as LinkIcon, Award, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { updateFeedbackStatus, searchReferralsByCode } from "@/app/actions/admin";
 import { supabase } from "@/lib/supabase";
 
 export default function AdminClient({ stats, latestUsers, feedbacks }: { stats: any, latestUsers: any[], feedbacks: any[] }) {
   const [localFeedbacks, setLocalFeedbacks] = useState(feedbacks);
+  const [localUsers, setLocalUsers] = useState(latestUsers);
   const [onlineUsers, setOnlineUsers] = useState(0);
+  const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLocalUsers(latestUsers);
+  }, [latestUsers]);
 
   const [searchCode, setSearchCode] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
@@ -51,6 +57,28 @@ export default function AdminClient({ stats, latestUsers, feedbacks }: { stats: 
     const res = await updateFeedbackStatus(id, newStatus);
     if (res.success) {
       setLocalFeedbacks(localFeedbacks.map(f => f.id === id ? { ...f, status: newStatus } : f));
+    }
+  };
+
+  const handleDeleteUser = async (userId: string, userName: string) => {
+    if (!confirm(`Tem certeza que deseja APAGAR permanentemente a conta de "${userName}"? Esta ação não pode ser desfeita.`)) return;
+    setDeletingUserId(userId);
+    try {
+      const res = await fetch('/api/admin/delete-user', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setLocalUsers(prev => prev.filter(u => u.id !== userId));
+      } else {
+        alert('Erro ao apagar: ' + data.error);
+      }
+    } catch (e) {
+      alert('Erro de conexão ao apagar usuário.');
+    } finally {
+      setDeletingUserId(null);
     }
   };
 
@@ -130,7 +158,7 @@ export default function AdminClient({ stats, latestUsers, feedbacks }: { stats: 
                   </tr>
                 </thead>
                 <tbody>
-                  {latestUsers.map((user, i) => (
+                  {localUsers.map((user, i) => (
                     <tr key={i}>
                       <td style={{ fontWeight: 600, color: "var(--text-primary)" }}>{user.name}</td>
                       <td style={{ color: "var(--text-secondary)", fontSize: "0.85rem" }}>{user.email}</td>
@@ -144,9 +172,25 @@ export default function AdminClient({ stats, latestUsers, feedbacks }: { stats: 
                         </span>
                       </td>
                       <td style={{ color: "var(--text-tertiary)", fontSize: "0.85rem" }}>{user.date}</td>
+                      <td>
+                        <button
+                          onClick={() => handleDeleteUser(user.id, user.name || user.email)}
+                          disabled={deletingUserId === user.id}
+                          title="Apagar conta"
+                          style={{
+                            background: 'none', border: 'none', cursor: 'pointer',
+                            color: 'var(--red-primary)', opacity: deletingUserId === user.id ? 0.4 : 0.7,
+                            padding: '4px', borderRadius: '6px', display: 'flex', alignItems: 'center'
+                          }}
+                          onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
+                          onMouseLeave={e => (e.currentTarget.style.opacity = deletingUserId === user.id ? '0.4' : '0.7')}
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </td>
                     </tr>
                   ))}
-                  {latestUsers.length === 0 && (
+                  {localUsers.length === 0 && (
                     <tr>
                       <td colSpan={4} style={{ textAlign: "center", padding: "24px", color: "var(--text-tertiary)" }}>Nenhum usuário encontrado</td>
                     </tr>

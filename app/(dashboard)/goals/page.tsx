@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { getGoals } from "@/app/actions/goals";
 import GoalsClient from "./goals-client";
 
