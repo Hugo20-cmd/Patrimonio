@@ -18,6 +18,8 @@ const BASE_ACHIEVEMENTS = [
   { key: 'meta_concluida', title: 'Realizador de Sonhos', xp: 1000 },
 ];
 
+import { createNotification } from './notifications'
+
 export async function addXp(userId: string, xpAmount: number) {
   const supabase = await createClient()
 
@@ -30,12 +32,14 @@ export async function addXp(userId: string, xpAmount: number) {
   let newXp = (profile?.xp || 0) + xpAmount
   let newLevel = profile?.level || 1
   let newXpToNext = profile?.xp_to_next_level || 1000
+  let leveledUp = false
 
   // Sistema simples de progressão de nível
   while (newXp >= newXpToNext) {
     newLevel += 1
     newXp -= newXpToNext
     newXpToNext = Math.floor(newXpToNext * 1.5) // Próximo nível requer 50% a mais de XP
+    leveledUp = true
   }
 
   await supabase
@@ -46,6 +50,15 @@ export async function addXp(userId: string, xpAmount: number) {
       level: newLevel,
       xp_to_next_level: newXpToNext
     }, { onConflict: 'id' })
+
+  if (leveledUp) {
+    await createNotification(
+      'Nível Alcançado!',
+      `Parabéns! Você alcançou o Nível ${newLevel}. Continue investindo para crescer ainda mais!`,
+      'achievement',
+      userId
+    )
+  }
 }
 
 export async function unlockAchievement(userId: string, achievementKey: string) {
@@ -64,6 +77,13 @@ export async function unlockAchievement(userId: string, achievementKey: string) 
   const xpReward = baseAch ? baseAch.xp : 200 // XP padrão para conquistas dinâmicas
 
   await addXp(userId, xpReward)
+  
+  await createNotification(
+    'Nova Conquista!',
+    `Você desbloqueou "${baseAch?.title || achievementKey}" e ganhou ${xpReward} XP.`,
+    'achievement',
+    userId
+  )
   
   return { unlocked: true, xpReward }
 }
