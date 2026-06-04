@@ -283,20 +283,21 @@ export default function ChatClient({ initialMessages, isAdmin = false, currentUs
                       </button>
                       
                       {isMyMessage && !msg.is_pinned && (
-                        <>
-                          <button 
-                            onClick={() => { setEditingMsg(msg); setContent(msg.content); setReplyTo(null); }}
-                            style={{ background: "none", border: "none", color: "var(--blue-primary)", fontSize: "0.8rem", cursor: "pointer", padding: "0", display: "flex", alignItems: "center", gap: "4px", fontWeight: 600 }}
-                          >
-                            <Edit2 size={12} /> Editar
-                          </button>
-                          <button 
-                            onClick={() => handleDelete(msg.id)}
-                            style={{ background: "none", border: "none", color: "var(--red-primary)", fontSize: "0.8rem", cursor: "pointer", padding: "0", display: "flex", alignItems: "center", gap: "4px", fontWeight: 600 }}
-                          >
-                            <Trash2 size={12} /> Excluir
-                          </button>
-                        </>
+                        <button 
+                          onClick={() => { setEditingMsg(msg); setContent(msg.content); setReplyTo(null); }}
+                          style={{ background: "none", border: "none", color: "var(--blue-primary)", fontSize: "0.8rem", cursor: "pointer", padding: "0", display: "flex", alignItems: "center", gap: "4px", fontWeight: 600 }}
+                        >
+                          <Edit2 size={12} /> Editar
+                        </button>
+                      )}
+                      
+                      {(isMyMessage || isAdmin) && !msg.is_pinned && (
+                        <button 
+                          onClick={() => handleDelete(msg.id)}
+                          style={{ background: "none", border: "none", color: "var(--red-primary)", fontSize: "0.8rem", cursor: "pointer", padding: "0", display: "flex", alignItems: "center", gap: "4px", fontWeight: 600 }}
+                        >
+                          <Trash2 size={12} /> Excluir
+                        </button>
                       )}
 
                       {isAdmin && (

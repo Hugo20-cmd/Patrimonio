@@ -149,11 +149,22 @@ export async function deleteChatMessage(id: string) {
 
   if (!userData?.user) return { error: 'Not authenticated' }
 
-  const { error } = await supabase
-    .from('chat_messages')
-    .delete()
-    .eq('id', id)
-    .eq('user_id', userData.user.id)
+  const ADMIN_EMAILS = ['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br']
+  const isAdmin = ADMIN_EMAILS.includes(userData.user.email?.toLowerCase().trim() || '')
+
+  const { createClient: createAdminClient } = await import('@supabase/supabase-js')
+  const supabaseAdmin = createAdminClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
+  let query = supabaseAdmin.from('chat_messages').delete().eq('id', id)
+  
+  if (!isAdmin) {
+    query = query.eq('user_id', userData.user.id)
+  }
+
+  const { error } = await query
 
   if (error) return { error: error.message }
 
