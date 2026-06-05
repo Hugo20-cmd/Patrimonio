@@ -136,37 +136,37 @@ export default function HomeBrokerClient({
   const totalValue = quantity * price;
 
   return (
-    <div style={{ paddingBottom: "40px", height: "calc(100vh - 100px)", display: "flex", flexDirection: "column", gap: "16px" }}>
+    <div style={{ paddingBottom: "40px", display: "flex", flexDirection: "column", gap: "24px" }}>
       
       {/* HEADER Ticker & Saldo */}
-      <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
         
         {/* BUSCA DE ATIVO */}
-        <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", padding: "16px", flex: 2, minWidth: "300px", display: "flex", alignItems: "center", gap: "16px" }}>
+        <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", padding: "20px", flex: 2, minWidth: "300px", display: "flex", alignItems: "center", gap: "20px" }}>
           <AssetIcon ticker={displayTicker} />
           <div>
-            <div style={{ fontSize: "1.4rem", fontWeight: 900, lineHeight: 1 }}>{displayTicker}</div>
-            <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", marginTop: "4px" }}>Ação / FII / Cripto</div>
+            <div style={{ fontSize: "1.6rem", fontWeight: 900, lineHeight: 1 }}>{displayTicker}</div>
+            <div style={{ fontSize: "0.85rem", color: "var(--text-tertiary)", marginTop: "6px" }}>Ação / FII / Cripto</div>
           </div>
           <div style={{ flex: 1 }}></div>
-          <form onSubmit={handleSearch} style={{ position: "relative", width: "250px" }}>
-            <Search size={16} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--text-tertiary)" }} />
+          <form onSubmit={handleSearch} style={{ position: "relative", width: "300px" }}>
+            <Search size={18} style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", color: "var(--text-tertiary)" }} />
             <input 
               type="text" 
               placeholder="Buscar Ativo (ex: VALE3)" 
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              style={{ width: "100%", padding: "10px 16px 10px 36px", background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)", borderRadius: "8px", color: "var(--text-primary)", outline: "none", fontSize: "0.9rem" }}
+              style={{ width: "100%", padding: "12px 16px 12px 44px", background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)", borderRadius: "10px", color: "var(--text-primary)", outline: "none", fontSize: "0.95rem" }}
             />
           </form>
         </div>
 
         {/* SALDO / PODER DE COMPRA */}
-        <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", padding: "16px", flex: 1, minWidth: "250px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
-            <Briefcase size={14} color="var(--blue-primary)" /> Poder de Compra
+        <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", padding: "20px", flex: 1, minWidth: "250px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <div style={{ fontSize: "0.85rem", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
+            <Briefcase size={16} color="var(--blue-primary)" /> Poder de Compra
           </div>
-          <div style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--text-primary)" }}>
+          <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--text-primary)" }}>
             {formatCurrency(account?.balance || 0)}
           </div>
         </div>
@@ -174,30 +174,30 @@ export default function HomeBrokerClient({
       </div>
 
       {/* MAIN AREA */}
-      <div style={{ display: "flex", gap: "16px", flex: 1, minHeight: 0 }}>
+      <div style={{ display: "flex", gap: "24px", minHeight: "550px" }}>
         
         {/* CHART TRADINGVIEW */}
-        <div style={{ flex: 3, background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
-          <div style={{ padding: "12px 20px", borderBottom: "1px solid var(--border-subtle)", display: "flex", justifyContent: "space-between", alignItems: "center", background: "var(--bg-elevated)" }}>
-            <div style={{ fontSize: "0.85rem", fontWeight: 700, display: "flex", alignItems: "center", gap: "8px" }}>
-              <Activity size={16} color="var(--blue-primary)" /> Gráfico Avançado
+        <div style={{ flex: 2.5, background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+          <div style={{ padding: "16px 24px", borderBottom: "1px solid var(--border-subtle)", display: "flex", justifyContent: "space-between", alignItems: "center", background: "var(--bg-elevated)" }}>
+            <div style={{ fontSize: "0.9rem", fontWeight: 700, display: "flex", alignItems: "center", gap: "8px" }}>
+              <Activity size={18} color="var(--blue-primary)" /> Gráfico Avançado
             </div>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)" }}>
+            <div style={{ fontSize: "0.8rem", color: "var(--text-tertiary)", fontWeight: 600 }}>
               {activeTicker}
             </div>
           </div>
-          <div style={{ flex: 1, position: "relative" }}>
+          <div style={{ flex: 1, position: "relative", minHeight: "450px" }}>
             <div id="tradingview_chart" style={{ width: "100%", height: "100%", position: "absolute", inset: 0 }}></div>
           </div>
         </div>
 
         {/* BOLETA DE ORDENS */}
-        <div style={{ flex: 1, minWidth: "320px", background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", display: "flex", flexDirection: "column", overflow: "hidden" }}>
-          <div style={{ padding: "16px", borderBottom: "1px solid var(--border-subtle)", background: "var(--bg-elevated)", textAlign: "center" }}>
-            <h3 style={{ fontSize: "1.1rem", fontWeight: 800, margin: 0 }}>Boleta de Ordens</h3>
+        <div style={{ flex: 1, minWidth: "350px", background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+          <div style={{ padding: "20px", borderBottom: "1px solid var(--border-subtle)", background: "var(--bg-elevated)", textAlign: "center" }}>
+            <h3 style={{ fontSize: "1.2rem", fontWeight: 800, margin: 0 }}>Boleta de Ordens</h3>
           </div>
           
-          <div style={{ padding: "20px", flex: 1, overflowY: "auto" }}>
+          <div style={{ padding: "24px", display: "flex", flexDirection: "column", flex: 1 }}>
             {/* TABS COMPRAR / VENDER */}
             <div style={{ display: "flex", background: "var(--bg-elevated)", borderRadius: "10px", padding: "4px", marginBottom: "24px" }}>
               <button 
@@ -270,8 +270,8 @@ export default function HomeBrokerClient({
                 type="submit" 
                 disabled={loading || totalValue <= 0 || (orderType === 'buy' && totalValue > (account?.balance || 0))}
                 style={{ 
-                  width: "100%", padding: "16px", borderRadius: "12px", border: "none", cursor: "pointer", 
-                  fontWeight: 800, fontSize: "1.1rem", marginTop: "16px", transition: "all 0.2s",
+                  width: "100%", padding: "18px", borderRadius: "12px", border: "none", cursor: "pointer", 
+                  fontWeight: 800, fontSize: "1.1rem", marginTop: "auto", transition: "all 0.2s",
                   background: orderType === 'buy' ? "var(--green-primary)" : "var(--red-primary)",
                   color: orderType === 'buy' ? "#000" : "#fff",
                   opacity: (loading || totalValue <= 0 || (orderType === 'buy' && totalValue > (account?.balance || 0))) ? 0.5 : 1
