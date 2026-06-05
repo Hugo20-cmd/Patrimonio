@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, TrendingUp, DollarSign, Activity, Clock, Briefcase, RefreshCw, Loader2 } from "lucide-react";
+import { Search, TrendingUp, TrendingDown, Activity, Clock, Briefcase, RefreshCw, Loader2, AlertCircle, PieChart } from "lucide-react";
 import { formatCurrency } from "@/lib/mock-data";
 import { executeSimulatorOrder } from "@/app/actions/simulator";
 import { searchAsset } from "@/app/actions/market";
@@ -24,6 +24,13 @@ export default function HomeBrokerClient({
   const [searchInput, setSearchInput] = useState("");
   const [account, setAccount] = useState(initialAccount);
   const [history, setHistory] = useState(initialHistory);
+  const [positions, setPositions] = useState(initialPositions);
+
+  const [quotes] = useState(() => {
+    const map: Record<string, any> = {};
+    initialQuotes.forEach(q => { if(q && q.symbol) map[q.symbol.toUpperCase()] = q; });
+    return map;
+  });
 
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -149,11 +156,39 @@ export default function HomeBrokerClient({
     } else {
       setSuccessMsg(`Ordem de ${orderType === 'buy' ? 'COMPRA' : 'VENDA'} executada com sucesso!`);
       // Update local state temporarily for fast feedback
+      let updatedPositions = [...positions];
+      const existingIdx = updatedPositions.findIndex(p => p.ticker === displayTicker);
+      
       if (orderType === 'buy') {
         setAccount({ ...account, balance: account.balance - (quantity * price) });
+        if (existingIdx >= 0) {
+          const old = updatedPositions[existingIdx];
+          const newQty = old.quantity + quantity;
+          const newAvgPrice = ((old.quantity * old.averagePrice) + (quantity * price)) / newQty;
+          updatedPositions[existingIdx] = { ...old, quantity: newQty, averagePrice: newAvgPrice };
+        } else {
+          updatedPositions.push({
+            id: Math.random().toString(),
+            ticker: displayTicker,
+            quantity: quantity,
+            averagePrice: price,
+            currentPrice: price
+          });
+        }
       } else {
         setAccount({ ...account, balance: account.balance + (quantity * price) });
+        if (existingIdx >= 0) {
+          const old = updatedPositions[existingIdx];
+          const newQty = old.quantity - quantity;
+          if (newQty <= 0) {
+            updatedPositions.splice(existingIdx, 1);
+          } else {
+            updatedPositions[existingIdx] = { ...old, quantity: newQty };
+          }
+        }
       }
+      setPositions(updatedPositions);
+
       setHistory([{
         id: Math.random().toString(),
         ticker: displayTicker,
@@ -175,6 +210,17 @@ export default function HomeBrokerClient({
   return (
     <div style={{ paddingBottom: "40px", display: "flex", flexDirection: "column", gap: "24px" }}>
       
+      {/* EDUCATIONAL BANNER */}
+      <div style={{ background: "rgba(79, 110, 247, 0.1)", border: "1px solid rgba(79, 110, 247, 0.3)", borderRadius: "12px", padding: "16px", display: "flex", alignItems: "center", gap: "12px" }}>
+        <AlertCircle size={24} color="var(--blue-primary)" />
+        <div>
+          <h4 style={{ margin: 0, color: "var(--blue-primary)", fontSize: "0.95rem", fontWeight: 800 }}>Ambiente de Simulação</h4>
+          <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.85rem", marginTop: "2px" }}>
+            Os dados de mercado apresentados nesta tela são em tempo real, porém todas as transações são virtuais e têm finalidade exclusivamente educacional. Pratique e aprenda sem riscos reais.
+          </p>
+        </div>
+      </div>
+
       {/* HEADER Ticker & Saldo */}
       <div style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
         
@@ -183,7 +229,7 @@ export default function HomeBrokerClient({
           <AssetIcon ticker={displayTicker} />
           <div>
             <div style={{ fontSize: "1.6rem", fontWeight: 900, lineHeight: 1 }}>{displayTicker}</div>
-            <div style={{ fontSize: "0.85rem", color: "var(--text-tertiary)", marginTop: "6px" }}>Ação / FII / Cripto</div>
+            <div style={{ fontSize: "0.85rem", color: "var(--text-tertiary)", marginTop: "6px" }}>Ação / FII / Cripto / ETF</div>
           </div>
           <div style={{ flex: 1 }}></div>
           <form ref={searchContainerRef} onSubmit={handleSearch} style={{ position: "relative", width: "300px" }}>
@@ -401,6 +447,72 @@ export default function HomeBrokerClient({
                   </td>
                 </tr>
               ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* CARTEIRA SIMULADA */}
+      <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", overflow: "hidden", minHeight: "200px" }}>
+        <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border-subtle)", display: "flex", justifyContent: "space-between", alignItems: "center", background: "var(--bg-elevated)" }}>
+          <h3 style={{ fontSize: "1rem", fontWeight: 700, margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
+            <PieChart size={16} color="var(--blue-primary)" /> Minha Carteira Simulada
+          </h3>
+        </div>
+        <div style={{ overflowX: "auto" }}>
+          <table className="table-premium" style={{ width: "100%", minWidth: "700px" }}>
+            <thead>
+              <tr>
+                <th style={{ paddingLeft: "24px" }}>Ativo</th>
+                <th style={{ textAlign: "right" }}>Quantidade</th>
+                <th style={{ textAlign: "right" }}>Preço Médio</th>
+                <th style={{ textAlign: "right" }}>Cotação Atual</th>
+                <th style={{ textAlign: "right" }}>Total Atual</th>
+                <th style={{ textAlign: "right", paddingRight: "24px" }}>Resultado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {positions.length === 0 ? (
+                <tr>
+                  <td colSpan={6} style={{ textAlign: "center", padding: "32px", color: "var(--text-tertiary)", fontSize: "0.9rem" }}>
+                    Você ainda não possui ativos na sua carteira simulada. Execute compras na boleta acima para começar.
+                  </td>
+                </tr>
+              ) : positions.map((pos) => {
+                const quote = quotes[pos.ticker.toUpperCase()];
+                const livePrice = quote?.price ?? pos.currentPrice ?? pos.averagePrice;
+                const totalInvested = pos.quantity * pos.averagePrice;
+                const totalCurrent = pos.quantity * livePrice;
+                const profit = totalCurrent - totalInvested;
+                const profitPercent = totalInvested > 0 ? (profit / totalInvested) * 100 : 0;
+                const isPositive = profit >= 0;
+
+                return (
+                  <tr key={pos.id}>
+                    <td style={{ paddingLeft: "24px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <AssetIcon ticker={pos.ticker} width={28} height={28} />
+                        <div>
+                          <div style={{ fontWeight: 800, color: "var(--text-primary)" }}>{pos.ticker}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style={{ textAlign: "right", fontWeight: 600, color: "var(--text-primary)" }}>{pos.quantity}</td>
+                    <td style={{ textAlign: "right", color: "var(--text-secondary)" }}>{formatCurrency(pos.averagePrice)}</td>
+                    <td style={{ textAlign: "right", fontWeight: 700, color: "var(--text-primary)" }}>{formatCurrency(livePrice)}</td>
+                    <td style={{ textAlign: "right", fontWeight: 700, color: "var(--text-primary)" }}>{formatCurrency(totalCurrent)}</td>
+                    <td style={{ textAlign: "right", paddingRight: "24px" }}>
+                      <div style={{ color: isPositive ? "var(--green-primary)" : "var(--red-primary)", fontWeight: 800 }}>
+                        {isPositive ? "+" : ""}{formatCurrency(profit)}
+                      </div>
+                      <div style={{ fontSize: "0.75rem", color: isPositive ? "var(--green-primary)" : "var(--red-primary)", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "2px" }}>
+                        {isPositive ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                        {isPositive ? "+" : ""}{profitPercent.toFixed(2)}%
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
