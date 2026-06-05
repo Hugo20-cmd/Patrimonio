@@ -226,14 +226,16 @@ export default function HomeBrokerClient({
       <div className="hb-header-area" style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
         
         {/* BUSCA DE ATIVO */}
-        <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", padding: "20px", flex: 2, minWidth: "300px", display: "flex", alignItems: "center", gap: "20px" }}>
-          <AssetIcon ticker={displayTicker} />
-          <div>
-            <div style={{ fontSize: "1.6rem", fontWeight: 900, lineHeight: 1 }}>{displayTicker}</div>
-            <div style={{ fontSize: "0.85rem", color: "var(--text-tertiary)", marginTop: "6px" }}>Ação / FII / Cripto / ETF</div>
+        <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", padding: "20px", flex: 2, minWidth: 0, display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+            <AssetIcon ticker={displayTicker} />
+            <div>
+              <div style={{ fontSize: "1.6rem", fontWeight: 900, lineHeight: 1 }}>{displayTicker}</div>
+              <div style={{ fontSize: "0.85rem", color: "var(--text-tertiary)", marginTop: "6px" }}>Ação / FII / Cripto / ETF</div>
+            </div>
           </div>
-          <div style={{ flex: 1 }}></div>
-          <form ref={searchContainerRef} onSubmit={handleSearch} className="hb-search-input" style={{ position: "relative", width: "300px" }}>
+          <div className="hb-spacer" style={{ flex: 1, minWidth: "20px" }}></div>
+          <form ref={searchContainerRef} onSubmit={handleSearch} className="hb-search-input" style={{ position: "relative", minWidth: "250px", flex: 1 }}>
             <Search size={18} style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", color: "var(--text-tertiary)" }} />
             <input 
               type="text" 
@@ -584,6 +586,7 @@ export default function HomeBrokerClient({
         @media (max-width: 768px) {
           .hb-header-area { flex-direction: column !important; }
           .hb-search-input { width: 100% !important; min-width: 100% !important; }
+          .hb-spacer { display: none !important; }
         }
       `}</style>
     </div>
