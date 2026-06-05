@@ -13,6 +13,7 @@ import { addAsset, deleteAsset, editAsset } from "@/app/actions/assets";
 import { deleteAssetTransaction } from "@/app/actions/asset-transactions";
 import { getMultipleQuotes, searchAsset, getQuote, getExchangeRate } from "@/app/actions/market";
 import PaywallModal from "@/components/PaywallModal";
+import AssetIcon from "@/components/ui/AssetIcon";
 
 // ----------------------------------------------------------------
 // Helpers
@@ -455,21 +456,7 @@ export default function PortfolioClient({ initialAssets, initialTransactions = [
                       {/* Ativo */}
                       <td>
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                          {/* Logo ou Placeholder */}
-                          <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", flexShrink: 0 }}>
-                            {quote?.logoUrl ? (
-                              <img
-                                src={quote.logoUrl}
-                                alt={asset.ticker}
-                                style={{ width: "28px", height: "28px", objectFit: "contain" }}
-                                onError={(e: any) => { e.target.style.display = "none"; }}
-                              />
-                            ) : (
-                              <span style={{ fontSize: "0.65rem", fontWeight: 700, color: "var(--text-secondary)" }}>
-                                {asset.ticker?.substring(0, 2)}
-                              </span>
-                            )}
-                          </div>
+                          <AssetIcon ticker={asset.ticker} name={asset.name} logoUrl={quotes[asset.ticker?.toUpperCase()]?.logoUrl} />
                           <div>
                             <div style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--text-primary)" }}>{asset.ticker}</div>
                             <div style={{ fontSize: "0.72rem", color: "var(--text-tertiary)", maxWidth: "150px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>

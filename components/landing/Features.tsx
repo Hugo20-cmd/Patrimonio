@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import {
   BarChart3, TrendingUp, Zap, Target, Shield, Globe,
   PieChart, Bell, ArrowUpRight,
@@ -179,14 +180,21 @@ export default function Features() {
               </p>
 
               {/* Arrow link */}
-              <div style={{
-                marginTop: "20px",
-                display: "flex", alignItems: "center", gap: "4px",
-                fontSize: "0.8rem", fontWeight: 600, color: f.color,
-                opacity: 0.7,
-              }}>
-                Saiba mais <ArrowUpRight size={12} />
-              </div>
+              <Link href="/register" style={{ textDecoration: 'none' }}>
+                <div style={{
+                  marginTop: "20px",
+                  display: "flex", alignItems: "center", gap: "4px",
+                  fontSize: "0.8rem", fontWeight: 600, color: f.color,
+                  opacity: 0.8,
+                  cursor: "pointer",
+                  transition: "opacity 0.2s"
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.8")}
+                >
+                  Saiba mais <ArrowUpRight size={12} />
+                </div>
+              </Link>
             </motion.div>
           ))}
         </motion.div>

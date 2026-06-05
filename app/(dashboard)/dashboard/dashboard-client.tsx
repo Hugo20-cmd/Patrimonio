@@ -19,6 +19,7 @@ import {
 import { getPortfolioSnapshots } from "@/app/actions/snapshots";
 import { getMultipleQuotes, getExchangeRate } from "@/app/actions/market";
 import MarketOverview from "@/components/dashboard/MarketOverview";
+import AssetIcon from "@/components/ui/AssetIcon";
 
 // Neon Palette for Dashboard
 const NEON_COLORS: Record<string, string> = {
@@ -468,9 +469,7 @@ export default function DashboardClient({ initialAssets, dividends = [] }: { ini
                   <tr key={asset.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.02)" }}>
                     <td style={{ padding: "16px 24px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.7rem", fontWeight: 800, color: "#fff" }}>
-                          {asset.ticker.substring(0,2)}
-                        </div>
+                        <AssetIcon ticker={asset.ticker} name={asset.name} logoUrl={quotes[asset.ticker?.toUpperCase()]?.logoUrl} />
                         <div>
                           <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#fff" }}>{asset.ticker}</div>
                           <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)" }}>{asset.name}</div>

@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { formatCurrency, formatPercent } from "@/lib/mock-data";
 import { addDividend, editDividend, deleteDividend } from "@/app/actions/dividends";
+import AssetIcon from "@/components/ui/AssetIcon";
 
 export default function DividendsClient({ initialDividends }: { initialDividends: any[] }) {
   const [activeYear, setActiveYear] = useState(new Date().getFullYear());
@@ -289,9 +290,7 @@ export default function DividendsClient({ initialDividends }: { initialDividends
                       </td>
                       <td>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "var(--bg-elevated)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.65rem", fontWeight: 700, color: "var(--text-secondary)" }}>
-                            {div.ticker.substring(0,2)}
-                          </div>
+                          <AssetIcon ticker={div.ticker} />
                           <div>
                             <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-primary)" }}>{div.ticker}</div>
                             <div style={{ fontSize: "0.7rem", color: "var(--text-tertiary)" }}>{div.type}</div>

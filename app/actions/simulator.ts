@@ -152,7 +152,7 @@ export async function executeSimulatorOrder(ticker: string, quantity: number, pr
     price
   })
 
-  revalidatePath('/simulador')
+  revalidatePath('/homebroker')
   return { success: true }
 }
 
@@ -166,7 +166,7 @@ export async function resetSimulatorAccount() {
   await supabase.from('simulator_positions').delete().eq('user_id', userId)
   await supabase.from('simulator_profiles').update({ balance: 100000 }).eq('user_id', userId)
 
-  revalidatePath('/simulador')
+  revalidatePath('/homebroker')
   return { success: true }
 }
 

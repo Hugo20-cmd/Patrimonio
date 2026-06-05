@@ -6,6 +6,7 @@ import { Search, Plus, ShieldCheck, Building, Rocket, Bitcoin, MapPin, Info } fr
 import { addAsset } from "@/app/actions/assets";
 import { getMultipleQuotes } from "@/app/actions/market";
 import CryptoScreener from "@/components/market/CryptoScreener";
+import AssetIcon from "@/components/ui/AssetIcon";
 
 function EduTooltip({ title, text, value }: { title: string, text: string, value: string }) {
   const [show, setShow] = useState(false);
@@ -226,9 +227,12 @@ export default function AtivosIndexPage() {
                 >
                   {/* Header */}
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
-                    <div>
-                      <h3 style={{ fontSize: "1.4rem", fontWeight: 900, color: "var(--text-primary)" }}>{asset.ticker}</h3>
-                      <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: 600 }}>{asset.name}</p>
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      <AssetIcon ticker={asset.ticker} name={asset.name} logoUrl={quotes[asset.ticker]?.logoUrl} />
+                      <div>
+                        <h3 style={{ fontSize: "1.4rem", fontWeight: 900, color: "var(--text-primary)", margin: 0, lineHeight: 1 }}>{asset.ticker}</h3>
+                        <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: 600, margin: "4px 0 0 0" }}>{asset.name}</p>
+                      </div>
                     </div>
                     {quotes[asset.ticker] && (
                       <div style={{ textAlign: "right" }}>
