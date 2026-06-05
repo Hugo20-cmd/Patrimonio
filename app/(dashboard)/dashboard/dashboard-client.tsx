@@ -297,7 +297,9 @@ export default function DashboardClient({ initialAssets, dividends = [] }: { ini
           padding: "24px",
           boxShadow: "inset 0 0 20px rgba(0,240,255,0.02)",
           minWidth: 0,
-          overflow: "hidden"
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column"
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
             <h3 style={{ fontSize: "1.1rem", display: "flex", alignItems: "center", gap: "8px", textTransform: "uppercase", letterSpacing: "1px" }}>
@@ -324,7 +326,7 @@ export default function DashboardClient({ initialAssets, dividends = [] }: { ini
             </div>
           </div>
           
-          <div style={{ height: "300px", marginLeft: "-16px" }}>
+          <div style={{ flex: 1, minHeight: "300px", marginLeft: "-16px" }}>
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={historyData}>
                 <defs>
