@@ -50,14 +50,8 @@ export default function HomeBrokerClient({
   }, [displayTicker]);
 
   useEffect(() => {
-    if (!chartContainerRef.current) return;
-    chartContainerRef.current.innerHTML = "";
-
-    const script = document.createElement("script");
-    script.src = "https://s3.tradingview.com/tv.js";
-    script.async = true;
-    script.onload = () => {
-      if (typeof window !== "undefined" && (window as any).TradingView) {
+    const loadWidget = () => {
+      if (typeof window !== "undefined" && (window as any).TradingView && document.getElementById("tradingview_chart")) {
         new (window as any).TradingView.widget({
           autosize: true,
           symbol: activeTicker,
@@ -76,7 +70,16 @@ export default function HomeBrokerClient({
         });
       }
     };
-    chartContainerRef.current.appendChild(script);
+
+    if (!(window as any).TradingView) {
+      const script = document.createElement("script");
+      script.src = "https://s3.tradingview.com/tv.js";
+      script.async = true;
+      script.onload = loadWidget;
+      document.head.appendChild(script);
+    } else {
+      loadWidget();
+    }
   }, [activeTicker]);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -183,8 +186,8 @@ export default function HomeBrokerClient({
               {activeTicker}
             </div>
           </div>
-          <div style={{ flex: 1, position: "relative" }} ref={chartContainerRef}>
-            <div id="tradingview_chart" style={{ width: "100%", height: "100%" }}></div>
+          <div style={{ flex: 1, position: "relative" }}>
+            <div id="tradingview_chart" style={{ width: "100%", height: "100%", position: "absolute", inset: 0 }}></div>
           </div>
         </div>
 
