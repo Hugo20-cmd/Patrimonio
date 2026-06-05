@@ -223,7 +223,7 @@ export default function HomeBrokerClient({
       </div>
 
       {/* HEADER Ticker & Saldo */}
-      <div style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
+      <div className="hb-header-area" style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
         
         {/* BUSCA DE ATIVO */}
         <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", padding: "20px", flex: 2, minWidth: "300px", display: "flex", alignItems: "center", gap: "20px" }}>
@@ -233,7 +233,7 @@ export default function HomeBrokerClient({
             <div style={{ fontSize: "0.85rem", color: "var(--text-tertiary)", marginTop: "6px" }}>Ação / FII / Cripto / ETF</div>
           </div>
           <div style={{ flex: 1 }}></div>
-          <form ref={searchContainerRef} onSubmit={handleSearch} style={{ position: "relative", width: "300px" }}>
+          <form ref={searchContainerRef} onSubmit={handleSearch} className="hb-search-input" style={{ position: "relative", width: "300px" }}>
             <Search size={18} style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", color: "var(--text-tertiary)" }} />
             <input 
               type="text" 
@@ -290,10 +290,10 @@ export default function HomeBrokerClient({
       </div>
 
       {/* MAIN AREA */}
-      <div style={{ display: "flex", gap: "24px", minHeight: "550px" }}>
+      <div className="hb-main-area" style={{ display: "flex", gap: "24px", minHeight: "550px" }}>
         
         {/* CHART TRADINGVIEW */}
-        <div style={{ flex: 2.5, background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+        <div className="hb-chart-container" style={{ flex: 2.5, background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
           <div style={{ padding: "16px 24px", borderBottom: "1px solid var(--border-subtle)", display: "flex", justifyContent: "space-between", alignItems: "center", background: "var(--bg-elevated)" }}>
             <div style={{ fontSize: "0.9rem", fontWeight: 700, display: "flex", alignItems: "center", gap: "8px" }}>
               <Activity size={18} color="var(--blue-primary)" /> Gráfico Avançado
@@ -576,6 +576,15 @@ export default function HomeBrokerClient({
       <style jsx global>{`
         .spin { animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
+        
+        @media (max-width: 1024px) {
+          .hb-main-area { flex-direction: column !important; min-height: auto !important; }
+          .hb-chart-container { min-height: 450px !important; }
+        }
+        @media (max-width: 768px) {
+          .hb-header-area { flex-direction: column !important; }
+          .hb-search-input { width: 100% !important; min-width: 100% !important; }
+        }
       `}</style>
     </div>
   );
