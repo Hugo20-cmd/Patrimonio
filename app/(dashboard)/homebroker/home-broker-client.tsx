@@ -25,6 +25,7 @@ export default function HomeBrokerClient({
   const [account, setAccount] = useState(initialAccount);
   const [history, setHistory] = useState(initialHistory);
   const [positions, setPositions] = useState(initialPositions);
+  const [historyFilter, setHistoryFilter] = useState<'all' | 'today' | 'week' | 'month'>('today');
 
   const [quotes] = useState(() => {
     const map: Record<string, any> = {};
@@ -401,16 +402,42 @@ export default function HomeBrokerClient({
 
       {/* HISTÓRICO DE ORDENS */}
       <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", overflow: "hidden", minHeight: "200px" }}>
-        <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border-subtle)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border-subtle)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
           <h3 style={{ fontSize: "1rem", fontWeight: 700, margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
-            <Clock size={16} color="var(--text-tertiary)" /> Histórico de Ordens Hoje
+            <Clock size={16} color="var(--text-tertiary)" /> Histórico de Transações
           </h3>
+          <div style={{ display: "flex", gap: "8px", background: "var(--bg-elevated)", padding: "4px", borderRadius: "10px" }}>
+            <button 
+              onClick={() => setHistoryFilter('today')}
+              style={{ background: historyFilter === 'today' ? "var(--text-primary)" : "transparent", color: historyFilter === 'today' ? "var(--bg-card)" : "var(--text-secondary)", border: "none", padding: "4px 12px", borderRadius: "6px", fontSize: "0.8rem", fontWeight: 700, cursor: "pointer", transition: "all 0.2s" }}
+            >
+              Hoje
+            </button>
+            <button 
+              onClick={() => setHistoryFilter('week')}
+              style={{ background: historyFilter === 'week' ? "var(--text-primary)" : "transparent", color: historyFilter === 'week' ? "var(--bg-card)" : "var(--text-secondary)", border: "none", padding: "4px 12px", borderRadius: "6px", fontSize: "0.8rem", fontWeight: 700, cursor: "pointer", transition: "all 0.2s" }}
+            >
+              Últimos 7 dias
+            </button>
+            <button 
+              onClick={() => setHistoryFilter('month')}
+              style={{ background: historyFilter === 'month' ? "var(--text-primary)" : "transparent", color: historyFilter === 'month' ? "var(--bg-card)" : "var(--text-secondary)", border: "none", padding: "4px 12px", borderRadius: "6px", fontSize: "0.8rem", fontWeight: 700, cursor: "pointer", transition: "all 0.2s" }}
+            >
+              Mês Atual
+            </button>
+            <button 
+              onClick={() => setHistoryFilter('all')}
+              style={{ background: historyFilter === 'all' ? "var(--text-primary)" : "transparent", color: historyFilter === 'all' ? "var(--bg-card)" : "var(--text-secondary)", border: "none", padding: "4px 12px", borderRadius: "6px", fontSize: "0.8rem", fontWeight: 700, cursor: "pointer", transition: "all 0.2s" }}
+            >
+              Todo o Período
+            </button>
+          </div>
         </div>
-        <div style={{ overflowX: "auto" }}>
-          <table className="table-premium" style={{ width: "100%", minWidth: "600px" }}>
-            <thead>
+        <div style={{ overflowX: "auto", maxHeight: "400px" }}>
+          <table className="table-premium" style={{ width: "100%", minWidth: "700px" }}>
+            <thead style={{ position: "sticky", top: 0, background: "var(--bg-card)", zIndex: 10 }}>
               <tr>
-                <th style={{ paddingLeft: "24px" }}>Horário</th>
+                <th style={{ paddingLeft: "24px" }}>Data / Hora</th>
                 <th>Operação</th>
                 <th>Ativo</th>
                 <th style={{ textAlign: "right" }}>Qtd</th>
@@ -419,34 +446,62 @@ export default function HomeBrokerClient({
               </tr>
             </thead>
             <tbody>
-              {history.length === 0 ? (
-                <tr>
-                  <td colSpan={6} style={{ textAlign: "center", padding: "32px", color: "var(--text-tertiary)", fontSize: "0.9rem" }}>
-                    Nenhuma ordem executada hoje.
-                  </td>
-                </tr>
-              ) : history.slice(0, 10).map((order) => (
-                <tr key={order.id}>
-                  <td style={{ paddingLeft: "24px", color: "var(--text-tertiary)", fontSize: "0.85rem" }}>
-                    {new Date(order.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-                  </td>
-                  <td>
-                    <span style={{ 
-                      background: order.operation === 'buy' ? "rgba(0,212,170,0.1)" : "rgba(255,77,109,0.1)", 
-                      color: order.operation === 'buy' ? "var(--green-primary)" : "var(--red-primary)",
-                      padding: "4px 8px", borderRadius: "4px", fontSize: "0.75rem", fontWeight: 800, textTransform: "uppercase"
-                    }}>
-                      {order.operation === 'buy' ? 'Compra' : 'Venda'}
-                    </span>
-                  </td>
-                  <td style={{ fontWeight: 700, color: "var(--text-primary)" }}>{order.ticker}</td>
-                  <td style={{ textAlign: "right", color: "var(--text-secondary)" }}>{order.quantity}</td>
-                  <td style={{ textAlign: "right", color: "var(--text-secondary)" }}>{formatCurrency(order.price)}</td>
-                  <td style={{ textAlign: "right", paddingRight: "24px", fontWeight: 700, color: "var(--text-primary)" }}>
-                    {formatCurrency(order.quantity * order.price)}
-                  </td>
-                </tr>
-              ))}
+              {(() => {
+                const now = new Date();
+                const filteredHistory = history.filter(order => {
+                  const orderDate = new Date(order.created_at);
+                  if (historyFilter === 'today') {
+                    return orderDate.toDateString() === now.toDateString();
+                  } else if (historyFilter === 'week') {
+                    const diffTime = Math.abs(now.getTime() - orderDate.getTime());
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    return diffDays <= 7;
+                  } else if (historyFilter === 'month') {
+                    return orderDate.getMonth() === now.getMonth() && orderDate.getFullYear() === now.getFullYear();
+                  }
+                  return true;
+                });
+
+                if (filteredHistory.length === 0) {
+                  return (
+                    <tr>
+                      <td colSpan={6} style={{ textAlign: "center", padding: "40px", color: "var(--text-tertiary)", fontSize: "0.9rem" }}>
+                        Nenhuma ordem encontrada para o período selecionado.
+                      </td>
+                    </tr>
+                  );
+                }
+
+                return filteredHistory.map((order) => {
+                  const dateObj = new Date(order.created_at);
+                  const dateStr = dateObj.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                  const timeStr = dateObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+                  return (
+                    <tr key={order.id}>
+                      <td style={{ paddingLeft: "24px" }}>
+                        <div style={{ fontWeight: 600, color: "var(--text-primary)", fontSize: "0.85rem" }}>{dateStr}</div>
+                        <div style={{ color: "var(--text-tertiary)", fontSize: "0.75rem" }}>{timeStr}</div>
+                      </td>
+                      <td>
+                        <span style={{ 
+                          background: order.operation === 'buy' ? "rgba(0,212,170,0.1)" : "rgba(255,77,109,0.1)", 
+                          color: order.operation === 'buy' ? "var(--green-primary)" : "var(--red-primary)",
+                          padding: "4px 8px", borderRadius: "4px", fontSize: "0.75rem", fontWeight: 800, textTransform: "uppercase"
+                        }}>
+                          {order.operation === 'buy' ? 'Compra' : 'Venda'}
+                        </span>
+                      </td>
+                      <td style={{ fontWeight: 700, color: "var(--text-primary)" }}>{order.ticker}</td>
+                      <td style={{ textAlign: "right", color: "var(--text-secondary)" }}>{order.quantity}</td>
+                      <td style={{ textAlign: "right", color: "var(--text-secondary)" }}>{formatCurrency(order.price)}</td>
+                      <td style={{ textAlign: "right", paddingRight: "24px", fontWeight: 700, color: "var(--text-primary)" }}>
+                        {formatCurrency(order.quantity * order.price)}
+                      </td>
+                    </tr>
+                  );
+                });
+              })()}
             </tbody>
           </table>
         </div>
