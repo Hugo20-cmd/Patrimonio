@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Search, TrendingUp, DollarSign, Activity, Clock, Briefcase, RefreshCw, Loader2 } from "lucide-react";
 import { formatCurrency } from "@/lib/mock-data";
 import { executeSimulatorOrder } from "@/app/actions/simulator";
+import { searchAsset } from "@/app/actions/market";
 import AssetIcon from "@/components/ui/AssetIcon";
 
 export default function HomeBrokerClient({ 
@@ -22,6 +24,11 @@ export default function HomeBrokerClient({
   const [searchInput, setSearchInput] = useState("");
   const [account, setAccount] = useState(initialAccount);
   const [history, setHistory] = useState(initialHistory);
+
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+  const searchContainerRef = useRef<HTMLFormElement>(null);
   
   // Order Form
   const [orderType, setOrderType] = useState<'buy' | 'sell'>('buy');
@@ -48,6 +55,34 @@ export default function HomeBrokerClient({
     };
     fetchPrice();
   }, [displayTicker]);
+
+  useEffect(() => {
+    if (searchInput.length < 1) { 
+      setSuggestions([]); 
+      setShowSuggestions(false);
+      return; 
+    }
+    const timer = setTimeout(async () => {
+      setLoadingSuggestions(true);
+      try {
+        const results = await searchAsset(searchInput);
+        setSuggestions(results.slice(0, 6));
+        setShowSuggestions(true);
+      } catch (err) {}
+      setLoadingSuggestions(false);
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const loadWidget = () => {
@@ -82,21 +117,23 @@ export default function HomeBrokerClient({
     }
   }, [activeTicker]);
 
+  const applySelection = (cleanSearch: string) => {
+    setDisplayTicker(cleanSearch);
+    if (/^[A-Z]{4}\d{1,2}$/.test(cleanSearch)) {
+      setActiveTicker(`BMFBOVESPA:${cleanSearch}`);
+    } else if (cleanSearch.includes("USDT") || cleanSearch === "BTC" || cleanSearch === "ETH") {
+      setActiveTicker(`BINANCE:${cleanSearch}${cleanSearch.endsWith('USDT') ? '' : 'USDT'}`);
+    } else {
+      setActiveTicker(`NASDAQ:${cleanSearch}`);
+    }
+    setSearchInput("");
+    setShowSuggestions(false);
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchInput) return;
-    const cleanSearch = searchInput.toUpperCase().trim();
-    setDisplayTicker(cleanSearch);
-    
-    // TradingView format logic
-    if (/^[A-Z]{4}\d{1,2}$/.test(cleanSearch)) {
-      setActiveTicker(`BMFBOVESPA:${cleanSearch}`); // Ações BR e FIIs
-    } else if (cleanSearch.includes("USDT") || cleanSearch === "BTC" || cleanSearch === "ETH") {
-      setActiveTicker(`BINANCE:${cleanSearch}${cleanSearch.endsWith('USDT') ? '' : 'USDT'}`); // Cripto
-    } else {
-      setActiveTicker(`NASDAQ:${cleanSearch}`); // Ações US padrão
-    }
-    setSearchInput("");
+    applySelection(searchInput.toUpperCase().trim());
   };
 
   const handleExecuteOrder = async (e: React.FormEvent) => {
@@ -149,15 +186,47 @@ export default function HomeBrokerClient({
             <div style={{ fontSize: "0.85rem", color: "var(--text-tertiary)", marginTop: "6px" }}>Ação / FII / Cripto</div>
           </div>
           <div style={{ flex: 1 }}></div>
-          <form onSubmit={handleSearch} style={{ position: "relative", width: "300px" }}>
+          <form ref={searchContainerRef} onSubmit={handleSearch} style={{ position: "relative", width: "300px" }}>
             <Search size={18} style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", color: "var(--text-tertiary)" }} />
             <input 
               type="text" 
               placeholder="Buscar Ativo (ex: VALE3)" 
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
+              onFocus={() => { if(suggestions.length > 0) setShowSuggestions(true); }}
               style={{ width: "100%", padding: "12px 16px 12px 44px", background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)", borderRadius: "10px", color: "var(--text-primary)", outline: "none", fontSize: "0.95rem" }}
             />
+            {loadingSuggestions && (
+              <Loader2 size={16} className="spin" style={{ position: "absolute", right: "16px", top: "50%", transform: "translateY(-50%)", color: "var(--text-tertiary)" }} />
+            )}
+            
+            {/* AUTOCOMPLETE DROPDOWN */}
+            <AnimatePresence>
+              {showSuggestions && suggestions.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  style={{ position: "absolute", top: "calc(100% + 8px)", left: 0, right: 0, background: "var(--bg-card)", border: "1px solid var(--border-subtle)", borderRadius: "12px", boxShadow: "0 10px 40px rgba(0,0,0,0.5)", overflow: "hidden", zIndex: 100 }}
+                >
+                  {suggestions.map((s, idx) => (
+                    <div 
+                      key={idx}
+                      onClick={() => applySelection(s.symbol.toUpperCase())}
+                      style={{ padding: "12px 16px", borderBottom: idx === suggestions.length - 1 ? "none" : "1px solid var(--border-subtle)", display: "flex", gap: "12px", alignItems: "center", cursor: "pointer", transition: "background 0.2s" }}
+                      onMouseEnter={e => e.currentTarget.style.background = "var(--bg-elevated)"}
+                      onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+                    >
+                      <AssetIcon ticker={s.symbol} name={s.shortName} logoUrl={s.logourl} />
+                      <div>
+                        <div style={{ fontWeight: 800, fontSize: "0.9rem", color: "var(--text-primary)" }}>{s.symbol}</div>
+                        <div style={{ fontSize: "0.75rem", color: "var(--text-tertiary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "200px" }}>{s.shortName || s.longName}</div>
+                      </div>
+                    </div>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </form>
         </div>
 
