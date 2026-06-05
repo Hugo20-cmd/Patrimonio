@@ -299,11 +299,11 @@ export default function DashboardClient({ initialAssets, dividends = [] }: { ini
           minWidth: 0,
           overflow: "hidden"
         }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
             <h3 style={{ fontSize: "1.1rem", display: "flex", alignItems: "center", gap: "8px", textTransform: "uppercase", letterSpacing: "1px" }}>
               <TrendingUp size={18} color="#00F0FF" /> Evolução Patrimonial
             </h3>
-            <div style={{ display: "flex", gap: "4px", background: "rgba(255,255,255,0.05)", padding: "4px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.1)" }}>
+            <div style={{ display: "flex", gap: "4px", background: "rgba(255,255,255,0.05)", padding: "4px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.1)", overflowX: "auto", maxWidth: "100%" }}>
               {(["1M", "6M", "1A", "TUDO"] as const).map(tr => (
                 <button 
                   key={tr}
