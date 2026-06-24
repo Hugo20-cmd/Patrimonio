@@ -29,8 +29,9 @@ export async function updateSession(request: NextRequest) {
 
   // Atualizar a sessão se necessário (evitar token expirado)
   const {
-    data: { user },
-  } = await supabase.auth.getUser()
+    data: { session },
+  } = await supabase.auth.getSession()
+  const user = session?.user || null
 
   // Nota: A lógica de validação de sessão única (Single Session) que consultava
   // a tabela 'profiles' foi removida daqui, pois chamadas diretas ao banco de dados 
