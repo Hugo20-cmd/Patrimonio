@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { PlayCircle, Lock, CheckCircle2, Crown, BrainCircuit, TrendingUp, ShieldAlert, Building2, Briefcase, Globe2, X, ChevronRight, ChevronLeft, PieChart, AlertOctagon, ShieldCheck } from "lucide-react";
+import { PlayCircle, Lock, CheckCircle2, Crown, BrainCircuit, TrendingUp, ShieldAlert, Building2, Briefcase, Globe2, X, ChevronRight, ChevronLeft, PieChart, AlertOctagon, ShieldCheck, Video } from "lucide-react";
 import { getSubscriptionStatus } from "@/app/actions/subscription";
 
 import { createClient } from "@/utils/supabase/client";
 
 import { CURRICULUM } from "@/lib/data/curriculum";
+import { PREMIUM_VIDEOS } from "@/lib/data/videos";
 
 export default function AcademiaPage() {
   const [progress, setProgress] = useState(0); 
@@ -14,6 +15,9 @@ export default function AcademiaPage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
+  const [activeTab, setActiveTab] = useState<"trilha" | "videos">("trilha");
+  const [isPremium, setIsPremium] = useState(false);
+  const [activeVideo, setActiveVideo] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -21,8 +25,15 @@ export default function AcademiaPage() {
       // Use standard App Router client pattern, or fallback to direct fetch if imported supabase has session
       const { data } = await supabase.auth.getUser();
       const email = data?.user?.email?.toLowerCase().trim() || '';
+      
+      const subStatus = await getSubscriptionStatus();
+      if (subStatus.status === 'premium') {
+        setIsPremium(true);
+      }
+
       if (['contatopennamc@gmail.com', 'suporte@patrimoniomais.com.br'].includes(email)) {
         setIsAdmin(true);
+        setIsPremium(true);
       }
     };
     fetchUser();
@@ -149,8 +160,36 @@ export default function AcademiaPage() {
         </a>
       </div>
 
-      {/* ROADMAP TIMELINE */}
-      <div style={{ position: "relative", paddingLeft: "32px" }}>
+      {/* TAB SWITCHER */}
+      <div style={{ display: "flex", gap: "16px", marginBottom: "48px", borderBottom: "1px solid var(--border-subtle)", paddingBottom: "16px" }}>
+        <button 
+          onClick={() => setActiveTab("trilha")}
+          style={{ 
+            background: activeTab === "trilha" ? "var(--bg-elevated)" : "transparent",
+            color: activeTab === "trilha" ? "var(--text-primary)" : "var(--text-secondary)",
+            border: "none", padding: "12px 24px", borderRadius: "12px", fontSize: "1.1rem", fontWeight: 800,
+            cursor: "pointer", transition: "0.2s", display: "flex", alignItems: "center", gap: "8px"
+          }}
+        >
+          <CheckCircle2 size={20} /> Trilha de Estudos
+        </button>
+        <button 
+          onClick={() => setActiveTab("videos")}
+          style={{ 
+            background: activeTab === "videos" ? "var(--bg-elevated)" : "transparent",
+            color: activeTab === "videos" ? "var(--text-primary)" : "var(--text-secondary)",
+            border: "none", padding: "12px 24px", borderRadius: "12px", fontSize: "1.1rem", fontWeight: 800,
+            cursor: "pointer", transition: "0.2s", display: "flex", alignItems: "center", gap: "8px"
+          }}
+        >
+          <Video size={20} /> Videoaulas
+        </button>
+      </div>
+
+      {activeTab === "trilha" && (
+        <>
+          {/* ROADMAP TIMELINE */}
+          <div style={{ position: "relative", paddingLeft: "32px" }}>
         
         {/* Vertical Line */}
         <div style={{ position: "absolute", top: "20px", bottom: "20px", left: "54px", width: "3px", background: "var(--border-subtle)", borderRadius: "10px", zIndex: 0 }} />
@@ -237,6 +276,92 @@ export default function AcademiaPage() {
           })}
         </div>
       </div>
+      </>
+      )}
+
+      {/* VIDEO GALLERY (VIDEOS TAB) */}
+      {activeTab === "videos" && (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "24px" }}>
+          {PREMIUM_VIDEOS.map((video) => (
+            <div 
+              key={video.id} 
+              onClick={() => {
+                if (!isPremium) {
+                  setShowPaywall(true);
+                  document.body.style.overflow = "hidden";
+                } else {
+                  setActiveVideo(video.youtubeId);
+                  document.body.style.overflow = "hidden";
+                }
+              }}
+              style={{ 
+                background: "var(--bg-card)", borderRadius: "20px", border: "1px solid var(--border-default)",
+                overflow: "hidden", cursor: "pointer", transition: "transform 0.2s", display: "flex", flexDirection: "column"
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-4px)"}
+              onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
+            >
+              <div style={{ position: "relative", width: "100%", paddingTop: "56.25%", background: "#000" }}>
+                <img 
+                  src={video.thumbnail || `https://img.youtube.com/vi/${video.youtubeId}/maxresdefault.jpg`} 
+                  alt={video.title}
+                  style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.8 }}
+                  onError={(e) => { e.currentTarget.src = `https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg`; }}
+                />
+                {!isPremium && (
+                  <div style={{ position: "absolute", top: "12px", right: "12px", background: "rgba(0,0,0,0.7)", padding: "8px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <Lock size={18} color="#FFD700" />
+                  </div>
+                )}
+                <div style={{ position: "absolute", bottom: "12px", right: "12px", background: "rgba(0,0,0,0.8)", padding: "4px 8px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: 700, color: "#fff" }}>
+                  {video.duration}
+                </div>
+                <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "48px", height: "48px", background: "var(--green-primary)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 20px rgba(0,212,170,0.4)" }}>
+                  <PlayCircle size={24} color="#000" fill="#000" />
+                </div>
+              </div>
+              <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "8px", flex: 1 }}>
+                <span style={{ fontSize: "0.75rem", fontWeight: 800, color: "var(--blue-primary)", textTransform: "uppercase", letterSpacing: "1px" }}>{video.module}</span>
+                <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary)", margin: 0 }}>{video.title}</h3>
+                <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: 1.5, margin: 0 }}>{video.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* YOUTUBE VIDEO MODAL */}
+      {activeVideo && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(0,0,0,0.9)", backdropFilter: "blur(10px)",
+          zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center",
+          animation: "fadeIn 0.3s ease", padding: "20px"
+        }}>
+          <div style={{ width: "100%", maxWidth: "1000px", display: "flex", flexDirection: "column", gap: "16px" }}>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <button 
+                onClick={() => { setActiveVideo(null); document.body.style.overflow = "auto"; }} 
+                style={{ background: "rgba(255,255,255,0.1)", border: "none", color: "#fff", cursor: "pointer", borderRadius: "50%", width: "40px", height: "40px", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s" }}
+                onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.2)"}
+                onMouseLeave={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.1)"}
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <div style={{ position: "relative", paddingTop: "56.25%", background: "#000", borderRadius: "16px", overflow: "hidden", border: "1px solid var(--border-default)", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}>
+              <iframe
+                src={`https://www.youtube.com/embed/${activeVideo}?autoplay=1`}
+                title="Video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* SLIDESHOW MODAL (OVERLAY) */}
       {activeModule && slides.length > 0 && (
