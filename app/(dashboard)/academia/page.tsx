@@ -160,7 +160,7 @@ export default function AcademiaPage() {
         </a>
       </div>
 
-      {/* TAB SWITCHER */}
+      {/* TAB SWITCHER (Oculto temporariamente até os vídeos estarem prontos)
       <div style={{ display: "flex", gap: "16px", marginBottom: "48px", borderBottom: "1px solid var(--border-subtle)", paddingBottom: "16px" }}>
         <button 
           onClick={() => setActiveTab("trilha")}
@@ -185,6 +185,7 @@ export default function AcademiaPage() {
           <Video size={20} /> Videoaulas
         </button>
       </div>
+      */}
 
       {activeTab === "trilha" && (
         <>
